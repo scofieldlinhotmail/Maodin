@@ -1,0 +1,10 @@
+@mixin transition ($attr: all, $time: 0.3s, $ease: ease) {
+  transition: $attr $time $ease;
+}
+
+@mixin fix{
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+}

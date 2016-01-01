@@ -1,0 +1,57 @@
+<% extend 'phone/base.html' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/phone-addaddress.css">
+<% end %>
+<div class="am-padding">
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <div class="content">
+                <div class="am-form">
+                    <fieldset class="am-form-set">
+                        <input id="receiver" class="input" name="receiver" type="text" placeholder="收件人">
+                        <input id="tel" class="input" name="tel" type="text" placeholder="手机号码">
+                        <input id="code" class="input" name="code" type="text" placeholder="邮政编码">
+                        <div data-toggle="distpicker" class="am-form-group">
+                            <select id="province" data-province="辽宁省"></select>
+                            <select id="city" data-city="大连市"></select>
+                        </div>
+
+                        <div class="am-form-group">
+                            <select name="area" id="area">
+                                <% for a in @area : %>
+                                <option value="<%= a.id %>"><%= a.title %></option>
+                                <% end %>
+                            </select>
+                        </div>
+
+                        <input id="addr" class="input" name="addr" type="text" placeholder="详细地址">
+                    </fieldset>
+                    <div class="am-u-sm-12 yes">
+                        <button id="yes" type="button" class="am-btn am-btn-warning am-btn-block btn-yes">确 定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-g" id="danger">
+        <div class="am-u-sm-10 am-u-sm-offset-1 attention">
+            <div class="am-panel am-panel-danger">
+                <div class="am-panel-hd">
+                    <h3 class="am-panel-title am-text-center">输入错误</h3>
+                </div>
+                <div class="am-panel-bd">
+                    <ul class="am-list am-list-static">
+                        <li class="a">请输入中文名</li>
+                        <li class="b">请输入正确手机号</li>
+                        <li class="c">请输入正确邮政编码</li>
+                        <li class="e">请输入正确收货地址</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-addaddress.js"></script>
+<% end %>

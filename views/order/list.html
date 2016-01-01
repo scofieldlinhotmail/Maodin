@@ -1,0 +1,219 @@
+<% extend 'shared/admin-base' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-order-list.css">
+<style>
+    table img{
+        width: 48px;
+        height: 48px;
+    }
+    html .dropdown-menu {
+        min-width: 80px;;
+    }
+    table td, table th{ text-align: center; vertical-align: middle !important;}
+</style>
+
+<% end %>
+<div ng-controller="AppCtrl">
+    <div ng-controller="OrderListCtrl">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-reorder"></i>筛选条件</div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse"></a>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <div action="#" class="form-horizontal form-bordered">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">商品id</label>
+                            <div class="col-md-4">
+                                <select multiple class="form-control" ng-model="goodsIds">
+                                    <% for item in @goods : %>
+                                    <option value="<%= item.id %>">(id:<%= item.id %>)<%= item.title %></option>
+                                    <% end %>
+                                </select>
+                                <span class="help-block">可多选</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">一级区域</label>
+                            <div class="col-md-4">
+                                <select multiple class="form-control" ng-model="areas">
+                                    <% for item in @areas : %>
+                                    <option value="<%= item.id %>"><%= item.title %></option>
+                                    <% end %>
+                                </select>
+                                <span class="help-block">可多选</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">订单状态</label>
+                            <div class="col-md-4">
+                                <select class="form-control" ng-model="status">
+                                    <option value="1">待发货</option>
+                                    <option value="2">已发货</option>
+                                    <option value="3">已签收</option>
+                                </select>
+                                <span class="help-block">可多选</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-md-3 control-label">收货人姓名</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control"  ng-model="recieverName">
+                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label  class="col-md-3 control-label">收货人手机号</label>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control"  ng-model="phone">
+                                    <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">支付时间</label>
+                            <div class="col-md-4">
+                                <div class="input-group input-large date-picker input-daterange" data-date-format="mm/dd/yyyy">
+                                    <input type="text" class="form-control" ng-model="startDate">
+                                    <span class="input-group-addon">to</span>
+                                    <input type="text" class="form-control" ng-model="endDate">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-actions text-center ">
+                        <button type="submit" class="btn blue" ng-click="search()" ng-disabled="loading">查询</button>
+                        <button type="submit" class="btn green" ng-click="exportAll('all')" ng-disabled="loading">导出所筛选的</button>
+                        <button type="submit" class="btn green" ng-click="exportAll('small')" ng-disabled="loading">导出所筛选的（供货商版）</button>
+                        <button type="button" class="btn default" ng-click="reset()">清空</button>
+                    </div>
+                </div>
+                <!-- END FORM-->
+            </div>
+        </div>
+        <div style="margin: 8px 0;">
+            <div class="btn-groups text-right">
+                <div class="btn btn-default" ng-click="action(2)">发货</div>
+                <!--<div class="btn btn-default">取消</div>-->
+                <div class="btn btn-success" ng-click="export('all')">导出详情</div>
+                <div class="btn btn-success" ng-click="export('small')">导出（供货商版）</div>
+                <div class="btn btn-primary" ng-click="select('to be empty')">清空勾选</div>
+            </div>
+        </div>
+        <form action="/adminer/order/export" method="post" target="_blank" style="display: none;" id="export-form">
+            <input name="ids">
+            <input name="type">
+            <input name="exportAll">
+        </form>
+        <table class="table  table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="width: 48px;"></th>
+                <th style="width: 48px;">
+                    <input type="checkbox" ng-click="select('all')" ng-checked="all" id="all-checkbox">
+                </th>
+                <th>订单号</th>
+                <th>收货人姓名</th>
+                <th>收货人手机号</th>
+                <th>一级区域</th>
+                <th>二级区域</th>
+                <th>数量</th>
+                <th>总价</th>
+                <th>运费</th>
+                <th>支付时间</th>
+                <th>订单状态</th>
+                <th>备注</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat-start="order in list" ng-controller="OrderCtrl">
+                <td>
+                    <i class="fa {{order.opened ? 'fa-minus': 'fa-plus'}}" ng-click="order.opened = !order.opened"></i>
+                </td>
+                <td>
+                    <input type="checkbox" ng-click="select(order.id)" ng-checked="order.selected">
+                </td>
+                <td>{{order.id}}</td>
+                <td>{{order.recieverName}}</td>
+                <td>{{order.phone}}</td>
+                <td>{{order.Area.TopArea.title}}</td>
+                <td>{{order.Area.title}}</td>
+                <td>{{order.num}}</td>
+                <td>{{order.price}}</td>
+                <td>{{order.fare}}</td>
+                <td>{{order.payTime}}</td>
+                <td>{{order.status | statusStr}}</td>
+                <td> {{order.message}}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            操作 <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li ng-click="action(2, order.id)"><a href="#">发货</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-repeat-end="" ng-show="order.opened" ng-controller="OrderCtrl">
+                <td></td>
+                <td colspan="13">
+                    <table class="table  table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>商品id</th>
+                            <th>图片</th>
+                            <th>购买数量</th>
+                            <th>单价</th>
+                            <th>总价</th>
+                            <th>规格</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in order.orderItems">
+                            <td>{{item.goods.id}}</td>
+                            <td><img ng-src="{{item.goods.mainImg}}" ></td>
+                            <td>{{item.goods.price}}</td>
+                            <td>{{item.num}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.goods.perNum}} {{item.goods.perStr}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="clearfix">
+            <span class="pull-left">共<span>{{count}}</span>条数据 第<span>{{page}}/{{totalPage}}</span>页</span>
+            <div class="btn-group pull-right" role="group" >
+                <button type="button" class="btn btn-default" ng-click="page = page -1" ng-show="page != 1 ">上一页</button>
+                <button type="button" class="btn btn-default" ng-click="page = page + 1" ng-show="page != totalPage">下一页</button>
+            </div>
+        </div>
+        <div style="margin: 8px 0;">
+            <div class="btn-groups text-right">
+                <div class="btn btn-default" ng-click="action(2)">发货</div>
+                <!--<div class="btn btn-default">取消</div>-->
+                <div class="btn btn-success" ng-click="export('all')">导出详情</div>
+                <div class="btn btn-success" ng-click="export('small')">导出（供货商版）</div>
+                <div class="btn btn-primary" ng-click="select('to be empty')">清空勾选</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<% block 'scripts': %>
+<script src="/dist/admin-order-list.js"></script>
+<% end %>

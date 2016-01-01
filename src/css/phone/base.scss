@@ -1,0 +1,24 @@
+$main-color: #ff4444;
+$navbar-height: 48px;
+
+body {
+  padding-bottom: $navbar-height;
+}
+#header {
+  background-color: $main-color;
+}
+
+#navbar {
+  height: $navbar-height;
+  left: 0;
+  width: 100%;
+  bottom: 0;
+  background: #fff;
+  border-top: 1px solid #eee;
+  * {
+    color: #444 !important;
+  }
+  .active * {
+    color: $main-color !important;
+  }
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <% include 'shared/head' %>
+    <link rel="stylesheet" href="/dist/phone-commons-ex.js.css" >
+    <% content 'head' %>
+</head>
+<body>
+
+<header id="header" data-am-widget="header" class="am-header am-header-default">
+    <div class="am-header-left am-header-nav">
+        <a href="#left-link" class="" onclick="window.history.back()">
+            <i class="am-header-icon am-icon-angle-left"></i>
+        </a>
+    </div>
+
+    <h1 class="am-header-title">
+        <a class="">
+            <%- @title %>
+        </a>
+    </h1>
+</header>
+
+
+<% content %>
+
+<% include "phone/bottom-navbar.html" %>
+
+<script src="/dist/phone-commons-ex.js"></script>
+<% content 'scripts' %>
+</body>
+</html>

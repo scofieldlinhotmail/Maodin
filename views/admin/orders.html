@@ -1,0 +1,322 @@
+<% extend 'shared/admin-base' %>
+
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-orders.css">
+<style>
+    table th, table td {
+        vertical-align: middle;
+    }
+</style>
+<% end %>
+
+<ul  class="nav nav-pills tabcon" id="">
+    <li class="list active"><a href="orders" >所有订单</a></li>
+    <li class="list"><a href="orders?t=1" >待付款</a></li>
+    <li class="list"><a href="orders?t=2" >待发货</a></li>
+    <li class="list"><a href="orders?t=3" >待收货</a></li>
+    <li class="list"><a href="orders?t=4" >已收货</a></li>
+    <li class="list"><a href="orders?t=5" >已拒绝</a></li>
+    <input type="hidden" value="<%= @t %>" id="activeid">
+
+</ul>
+<hr style="    height: 1px;
+    border: none;
+    border-top: 2px solid #337AB7;
+    margin: 0;" />
+
+<div class="row">
+    <div class="tabbable tabs-left col-md-12" style="margin: 10px 0;">
+        <ul class="col-md-1.5 nav nav-tabs">
+            <li class="" id="ddli">
+                <a href="#" id="con"  class="dropdown-toggle" data-toggle="dropdown">搜索方式<i class="fa fa-angle-down"></i></a>
+                <ul class="dropdown-menu" id="dm" role="menu" >
+                    <li><a href="#tab_6_1" tabindex="-1" data-toggle="tab">订单号</a></li>
+                    <li><a href="#tab_6_2" tabindex="-1" data-toggle="tab">成交时间</a></li>
+                    <li><a href="#tab_6_3" tabindex="-1" data-toggle="tab">下单时间</a></li>
+                    <li><a href="#tab_6_4" tabindex="-1" data-toggle="tab">宝贝名称</a></li>
+                </ul>
+            </li>
+
+
+        </ul>
+        <div  class="tab-content col-md-9">
+            <div class="tab-pane active" id="tab_6_1">
+                <form class="form-horizontal" method="get" action="orders" role="form">
+                    <input type="hidden" name="s" class="form-control"  value="1" >
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">订单号:</label>
+                            <div class="col-md-5">
+                                <input type="text" name="num" class="form-control"  placeholder="请输入订单号">
+                            </div>
+                            <button type="submit" class="btn green col-md-1">搜索</button>
+                        </div>
+
+
+
+
+                </form>
+            </div>
+            <div class="tab-pane fade" id="tab_6_2">
+                <form class="form-horizontal" method="get" action="orders" role="form">
+                    <input type="hidden" name="s" class="form-control"  value="2" >
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">开始时间:</label>
+                            <div class="col-md-3">
+                                <input class="form-control form_datetime"  size="16" type="datetime" name="stime" value="" />
+                            </div>
+                            <label class="col-md-2 control-label">结束时间:</label>
+                            <div class="col-md-3">
+                                <input class="form-control form_datetime"  size="16" type="datetime" name="etime" value="" />
+                            </div>
+                            <button type="submit" class="btn green col-md-1">搜索</button>
+                        </div>
+
+
+
+
+                </form>
+            </div>
+            <div class="tab-pane fade" id="tab_6_3">
+               <form class="form-horizontal" method="get" action="orders" role="form">
+                <input type="hidden" name="s" class="form-control"  value="3" >
+                <div class="form-group">
+                    <label class="col-md-2 control-label">开始时间:</label>
+                    <div class="col-md-3">
+                        <input class="form-control form_datetime"  size="16" type="datetime" name="stime" value="" />
+                    </div>
+                    <label class="col-md-2 control-label">结束时间:</label>
+                    <div class="col-md-3">
+                        <input class="form-control form_datetime"  size="16" type="datetime" name="etime" value="" />
+                    </div>
+                    <button type="submit" class="btn green col-md-1">搜索</button>
+                </div>
+
+
+
+
+                </form>
+            </div>
+            <div class="tab-pane fade" id="tab_6_4">
+                <form class="form-horizontal" method="get" action="orders" role="form">
+                    <input type="hidden" name="s" class="form-control"  value="4" >
+
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">宝贝名称:</label>
+                            <div class="col-md-5">
+                                <input type="text" name="name" class="form-control"  placeholder="请输入名称">
+                            </div>
+                            <button type="submit" class="btn green col-md-1">搜索</button>
+                        </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+
+        <ul class="page-breadcrumb breadcrumb nomargen" style="background: #c9c9c9">
+            <li></li>
+            <li class="col-md-5 col-sm-5">
+               宝贝
+            </li>
+            <li class="col-md-3 col-sm-3">
+                单价
+            </li>
+
+            <li class="col-md-3 col-sm-3">
+                数量
+            </li>
+
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+
+
+<div  style="float: right">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" style="visibility: visible;">
+            <% if @page==0 : %>
+            <li class="prev disabled"><a href="#" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% else : %>
+            <li class="prev "><a href="<%=  @preurl %>" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% end %>
+
+            <% if @next>0 : %>
+             <li class="next"><a href="<%=  @nexturl  %>" title="Next">下一页<i class="fa fa-angle-right"></i></a></li>
+            <% else : %>
+            <li class="next disabled"><a href="#" title="Next">下一页<i class="fa fa-angle-right"></i></a></li>
+            <% end %>
+        </ul>
+    </div>
+</div>
+
+
+<div class="row">
+
+    <% if @orders.length==0 : %>
+
+    <div class="col-md-12 col-sm-12">
+    <div class="note note-warning">
+        <h4 class="block">没有符合条件的宝贝，请尝试其他搜索条件。</h4>
+
+    </div>
+</div>
+    <% end %>
+
+    <% for type in @orders : %>
+
+        <div class="col-md-12 col-sm-12">
+            <div class="portlet box blue">
+                <div class="portlet-title">
+                    <div class="caption">订单编号：<%= type.dataValues.id %>    &nbsp; 成交时间：<%= type.dataValues.payTime.toLocaleString() %></div>
+
+
+                    <div class="tools">
+
+                        <a href="" class="collapse"></a>
+
+                    </div>
+                    <div class="caption" style="float: right"> 交易状态:已付款 </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="table-responsive">
+
+                        <% for item in type.dataValues.OrderItems : %>
+                        <div class="contitem">
+
+                        <li class="col-md-5 col-sm-5">
+                            <div class="itemimg col-md-1 col-sm-1">
+                            <img class="itemimg " src="<%= item.Good.dataValues.mainImg %>">
+                            </div>
+                            <div class="col-md-8 col-sm-8" style="word-break:break-all"><%= item.Good.dataValues.title %></div>
+                        </li>
+                        <li class="col-md-3 col-sm-3"><%= item.price %></li>
+                        <li class="col-md-3 col-sm-3"><%= item.num %></li>
+                        </div>
+
+                        <%end%>
+                        <div class="form-actions fluid" style="padding: 10px 0;margin: 0">
+                        <li class="col-md-3 col-sm-3" style="font-size: initial;">总计:12.5</li>
+                            <div style="float: right;">
+                            <a data-toggle="modal" href="#get" class="btn btn-sm default get" value="<%= type.dataValues.id %>">查看</a>
+                            <a data-toggle="modal" href="#send" class="btn btn-sm default send" value="<%= type.dataValues.id %>">发货</a>
+                            <a data-toggle="modal" href="#refuge" class="btn btn-sm default refuge" value="<%= type.dataValues.id %>">拒绝</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+    <% end %>
+</div>
+
+
+
+
+    <div id="get" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">添加</h4>
+                </div>
+                <div class="modal-body" style="height: 150px !important">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>标题</h4>
+                            <p><input id="add2" type="text" class="col-md-12 form-control"></p>
+                            <input id="add2fid" value="" type="hidden">
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                    <button type="button" id="add2btn" class="btn green">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="send" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">发货</h4>
+                </div>
+                <div class="modal-body" style="height: 100px !important">
+
+                    <form action="#" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">预计到达时间</label>
+                                <div class="col-md-5" style="border: 0">
+
+                                    <input id="sendtime" class="form-control form_datetime"  size="16" type="text" value="" />
+                                    <span class="help-block">选择时间</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                    <button type="button" id="sendbtn"  class="btn green">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="refuge" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title" style="text-align: center;">拒绝订单</h4>
+                </div>
+                <div class="modal-body" style="height:auto">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h>拒绝理由:</h>
+                            <textarea id="jjly" class="col-md-12 form-control" style="min-height: 200px"></textarea>
+
+                            <input id="rid" value="" type="hidden">
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                    <button type="button" id="refugebtn"  class="btn green">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<% block 'scripts': %>
+<script src="/dist/admin-orders.js"></script>
+<% end %>

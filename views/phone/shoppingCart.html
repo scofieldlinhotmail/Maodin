@@ -1,0 +1,65 @@
+<% extend "phone/base.html" %>
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-shoppingcart.css">
+<% end %>
+
+<div ng-controller="AppCtrl" ng-cloak>
+    <div class="am-padding-sm" >
+        <div class="am-panel am-panel-default shoppingcart">
+            <div class="am-panel-hd shoppingcart-shop-title">
+                <i class="am-icon am-icon-circle-o"  ng-hide="all" ng-click="selectAll(true)" ></i>
+                <i class="am-icon am-icon-check-circle" ng-show="all" ng-click="selectAll(false)" ></i>
+            </div>
+            <div class="am-panel-bd">
+                <div class="shoppingcart-item" ng-controller="GoodsCtrl" ng-repeat="goods in shoppingCart" ng-init="goodsIndex = $index">
+                    <div class="shoppingcart-item-checkbox" ng-click="goods.selected = !goods.selected">
+                        <i class="am-icon am-icon-circle-o" ng-hide="goods.selected"></i>
+                        <i class="am-icon am-icon-check-circle" ng-show="goods.selected" ></i>
+                    </div>
+                    <div class="shoppingcart-item-main">
+                        <a href="/user/goods-page/{{goods.id}}">
+                            <img ng-src="{{goods.Good.mainImg}}" >
+                        </a>
+                        <a href="/user/goods-page/{{goods.id}}">
+                            <h3>{{goods.Good.title}}</h3>
+                            <small>{{goods.Good.brief}}</small>
+                        </a>
+
+                        <p class="am-text-sm">￥ {{goods.Good.price * goods.Good.perNum}}/{{goods.Good.perStr}} <del>{{goods.Good.oldPrice * goods.Good.perNum}}</del></p>
+                        <div class="am-cf">
+                            <div class="goods-counter am-fl">
+                                <div class="btn minus am-text-warning" ng-click="goods.num = goods.num - 1">
+                                    <i class="am-icon am-icon-minus-square-o"></i>
+                                </div>
+                                <input type="number" ng-model="goods.num" min="0">
+                                <div class="btn plus am-text-success" ng-click="goods.num = goods.num + 1">
+                                    <i class="am-icon am-icon-plus-square-o"></i>
+                                </div>
+                            </div>
+                            <i class="am-icon am-icon-trash am-fr am-margin-right" ng-click="remove()"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="counter am-cf am-padding-left">
+        <div class="am-fl">
+            <strong>总价: ￥ {{totalPrice}}</strong>
+        </div>
+        <div class="am-fr counter-buy-btn am-padding-horizontal-sm">
+            <span ng-click="buy()">去结算</span>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/plain" id="shoppingCart">
+    <%- @shoppingCart %>
+</script>
+
+<% block 'scripts': %>
+<script src="/dist/phone-shoppingcart.js"></script>
+<% end %>

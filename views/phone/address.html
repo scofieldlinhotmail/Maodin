@@ -1,0 +1,68 @@
+<% extend 'phone/base.html' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/phone-address.css">
+<% end %>
+<div class="am-g" ng-app="App">
+    <div class="address-list am-padding-sm" ng-controller="Address">
+
+        <% if @datas?.length : %>
+            <% for addr in @datas : %>
+            <div class="addr title" id="<%= addr.id %>">
+                <div class="am-g">
+                    <div class="am-u-sm-10">
+                        <div class="am-g">
+                            <div class="am-u-sm-4">
+                                <div class="bian-head bian-name">
+                                    <span><%- addr.recieverName %></span>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-8 am-text-right">
+                                <div class="bian-head bian-tel">
+                                    <span><%- addr.phone %></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="am-g">
+                            <div class="am-u-sm-8">
+                                <div class="am-margin-vertical">
+                                    <span class="am-badge am-badge-default"><%- addr.Area.title %></span>
+                                    <span><%- addr.province %><%- addr.city %><%- addr.address %></span>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-4 color-red default" default="<%- addr.isDefault %>">
+                                <div class="am-margin-vertical">
+                                    <div class="am-text-right">[默认]</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-2  edit">
+                        <div class="am-text-center">
+                            <!--<div class="am-icon-btn am-icon-btn-sm am-icon-pencil am-margin-xs"></div>-->
+                            <br />
+                            <div class="am-icon-btn am-icon-btn-sm am-danger am-icon-trash del" id="<%- addr.id %>"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <% end %>
+        <% else : %>
+        <p>List is empty</p>
+        <% end %>
+
+    </div>
+
+</div>
+
+<div class="add-address">
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <button class="am-btn am-btn-block" type="button" id="add">新增收货地址</button>
+        </div>
+    </div>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-address.js"></script>
+<% end %>

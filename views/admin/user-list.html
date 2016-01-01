@@ -1,0 +1,87 @@
+<% extend './shared/admin-base' %>
+<% block 'head': %>
+<!--<link rel="stylesheet" href="/dist/admin-user-list.css">-->
+<% end %>
+<div class="row" ng-controller="AppCtrl">
+    <div class="col-md-12">
+        <div class="portlet ">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-users"></i>用户管理</div>
+                <div class="tools">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn default btn {{tab == 0 ? "active": ""}}" >
+                            <a ng-href="#/uncheck">
+                                <input type="radio" name="options" class="toggle">待审核
+                            </a>
+                        </label>
+                        <label class="btn default btn tab-toggle {{tab == 1 ? "active": ""}}" >
+                            <a ng-href="#/checked">
+                                <input type="radio" name="options" class="toggle">已审核
+                            </a>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div ng-view></div>
+                <div class="alert alert-sm alert-info alert-dismissible ">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    可搜索用户名、手机号。点击表格头中的列项，可对该项进行升序降序切换排序。
+                </div>
+
+                <div simple-datatable ng-model="list" sdt-action-col="actionColFactory" sdt-on="sdtOn">
+                    <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                        <div class=" col-md-4 col-md-offset-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control"  sdt-search-input>
+                                <span class="input-group-addon" sdt-search-btn><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-hover table-bordered center-table">
+                                <thead>
+                                <tr>
+                                    <th  data-sdt-col="name">真实姓名</th>
+                                    <th  data-sdt-col="nickname">用户昵称</th>
+                                    <th  data-sdt-col="phone">手机号</th>
+                                    <th  data-sdt-col="joinTime">加入时间</th>
+                                    <th style="width: 160px;"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <div class="clearfix">
+                                <span class="pull-left">共<span sdt-total-label></span> 第<span sdt-total-page></span>页</span>
+                                <div class="btn-group pull-right" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-default" sdt-prev-btn>上一页</button>
+                                    <button type="button" class="btn btn-default" sdt-next-btn>下一页</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-handlebars-template" id="row-btn">
+    <td>
+        <div class="btn-group dropup">
+            <button type="button" class="btn btn-primary" sdt-row-click="remove, pass" ng-show="row.status == 0">通过</button>
+            <button type="button" class="btn btn-warning" sdt-row-click="remove, reject" ng-show="row.status == 0">不通过</button>
+            <!--<button type="button" class="btn btn-warning" ng-show="row.status == 1">查看</button>-->
+        </div>
+    </td>
+</script>
+
+<% block 'scripts': %>
+<script src="/dist/admin-user-list.js"></script>
+<% end %>
+
+
+

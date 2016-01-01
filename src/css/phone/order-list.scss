@@ -1,0 +1,30 @@
+@import "base";
+
+$counter-height: 48px;
+.shoppingcart{
+  .am-panel-bd {
+    padding: 0;
+  }
+  &-item {
+    position: relative;
+    border-bottom: 1px solid #d7d7d7;
+    &-main{
+      position: relative;
+      margin: 12px 0;
+      $img-size: 56px;
+      min-height: $img-size;
+      padding-left: $img-size + 16px;
+      img{
+        position: absolute;
+        top: 50%;
+        left: 6px;
+        margin-top: - $img-size / 2;
+        width: $img-size;
+        height: $img-size;
+      }
+      h3, p {
+        margin: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-pay.css">
+<% end %>
+
+
+<div class="am-btn am-btn-success" id="pay">支付</div>
+
+<script type="text/plain" id="pay-info">
+    <%- @payInfo %>
+</script>
+
+<% block 'scripts': %>
+<script src="/dist/phone-pay.js"></script>
+<% end %>

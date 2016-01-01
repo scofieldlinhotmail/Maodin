@@ -1,0 +1,99 @@
+@import "base";
+
+$counter-height: 48px;
+
+body {
+  padding-bottom: $navbar-height + $counter-height;
+}
+.shoppingcart{
+  .am-panel-bd {
+    padding: 0;
+  }
+  &-shop-title i{
+    color: $main-color;
+    font-size: 18px;
+    margin-left: -4px;
+    margin-right: 4px;
+  }
+  &-item {
+    position: relative;
+    $checkbox-size: 48px;
+    min-height: $checkbox-size;
+    border-bottom: 1px solid #d7d7d7;
+    &-checkbox {
+      position: absolute;
+      width: $checkbox-size;
+      height: $checkbox-size;
+      line-height:$checkbox-size;
+      top: 50%;
+      left: 0;
+      margin-top: - $checkbox-size / 2;
+      text-align: center;
+      color: $main-color;
+      font-size: 18px;
+    }
+    &-main{
+      position: relative;
+      margin: 6px 0 6px $checkbox-size;
+      $img-size: 64px;
+      min-height: $img-size;
+      padding-left: $img-size + 16px;
+      img{
+        position: absolute;
+        top: 50%;
+        left: 0;
+        margin-top: - $img-size / 2;
+        width: $img-size;
+        height: $img-size;
+      }
+      h3, p {
+        margin: 0;
+      }
+    }
+  }
+
+  .goods-counter {
+    > * {
+      display: inline-block;
+    }
+    text-align: center;
+    input {
+      width: 48px;
+      height: 24px;
+      line-height: 24px;
+      border: none;
+      text-align: center;
+      border-bottom: 1px solid #d7d7d7;
+      margin-top: -18px;
+      &:focus, &:hover {
+        outline: none;
+      }
+    }
+    .btn {
+      font-size: 18px;
+      line-height: 24px;
+      margin: 0 8px;
+    }
+  }
+}
+
+
+.counter {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  bottom: $navbar-height;
+  $height: 48px;
+  height: $height;
+  line-height: $height;
+  color: #fff !important;
+  background-color: #3c3c3c;
+  &-buy-btn {
+    background-color: $main-color;
+    color: #fff;
+    $height: $counter-height;
+    height: $height;
+    line-height: $height;
+    background-color: $main-color;
+  }
+}

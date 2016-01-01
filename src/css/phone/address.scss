@@ -1,0 +1,70 @@
+@import "base";
+body{
+    //background-color:#efefef;
+    font-size:12px;
+}
+
+.title{
+    margin-top:10px;
+}
+
+.content{
+    height:100px;
+    margin-top:2px;
+    background-color: rgb(255,255,255);
+}
+
+
+
+.bian-content{
+   border-top-color: grey;
+    border-top-width:2px;
+    border-bottom-color: grey;
+    border-bottom-width:2px;
+}
+
+.bian-head{
+    font-size:18px;
+    display: inline-block !important;
+}
+
+
+.bian-name{
+}
+
+.bian-tel{
+}
+
+.bian-address{
+    clear:both;
+    font-size:12px;
+}
+
+.bian-state{
+    color:red;
+}
+
+.edit{
+    padding-left:0 !important;
+    padding-right:0 !important;
+}
+
+.bian-btn{
+    height:45px;
+    width:100% !important;
+}
+
+.add-address{
+    position: fixed;
+    bottom: 10px + $navbar-height;
+    color:white;
+    width:100%;
+}
+
+#add{
+    background-color: orangered;
+}
+
+.color-red{
+    color:red;
+}

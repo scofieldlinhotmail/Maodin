@@ -1,0 +1,52 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-user.css">
+<% end %>
+
+<div class="user-panel">
+    <div class="am-cf am-padding">
+        <div class="am-fl">
+            <img src="<%= @user.headimage %>" style="width: 48px; height: 48px;">
+        </div>
+        <div class="am-fr" style="line-height: 48px;">用户名: <%= @user.nickname %></div>
+    </div>
+</div>
+
+<!--<div class="am-text-right">-->
+    <!--<div class="am-btn-group">-->
+        <!--<a href="/user/order-list" class="am-success"></a>-->
+        <!--<a href="/user/order-list" class="am-warning"></a>-->
+    <!--</div>-->
+<!--</div>-->
+<!--<div class="am-g">-->
+    <!--<div class="order">-->
+        <!--<div class="am-u-sm-12 am-u-md-12">-->
+            <!--<div class="am-u-sm-3 am-u-md-3">-->
+                <!--<a href="/user/order-list">-->
+                    <!--<div class="am-icon am-icon-list" style="height:50px;width:50px;"></div>-->
+                    <!--<div class="text">我的订单</div>-->
+                <!--</a>-->
+            <!--</div>-->
+            <!--<div class="am-u-sm-3 am-u-md-3"><a href="/user/address">-->
+                <!--<div class="img am-center" style="background-color: grey;height:50px;width:50px;"></div>-->
+                <!--<div class="text">收货地址</div>-->
+            <!--</a></div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+<div class="am-g">
+    <div class="">
+        <a href="/user/order-list">
+            <div class="am-u-sm-12 option">我的订单<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">收货地址<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+    </div>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-user.js"></script>
+<% end %>

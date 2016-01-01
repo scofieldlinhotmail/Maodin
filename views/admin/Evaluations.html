@@ -1,0 +1,57 @@
+<% extend 'shared/admin-base' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-evaluations.css">
+<% end %>
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            评论列表: <small></small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+
+
+<% for e in @list : %>
+<div class="ds-ctx-body ">
+    <div class="">
+        <div  class="ds-time " ><%= e.createdAt.toLocaleString() %></div>
+        <div class="ds-ctx-head "><%= e.User.nickname %></div>
+    </div>
+
+    <a href="/adminer/order?id=<%= e.OrderId %>"  class="ds-time " >订单号:<%= e.OrderId %></a>
+    <div class="ds-ctx-text"><%= e.text %>　　　　　　　
+    </div>
+</div>
+<hr style="height:1px;border:none;border-top:1px solid #ddd;margin: 5px;" />
+
+<% end %>
+
+<div  style="float: right">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" style="visibility: visible;">
+            <% if @page==0 : %>
+            <li class="prev disabled"><a href="#" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% else : %>
+            <li class="prev "><a href="<%=  @preurl %>" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% end %>
+
+            <% if @next>0 : %>
+            <li class="next"><a href="<%=  @nexturl  %>" title="Next">下一页<i class="fa fa-angle-right"></i></a></li>
+            <% else : %>
+            <li class="next disabled"><a href="#" title="Next">下一页<i class="fa fa-angle-right"></i></a></li>
+            <% end %>
+        </ul>
+    </div>
+</div>
+
+
+
+<% block 'scripts': %>
+<script src="/dist/admin-evaluations.js"></script>
+<% end %>

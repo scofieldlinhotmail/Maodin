@@ -1,0 +1,19 @@
+@import "../css/phone/base";
+.ds-ctx-head{
+  background-color: #F8F8F8;
+}
+.ds-ctx-body{
+  border-left: 3px solid #ccc;
+  background-color: rgba(0,0,0,0.03);
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.ds-time{
+  font-size: small;
+float: right;
+}
+.ds-ctx-text{
+  font-size: small;
+}

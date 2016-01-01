@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的信息</title>
+</head>
+<body>
+<div class="myinfo">
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-bd">
+                    <div class="name">
+                        姓名
+                        <span class="change"><%- @user.name %></span>
+                    </div>
+                </div>
+                <ul class="am-list am-list-static">
+                    <li><div class="phone">
+                        已绑定手机号
+                        <span class="change"><%- @user.phone %> <span class="am-icon-angle-right"></span></span>
+                    </div></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="logout">
+        <div class="am-g">
+            <div class="am-u-sm-12">
+                <button type="button" class="am-btn am-btn-danger am-btn-block">退出登录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="changephone">
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <div class="am-panel am-panel-default">
+                <div class="am-panel-bd">
+                    <div class="oldphone">
+                        已绑定手机号
+                        <span class="change"><%- @user.phone %></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-g">
+        <div class="am-u-sm-9">
+            <div class="am-form">
+                <div class="am-form-group am-form-icon">
+                    <i class="am-icon-mobile"></i>
+                    <input type="text" id="tel" class="am-form-field" placeholder="新手机号">
+                </div>
+            </div>
+        </div>
+        <div class="am-u-sm-3" style="padding-left:0 !important;">
+            <button type="button" id="validate" class="am-btn am-btn-danger">获取验证码</button>
+        </div>
+    </div>
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <div class="am-form">
+                <div class="am-form-group">
+                    <div class="am-form-group am-form-icon">
+                        <i class="am-icon-paper-plane-o"></i>
+                        <input type="text" id="code" class="am-form-field" placeholder="你收到的验证码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-g">
+        <div class="am-u-sm-12">
+        <button id="change" class="am-btn am-btn-danger am-btn-block">更换手机号</button>
+        </div>
+    </div>
+    <div class="am-g" style="margin-top:20px;">
+        <div class="am-u-sm-12">
+            <button id="back" class="am-btn am-btn-danger am-btn-block">返回</button>
+        </div>
+    </div>
+</div>
+
+<script src="/dist/user-info.js"></script>
+</body>
+</html>

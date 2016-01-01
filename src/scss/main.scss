@@ -1,0 +1,93 @@
+$normal-position: relative;
+$normal-z-index: 0;
+header {
+  position: $normal-position;
+  width: 100%;
+  padding: 10px;
+  height: 10%;
+  z-index: 1;
+  background: rgb(229, 35, 33) none 0 0 no-repeat;
+  text-align: center;
+}
+
+div {
+  position: $normal-position;
+  z-index: $normal-z-index;
+}
+
+.market {
+  position: $normal-position;
+  z-index: $normal-z-index;
+  margin: auto;
+}
+
+.market-head {
+  display: inline-block;
+  color: #fff;
+}
+
+.market-head-left {
+  margin: auto 3%;
+  float: left;
+}
+
+.market-head-main {
+  margin: 0 auto;
+}
+
+
+section {
+    position: $normal-position;
+    width: 100%;
+    z-index: $normal-z-index;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.market-content {
+  width: 100%;
+  height: 100px;
+  overflow: hidden;
+}
+
+.market-content div {
+  float: left;
+  text-align: left;
+}
+
+.market-content img {
+  width: 100px;
+  height: 100px;
+}
+
+.market-content-img {
+  text-align: center;
+  width: 20%;
+}
+
+.market-content-sale {
+  float: right;
+  padding: 0 10%;
+}
+
+
+
+
+.font-black, .font-green, .font-red {
+  font-family: "黑体", Arial Black, Helvetica, sans-serif;
+}
+
+.font-black {
+  font-size: 16px;
+  color: #333;
+}
+
+.font-red {
+  font-size: 14px;
+  color: #ff5151;
+}
+
+.font-green {
+  font-size: 24px;
+  color: #009944;
+}

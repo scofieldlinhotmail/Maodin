@@ -1,0 +1,75 @@
+@import "base";
+
+.swiper-container {
+  width: 100%;
+  overflow: hidden;
+  .swiper-slide {
+    img{
+      width: 100%;
+      height: 100%;
+    }
+  }
+  border-bottom: 1px solid #d7d7d7;
+}
+
+.goods{
+  $goods-price-width: 120px;
+  $goods-price-height: 56px;
+  &-header{
+    position: relative;
+    //background-color: #ddd;
+    min-height: $goods-price-height;
+  }
+  &-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: $goods-price-width;
+    line-height: $goods-price-height;
+    * {
+      margin-bottom: 0 !important;
+    }
+  }
+  &-price {
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    margin-top: -$goods-price-height / 2;
+    right: 0;
+    width: $goods-price-width;
+    height: $goods-price-height;
+    line-height: $goods-price-height;
+    border-left: 1px solid #d7d7d7;
+  }
+  &-info{
+    background-color: #ddd;
+    line-height: 36px;
+  }
+  &-counter{
+    > * {
+      display: inline-block;
+    }
+    text-align: center;
+    input {
+      width: 128px;
+      height: 32px;
+      line-height: 32px;
+      border: none;
+      text-align: center;
+      border-bottom: 1px solid #d7d7d7;
+      margin-top: -18px;
+      &:focus, &:hover{
+        outline: none;
+      }
+    }
+    .btn{
+      font-size: 32px;
+      line-height: 32px;
+      margin: 0 8px;
+    }
+  }
+  &-detail {
+    img {
+      max-width: 100%;
+    }
+  }
+}

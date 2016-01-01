@@ -1,0 +1,35 @@
+<% extend 'phone/base.html' %>
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-evaluation.css">
+<% end %>
+
+<form class="am-form " method="get" action="/user/addevaluation">
+    <fieldset>
+        <legend>评价</legend>
+
+        <input type="hidden" name="id" value="<%= @id %>">
+
+
+        <div class="am-form-group">
+            <label for="doc-ta-1">评价内容</label>
+            <textarea name="text" class="" rows="5" id="doc-ta-1" required></textarea>
+        </div>
+
+        <button type="submit" class="am-btn am-btn-primary am-btn-block">提交</button>
+        <input type="hidden" id="save" value="<%= @save %>">
+    </fieldset>
+</form>
+
+
+<% block 'scripts': %>
+<script src="/dist/phone-evaluation.js"></script>
+<script>
+    var $=jQuery;
+    var s=$('#save').val();
+    if(s==1)
+    {
+        alert("评价成功");
+    }
+</script>
+<% end %>

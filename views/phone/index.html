@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zn">
+<head>
+    <% include 'shared/head' %>
+    <link rel="stylesheet" href="/dist/phone-commons-ex.js.css">
+    <link rel="stylesheet" href="/dist/phone-index.css">
+</head>
+<body ng-controller="AppCtrl" ng-cloak>
+
+<header class="fixed-header am-padding-xs">
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <form class="" role="search">
+                <div class="am-form-group">
+                    <input type="text" class="am-form-field am-input-sm am-radius" placeholder="搜索" ng-model="search"
+                           id="search">
+                </div>
+            </form>
+        </div>
+        <!--<div class="am-u-sm-3">-->
+        <!--<a href="/user/msg" class="am-btn am-btn-danger am-btn-sm am-radius am-fl city-label" ng-controller="MsgCtrl">-->
+        <!--<i class="am-icon am-icon-envelope-o"></i>({{msgCount}})-->
+        <!--</a>-->
+        <!--</div>-->
+    </div>
+
+</header>
+
+<div class="ltypes" ng-controller="LTypeCtrl">
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide {{activeLTypeIndex == -1 ? 'active' : ''}}" ng-click="setLType(-1)">我的收藏</div>
+            <div class="swiper-slide {{activeLTypeIndex == $index ? 'active' : ''}}" ng-repeat="type in types"
+                 data-id="{{type.id}}" ng-click="setLType($index)">{{type.title}}
+            </div>
+        </div>
+    </div>
+    <div class="ltypes-btn am-cf">
+        <div class="ltypes-prev am-fl" ng-click="prev()"><i class="am-icon am-icon-caret-left"></i></div>
+        <div class="ltypes-next am-fr" ng-click="next()"><i class="am-icon am-icon-caret-right"></i></div>
+    </div>
+</div>
+
+<div class="stypes" ng-controller="STypeCtrl">
+    <ul class="am-list">
+        <li class="{{activeSTypeIndex == $index ? 'active' : ''}}"
+            ng-repeat="type in types[activeLTypeIndex].GoodsTypes" ng-click="setSType($index)">{{type.title}}
+        </li>
+    </ul>
+</div>
+
+<div class="goods-area">
+    <div ng-repeat="goods in goodsData">
+        <div ng-controller="GoodsItemCtrl" class="goods-item am-cf am-padding-sm" ng-init="index = $index">
+
+            <div class="goods-item-left">
+                <a  ng-href="/user/goods-page/{{goods.id}}">
+                    <h3 class="">{{goods.title}}</h3>
+                    <small class="goods-item-brief">{{goods.brief}}</small>
+                </a>
+                <p>
+                    <span class="am-text-danger">{{goods.price * goods.perNum}}</span>
+                    /
+                    <span class="am-text-xs">{{goods.perNum}}{{goods.perStr}}</span>
+                    <del class="am-text-xs">原价{{goods.oldPrice * goods.perNum}}</del>
+                    <!--<span class="am-text-danger am-text-xs" ng-show="goods.vipDiscount < 10">会员{{goods.vipDiscount}}折</span>-->
+                </p>
+                <p class="am-text-xs">已售{{goods.soldNum}} / 剩余{{goods.capacity}}</p>
+            </div>
+
+            <div class="goods-item-right">
+                <img ng-src="{{goods.mainImg}}">
+                <div class="counter am-cf">
+                    <div class="btn minus am-fl am-text-warning" ng-click="goods.num = goods.num - 1">
+                        <i class="am-icon am-icon-minus-square-o"></i>
+                    </div>
+                    <input type="text" pattern="" class="am-fl" ng-model="goods.num">
+                    <div class="btn plus am-fl am-text-success" ng-click="goods.num = goods.num + 1">
+                        <i class="am-icon am-icon-plus-square-o"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-text-center am-padding" ng-show="loadStatus != 2" ng-click="loadMore()">
+        <i class="am-icon {{loadStatus == 0 ? 'am-icon-hand-o-down' : 'am-icon-spinner'}}"></i>
+        {{loadStatus == 0 ? '加载更多' : '正在加载'}}
+    </div>
+</div>
+
+<% include "phone/bottom-navbar.html" %>
+
+<script type="text/plain" id="types">
+    <%- @types %>
+
+</script>
+<!--<script src="/jquery.min.js"></script>-->
+<!--<script src="/amazeui.min.js"></script>-->
+<script src="/dist/phone-commons-ex.js"></script>
+<script src="/dist/phone-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+li {list-style-type:none;}
+.itemimg{
+  height:80px;
+  width: 80px;
+  padding: 0;
+
+}
+.contitem{
+  display: flex;
+  padding: 5px 0;
+  border: 1px solid #ddd;
+  margin-bottom: 5px;
+}
+.tabcon{
+  font-size: large;
+}
+.nomargen{
+  margin: 0 !important;
+}

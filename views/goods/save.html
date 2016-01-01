@@ -1,0 +1,162 @@
+<% extend './shared/admin-base' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-goods-save.css">
+<style>
+    .simditor {overflow: auto;}
+</style>
+<% end %>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN VALIDATION STATES-->
+        <div class="portlet box purple">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-reorder"></i>编辑商品信息</div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form action="" id="form_sample_1" class="form-horizontal" method="post">
+                    <input type="hidden" name="id" value="<%= @data?.id %>" >
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">商品标题<span class="required">*</span></label>
+
+                            <div class="col-md-3">
+                                <input type="text" name="title" data-required="1" class="form-control" value="<%= @data?.title %>" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">现价<span class="required">*</span></label>
+
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="price" min="0" value="<%= @data?.price %>" >
+                                    <div class="input-group-btn">
+                                        <a class="btn default"><i class="fa fa-rmb"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">原价<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="oldPrice" min="0" value="<%= @data?.oldPrice %>" >
+                                    <div class="input-group-btn">
+                                        <a class="btn default"><i class="fa fa-rmb"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">每份的量</label>
+
+                            <div class="col-md-3">
+                                <input type="number" class="form-control" name="perNum" min="0" value="<%= @data?.perNum %>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">单位</label>
+
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="perStr" maxlength="10" value="<%= @data?.perStr %>" >
+                            </div>
+                        </div>
+                        <!--<div class="form-group">-->
+                            <!--<label class="control-label col-md-3">会员折扣</label>-->
+
+                            <!--<div class="col-md-3">-->
+                                <!--<div class="input-group">-->
+                                    <!--<input type="number" class="form-control" name="vipDiscount" min="0" max="10" value="<%= @data?.vipDiscount %>" >-->
+                                    <!--<div class="input-group-btn">-->
+                                        <!--<a class="btn default">折</a>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="form-group">
+                            <label class="control-label col-md-3">剩余量<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
+                            </div>
+                        </div>
+                        <div class="form-group" ng-controller="TypeCtl" >
+                            <label class="control-label col-md-3">类别<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <select ng-model="ltype" class="form-control" ng-options="option.title for option in data track by option.id" >
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select ng-model="stype"  class="form-control" ng-options="option.title for option in ltype.GoodsTypes track by option.id" name="GoodsTypeId">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">图片<span class="required">*</span></label>
+                            <div class="col-md-9" ng-controller="UploadCtl">
+                                <input type="hidden" value="{{mainImgUrl}}" name="mainImg">
+                                <input type="hidden" value="{{imgsUrl}}" name="imgs">
+                                <div class="fileupload fileupload-new">
+                                    <div class="fileupload-new thumbnail" style="width: 320px; height: 140px;" ng-show="imgs.length == 0">
+                                        <img src="/empty.png" alt="" style="width: 320px; height: 130px;"/>
+                                    </div>
+                                    <div class="uploaded-imgs" ng-show="imgs.length != 0">
+                                        <div class="clearfix">
+                                            <div class="uploaded-imgs-item text-center pull-left {{mainImg == $index ? 'uploaded-imgs-item-main': ''}}" ng-repeat="img in imgs track by $index">
+                                                <img ng-src="{{img}}" class="img-responsive">
+                                                <div class="uploaded-imgs-item-tools  text-center">
+                                                    <span class="btn blue " ng-click="setMain($index)" ng-show="mainImg != $index">设为缩略图</span>
+                                                    <span class="btn green " ng-click="remove($index)">删除</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div>
+                                        <a href="#" class="btn blue" id="upload-picker"><i class="fa fa-cloud-upload"></i>添加文件</a>
+                                    </div>
+                                </div>
+                                <span class="label label-danger">注意!</span>
+                                <span> 每张图片大小不可超过3M，缩略图建议尺寸128*128 </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3">简要介绍<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input name="brief" type="text" class="form-control" maxlength="100" value="<%= @data?.brief %>" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label  col-md-3">商品详情</label>
+                            <div class="col-md-8">
+                                <textarea class="form-control" rows="6" id="editor" name="content"><%= @data?.content %></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn green">提交</button>
+                            <a href="/adminer/goods" class="btn blue">返回列表页</a>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+        <!-- END VALIDATION STATES-->
+    </div>
+</div>
+<script id="types" type="text/plain" data-id="<%- @data?.GoodsTypeId %>">
+    <%- @types %>
+</script>
+
+<script id="imgs" type="text/plain" data-main="<%- @data?.mainImg %>">
+    <%- @data?.imgs %>
+</script>
+<% block 'scripts': %>
+
+<script src="/dist/admin-goods-save.js"></script>
+<% end %>
+

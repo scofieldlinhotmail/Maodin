@@ -1,0 +1,253 @@
+<% extend 'shared/admin-base' %>
+
+
+<% for type in @order : %>
+
+<div class="col-md-12 col-sm-12">
+    <div class="portlet box blue">
+        <div class="portlet-title">
+            <div class="caption">订单编号：<%= type.dataValues.id %>    &nbsp; 成交时间：<%= type.dataValues.payTime.toLocaleString() %></div>
+
+
+            <div class="tools">
+
+                <a href="" class="collapse"></a>
+
+            </div>
+
+
+            <% if type.dataValues.status==0 : %>
+            <div class="caption" style="float: right">
+                交易状态:待付款
+            </div>
+            <% else if type.dataValues.status==1 : %>
+            <div class="caption" style="float: right">
+                交易状态:待发货
+            </div>
+            <% else if type.dataValues.status==2 : %>
+            <div class="caption" style="float: right">
+                交易状态:待收货
+            </div>
+            <% else if type.dataValues.status==3 : %>
+            <div class="caption" style="float: right">
+                交易状态:已收货
+            </div>
+            <% else if type.dataValues.status==4 : %>
+            <div class="caption" style="float: right">
+                交易状态:已拒绝
+            </div>
+            <% end %>
+
+
+
+        </div>
+        <div class="portlet-body">
+            <div class="table-responsive" style="overflow: visible">
+
+                <div style="margin: 0 10px 20px 10px;">
+                    <div class="row" style="margin-bottom: 10px;">
+                        <li class="col-md-3 col-sm-3" style="font-weight: bolder">
+                            买家信息:
+                        </li>
+                    </div>
+                    <div class="row">
+                        <li class="col-md-3 col-sm-3">
+                            昵称:<%= type.dataValues.User.nickname %>
+                        </li>
+                        <li class="col-md-3 col-sm-3">
+                            联系电话:<%= type.dataValues.User.phone %>
+                        </li>
+
+                    </div>
+
+                </div>
+                <hr style="height:1px;border:none;border-top:1px solid #ddd" />
+
+                <div style="margin: 0 10px 20px 10px;">
+                    <div class="row" style="margin-bottom: 10px;">
+                        <li class="col-md-3 col-sm-3" style="font-weight: bolder">
+                            订单信息:
+                        </li>
+                    </div>
+                    <div class="row">
+                        <li class="col-md-3 col-sm-3">
+                            订单编号：<%= type.dataValues.id %>
+                        </li>
+                        <li class="col-md-3 col-sm-3">
+                            付款时间:<%= type.dataValues.payTime.toLocaleString() %>
+                        </li>
+
+
+                    </div>
+                </div>
+                <hr style="height:1px;border:none;border-top:1px solid #ddd" />
+                <div style="margin: 0 10px 20px 10px;">
+                    <div class="row" style="margin-bottom: 10px;">
+                        <li class="col-md-3 col-sm-3" style="font-weight: bolder">
+                            物流信息:
+                        </li>
+                    </div>
+                    <div class="row">
+                        <li class="col-md-3 col-sm-3">
+                            买家留言：<%= type.dataValues.message %>
+                        </li>
+                        <li class="col-md-3 col-sm-3">
+                            收货地址:<%= type.dataValues.address %>
+                        </li>
+
+
+                    </div>
+
+
+                </div>
+                <ul class="page-breadcrumb breadcrumb nomargen" style="background: #c9c9c9;padding: 5px 0px;">
+                    <li></li>
+                    <li class="col-md-5 col-sm-5">
+                        宝贝
+                    </li>
+                    <li class="col-md-3 col-sm-3">
+                        单价
+                    </li>
+
+                    <li class="col-md-3 col-sm-3">
+                        数量
+                    </li>
+
+                </ul>
+                <% for item in type.dataValues.OrderItems : %>
+                <div class="contitem">
+
+                    <li class="col-md-5 col-sm-5">
+                        <div class="itemimg col-md-1 col-sm-1">
+                            <img class="itemimg " src="<%= item.Good.dataValues.mainImg %>">
+                        </div>
+                        <a  class="col-md-8 col-sm-8" style="word-break:break-all"><%= item.Good.dataValues.title %></a>
+                    </li>
+                    <li class="col-md-3 col-sm-3"><%= item.price %></li>
+                    <li class="col-md-3 col-sm-3"><%= item.num %></li>
+                </div>
+
+
+                <%end%>
+                <div class="form-actions fluid" style="padding: 10px 0;margin: 0">
+                    <li class="col-md-2 col-sm-2" style="font-size: initial;float: right;">实付款:<%= type.dataValues.price %> 元</li>
+                    <!--<div style="float: right;">-->
+                        <!--<a data-toggle="modal" href="#get" class="btn btn-sm default get" value="<%= type.dataValues.id %>">查看</a>-->
+                        <!--<a data-toggle="modal" href="#send" class="btn btn-sm default send" value="<%= type.dataValues.id %>">发货</a>-->
+                        <!--<a data-toggle="modal" href="#refuge" class="btn btn-sm default refuge" value="<%= type.dataValues.id %>">拒绝</a>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+<% end %>
+
+
+
+
+</div>
+
+
+
+
+    <div id="get" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">添加</h4>
+                </div>
+                <div class="modal-body" style="height: 150px !important">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4>标题</h4>
+                            <p><input id="add2" type="text" class="col-md-12 form-control"></p>
+                            <input id="add2fid" value="" type="hidden">
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                    <button type="button" id="add2btn" class="btn green">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="send" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">发货</h4>
+                </div>
+                <div class="modal-body" style="height: 100px !important">
+
+                    <form action="#" class="form-horizontal form-bordered">
+                        <div class="form-body">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">预计到达时间</label>
+                                <div class="col-md-5" style="border: 0">
+
+                                    <input id="sendtime" class="form-control form_datetime"  size="16" type="text" value="" />
+                                    <span class="help-block">选择时间</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                    <button type="button" id="sendbtn"  class="btn green">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="refuge" class="modal fade" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title" style="text-align: center;">拒绝订单</h4>
+                </div>
+                <div class="modal-body" style="height:auto">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h>拒绝理由:</h>
+                            <textarea id="jjly" class="col-md-12 form-control" style="min-height: 200px"></textarea>
+
+                            <input id="rid" value="" type="hidden">
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                    <button type="button" id="refugebtn"  class="btn green">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<% block 'scripts': %>
+<script src="/dist/admin-orders.js"></script>
+<% end %>

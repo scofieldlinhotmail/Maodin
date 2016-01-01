@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include 'shared/head' %>
+    <link rel="stylesheet" href="/dist/phone-commons-ex.js.css" >
+    <link rel="stylesheet" href="/dist/phone-register.css" >
+</head>
+<body>
+
+<div class="">
+    <form class="am-form am-form-horizontal" method="post">
+        <h3 class="am-text-center">完善用户信息</h3>
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">姓名</label>
+
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="填写姓名" required name="name">
+                <div class="am-alert am-alert-secondary am-hide">填写姓名</div>
+            </div>
+        </div>
+
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">区域</label>
+            <div class="am-u-sm-9">
+                <select name="area" id="area">
+                    <% for a in @area : %>
+                    <option value="<%= a.id %>"><%= a.title %></option>
+                    <% end %>
+                </select>
+                <div class="am-alert am-alert-secondary am-hide">请选择区域</div>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">您的地址</label>
+
+            <div class="am-u-sm-9">
+
+                <div class="am-g" id="distpicker">
+                    <div class="am-u-sm-6">
+                        <select class="am-margin-vertical-xs" name="province" required></select>
+                    </div>
+                    <div class="am-u-sm-6">
+                        <select class="am-margin-vertical-xs" name="city" required></select>
+                    </div>
+                    <select class="am-margin-vertical-xs" name="country" required></select>
+                </div>
+                <input name="address" type="text" placeholder="请输入具体地址" required>
+                <div class="am-alert am-alert-secondary am-hide">请输入具体地址</div>
+            </div>
+
+        </div>
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">手机号</label>
+
+            <div class="am-u-sm-9">
+                <div class="am-input-group">
+                    <input type="text" class="am-form-field js-pattern-phone" name="phone" required id="phone">
+                    <span class="am-input-group-btn">
+                        <button class="am-btn am-btn-default" type="button" id="get-verify-code">获取验证码</button>
+                    </span>
+                </div>
+                <div class="am-alert am-alert-secondary am-hide">请填写手机号</div>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">验证码</label>
+
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="验证码" name="verifyCode" required id="code">
+                <div class="am-alert am-alert-secondary am-hide">请输入正确验证码</div>
+            </div>
+        </div>
+
+        <input type="hidden" name="districtCode">
+        <div class="am-form-group am-text-center">
+            <button type="submit" class="am-btn am-btn-warning">提交登入</button>
+        </div>
+    </form>
+</div>
+
+
+
+<script src="/dist/phone-commons-ex.js"></script>
+<script src="/dist/phone-register.js"></script>
+</body>
+</html>

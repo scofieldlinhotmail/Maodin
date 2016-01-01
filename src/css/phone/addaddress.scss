@@ -1,0 +1,47 @@
+@import "base";
+
+$body_color:#efefef;
+
+body{
+  background-color:$body_color;
+}
+
+.content{
+}
+
+.input{
+  height:60px;
+}
+
+.am-form-set{
+  padding-right:20px;
+  padding-left: 20px;
+}
+
+.yes{
+  padding-right:20px;
+  padding-left: 20px;
+}
+
+.btn-yes{
+  font-size:20px;
+  height:60px;
+  border-radius: 4px;
+}
+
+.attention{
+  height:200px;
+  margin-top:30px;
+}
+
+.hide{
+  display: none !important;
+}
+
+.show{
+  display: inherit;
+}
+
+select option{
+  font-size:25px !important;
+}

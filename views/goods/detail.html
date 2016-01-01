@@ -1,0 +1,245 @@
+<% extend 'shared/admin-base' %>
+
+<h3 class="page-title">
+   商品详情
+</h3>
+
+
+
+
+
+<hr style="height:1px;border:none;border-top:1px solid #ddd" />
+
+<div class="row">
+    <div class="col-md-3">
+
+    </div>
+
+    <div class="col-md-6">
+        <div class="swiper-container">
+            <div class="swiper-wrapper" >
+                <% for img in @imgs : %>
+                <div class="swiper-slide">
+                    <img src="<%= img %>" alt="" style="height: 300px">
+                </div>
+                <% end %>
+            </div>
+            <div class="swiper-pagination"></div>
+
+        </div>
+    </div>
+  
+</div>
+<hr style="height:1px;border:none;border-top:1px solid #ddd" />
+
+
+<div class="row">
+    <li class="col-md-3 col-sm-3">
+
+    </li>
+    <li class="col-md-6 col-sm-6 form-section" style="text-align: center;font-size: large;font-weight: bolder">
+        <%= @good.dataValues.title %>
+    </li>
+</div>
+
+
+<div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+        <label class="control-label col-md-6">现价:<%= @good.dataValues.price %></label>
+    </div>
+    <!--/span-->
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-3">
+        <label class="control-label col-md-6">原价: <%= @good.dataValues.oldPrice %></label>
+    </div>
+    <!--/span-->
+</div>
+<div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+        <label class="control-label col-md-6"> 销量:<%= @good.dataValues.soldNum %></label>
+
+    </div>
+    <!--/span-->
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-3">
+        <label class="control-label col-md-6">库存: <%= @good.dataValues.capacity %></label>
+    </div>
+    <!--/span-->
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+        <label class="control-label col-md-6"> 规格:<%= @good.dataValues.per %></label>
+
+    </div>
+    <!--/span-->
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-3">
+
+
+
+        <% if @good.dataValues.status==0 : %>
+        <label class="control-label col-md-6"> 状态: 下架</label>
+
+        <% if @good.dataValues.status==1 : %>
+        <label class="control-label col-md-6"> 状态:销售中</label>
+
+        <% end %>
+
+    </div>
+    <!--/span-->
+</div>
+<div class="row">
+    <div class="col-md-3">
+    </div>
+    <div class="col-md-3">
+        <label class="control-label col-md-6"> 简介:<%= @good.dataValues.brief %></label>
+
+    </div>
+    <!--/span-->
+
+    <!--/span-->
+</div>
+
+
+
+
+<hr style="height:1px;border:none;border-top:1px solid #ddd" />
+
+<div class="row">
+    <div class="col-md-12">
+       <div id="main" style="height:400px"></div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="row" style="display: none">
+    <% for d in @dates : %>
+    <div class="date"><%= d %></div>
+    <% end %>
+    <% for c in @count : %>
+    <div class="count"><%= c %></div>
+    <% end %>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/admin-gooddetail.js"></script>
+<script src="/echarts/build/dist/echarts.js"></script>
+
+
+
+<script type="text/javascript">
+
+
+
+    var $=jQuery;
+    var date=[];
+    var count=[];
+    var dates=$(".date");
+    $.each(dates,function(){
+        var d=($(this).html());
+        date.unshift(d);
+    });
+    var counts=$(".count");
+    $.each(counts,function(){
+        var d=Number($(this).html());
+        count.unshift(d);
+    });
+
+
+    // 路径配置
+    require.config({
+        paths: {
+            echarts: '/echarts/build/dist'
+        }
+    });
+
+    require(
+            [
+                'echarts',
+                'echarts/chart/bar', // 使用柱状图就加载bar模块，按需加载
+                'echarts/chart/line'
+            ],
+            function (ec) {
+                // 基于准备好的dom，初始化echarts图表
+                var myChart = ec.init(document.getElementById('main'));
+
+                option = {
+                    title : {
+                        text: ' 销量趋势分析',
+                        subtext: '',
+                        x:'center'
+                    },
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data:['销量'],
+                        show:false
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+
+                            magicType : {show: true, type: ['line', 'bar']},
+
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    calculable : true,
+                    xAxis : [
+                        {
+                            type : 'category',
+                            boundaryGap : false,
+                            data : date
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value',
+                            axisLabel : {
+                                formatter: '{value} '
+                            }
+                        }
+                    ],
+                    series : [
+                        {
+                            name:'销量',
+                            type:'line',
+                            data:count,
+                            markPoint : {
+                                data : [
+                                    {type : 'max', name: '最大值'},
+                                    {type : 'min', name: '最小值'}
+                                ]
+                            },
+                            markLine : {
+                                data : [
+                                    {type : 'average', name: '平均值'}
+                                ]
+                            }
+                        }
+                    ]
+                };
+
+
+                // 为echarts对象加载数据
+                myChart.setOption(option);
+            }
+    );
+</script>
+<% end %>

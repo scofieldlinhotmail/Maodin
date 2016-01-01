@@ -1,0 +1,81 @@
+$info_height : 130px;
+$info_bgcolor : orange;
+$font:13px;
+$font-color:white;
+
+body{
+  box-sizing: border-box;
+}
+
+.info{
+  height:$info_height;
+  background-color: $info_bgcolor;
+  font-size:$font+5px;
+  color:black;
+  position:relative;
+}
+
+.user{
+  position: absolute;
+
+}
+
+.name{
+  top:10px;
+  left:10px;
+}
+
+.address{
+  bottom: 10px;
+  right:10px;
+}
+
+.title{
+  line-height:55px;
+  background-color: grey;
+}
+
+.order{
+  font-size:$font+6px;
+  margin-top:50px;
+}
+
+a .text{
+  margin-top:6px;
+  text-align: center;
+}
+
+a{
+  text-decoration: none;
+  color:black;
+}
+
+a:hover{
+  text-decoration: none;
+  color:black;
+}
+
+a:visited{
+  text-decoration: none;
+  color:black;
+}
+
+
+.margin-top-40{
+  margin-top:40px;
+}
+
+.option{
+  display: block;
+  text-align: left;
+  margin-top:15px;
+  font-size:$font+10px;
+  background-color: #efefef;
+  line-height:50px;
+  padding-right:20px;
+  padding-left:20px;
+}
+
+.icon{
+  float:right;
+}
