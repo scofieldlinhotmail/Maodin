@@ -9,98 +9,125 @@ module.exports = (router) => {
 
     var GoodsType = db.models.GoodsType;
     var Goods = db.models.Goods;
-    router.get('/adminer/goodstype',  function *() {
-        var types = yield GoodsType.all();
 
-        this.body = yield render('admin/goodstype', {
+    router.get('/adminer-shopkeeper/goodstype', function *() {
+        var types = yield GoodsType.all({
+            include: [GoodsType],
+            where: {
+                type: 1
+            }
+        });
+        this.body = yield render('goodstype/list', {
             types
         });
     });
 
+    router.get('/adminer-shopkeeper/goodstype-save', function *() {
 
-    router.get('/adminer/goodstype-save',  function *() {
+        var query = this.query;
 
-        //if(this.query.type!=1){
-        //    this.checkQuery('fid').toInt(0);
-        //}
-        //this.checkQuery('title').empty().len(2,20,"bad name.").trim().toLow();
-        //if (this.errors) {
-        //    this.body = this.errors;
-        //    return;
-        //}
-        //yield GoodsType.create({
-        //    title:this.query.title,
-        //    type:this.query.type,
-        //    GoodsTypeId:this.query.fid
-        //});
-        //
-        //
-        //this.body = this.query.title ;
+        var data;
+        if (query.id) {
+            data = yield GoodsType.findById(query.id);
+        }
 
         this.body = yield render('goodstype/save', {
             types: yield GoodsType.findAll({
                 where: {
                     type: 1
                 }
-            })
+            }),
+            data: JSON.stringify(data)
         });
 
 
     });
 
-    router.get('/adminer/edittype',  function *() {
+    router.post('/adminer-shopkeeper/goodstype-save', function *() {
 
+        var body = this.request.body;
 
-        this.checkQuery('title').empty().len(2,20,"bad name.").trim().toLow();
-        if (this.errors) {
+        if (typeof body.title === 'undefined' || body.title.trim().length === 0
+            || typeof body.type === 'undefined' || body.type.trim().length === 0) {
             this.body = this.errors;
             return;
         }
+        if (body.type == 2 && !body.topTypeId) {
+            this.body = 'topTypeId is missing';
+            return;
+        }
 
-        var type= yield GoodsType.findById(this.query.id);
+        body.title = body.title.trim();
+        if (body.id) {
+            yield GoodsType.update({
+                title: body.title,
+                fields: JSON.stringify(body.fields)
+            }, {
+                where: {
+                    id: body.id,
+                    type: body.type
+                }
+            });
+        } else {
+            var data = {
+                title: body.title,
+                fields: JSON.stringify(body.fields),
+                id: body.id,
+                type: body.type
+            };
+            if (body.type == 2) {
+                data.GoodsTypeId = body.topTypeId;
+            }
+            yield GoodsType.create(data)
+        }
 
-        type.title=this.query.title;
-
-        yield type.save();
-
-
-        this.body = this.query.title ;
-
-
+        this.body = {
+            url: '/adminer-shopkeeper/goodstype'
+        };
     });
 
-    router.get('/adminer/deltype',  function *() {
+    router.post('/adminer-shopkeeper/goodstype-del', function *() {
 
-        var type= yield GoodsType.findOne({
-            where:{
-                id:this.query.id
-            }
-        });
-        debug(type);
-        if(type.type==2){
-            var count=yield Goods.count({
-                where:{
-                    GoodsTypeId: this.query.id
+        var id = this.request.body.id;
+        if (!id) {
+            this.body = 'nothing';
+            return;
+        }
+        var type = yield GoodsType.findById(id);
+        if (type == null) {
+            this.body = 'nothing';
+            return;
+        }
+        if (type.type == 2) {
+            var count = yield Goods.count({
+                where: {
+                    GoodsTypeId: id
                 }
             });
-            if(count==0){
+            if (count == 0) {
                 type.destroy();
+            } else {
+                this.body = 1;
+                return;
             }
         }
-        else{
-            var count=yield GoodsType.count({
-                where:{
-                    GoodsTypeId:this.query.id
+        else {
+            var count = yield GoodsType.count({
+                where: {
+                    GoodsTypeId: id
                 }
             });
-            if(count==0){
+            if (count == 0) {
                 type.destroy();
+            } else {
+                this.body = 1;
+                return;
             }
         }
 
         yield type.save();
 
-        this.body = this.query.title ;
+        this.body = 0;
 
     });
 

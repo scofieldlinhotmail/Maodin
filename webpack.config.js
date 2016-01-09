@@ -21,7 +21,8 @@ var adminEnties = {
     'admin-adminer':['./src/js/admin/adminer.js'],
     //'admin-gooddetail':['./src/js/goods/detail.js'],
     //'admin-user-list': ['./src/js/admin/user.js'],
-    'admin-goodstype-save': ['./src/js/goodsType/save.js']
+    'admin-goodstype-save': ['./src/js/goodsType/save.js'],
+    'admin-goodstype': ['./src/js/goodsType/list.js'],
 };
 
 // 手机端文件
