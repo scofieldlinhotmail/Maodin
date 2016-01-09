@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var Sequelize = require('sequelize');
 
-var configs = require('./../instances/config.js');
+var configs = require('./../../instances/config.js');
 
 var sequelize = new Sequelize(configs.db.toString(), {
     logging: function () {}
@@ -18,7 +18,6 @@ fs
         try {
             sequelize.import(path.join(__dirname, file));
         } catch (e) {
-
         }
     });
 

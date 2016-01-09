@@ -3,7 +3,7 @@
  */
 var debug = require('../../instances/debug');
 var render = require('../../instances/render');
-var db = require('../../models/index');
+var db = require('../../models/db/index');
 var auth = require('../../helpers/auth.js');
 var Admins = db.models.Adminer;
 

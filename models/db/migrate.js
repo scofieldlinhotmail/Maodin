@@ -258,24 +258,7 @@ function *addSuperAdminer() {
 }
 
 co(function * () {
-    yield orderSeed;
-    //yield goodsSeed;
-    //yield adminerSeed;
-    //yield db.sync();
-    //yield addSuperAdminer;
-    //yield function *() {
-    //    yield db.models.User.create({
-    //        name: '用户',
-    //        password: '123456',
-    //        phone: '18840823910',
-    //        nickname: '用户',
-    //        headimage: 'https://www.google.com.hk/logos/doodles/2015/holidays-2015-day-1-6575248619077632-res.png',
-    //        sex: 0,
-    //        unionid: 'unionid',
-    //        openid: 'openid',
-    //        joinTime: Date.now()
-    //    })
-    //};
+    yield db.sync({force: true});
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

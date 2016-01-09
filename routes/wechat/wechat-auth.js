@@ -10,7 +10,7 @@ var log = require('./../../instances/log.js');
 var auth = require('./../../helpers/auth.js');
 var util = require('util');
 
-var db = require('./../../models/index.js');
+var db = require('./../../models/db/index.js');
 
 var WechatAuthClient = function () {
     return new OAuth(wechatConfig.appId, wechatConfig.secret);

@@ -7,7 +7,7 @@ var path = require('path');
 var util = require('util');
 
 var render = require('./../instances/render.js');
-var db = require('./../models/index.js');
+var db = require('./../models/db/index.js');
 var debug = require('./../instances/debug.js');
 var auth = require('../helpers/auth.js');
 var context = require('../instances/context.js');
@@ -21,40 +21,40 @@ var router = new Router();
 router.use(function *(next) {
 
     context.set(this);
-    var req = this.request;
-    //auth.login(this, yield db.models.User.findOne());
-    var user = yield auth.user(this);
-    if (/\/user\/.*/.test(req.url)) {
-        if (!user) {
-            this.redirect('/wechat/login');
-            return;
-        } else if (user.status == -1) {
-            this.redirect('/user-wait');
-            return;
-        } else if (user.status == -2) {
-            this.redirect('/user-register');
-            return;
-        }
-    }
-    if (/\/adminer\/*/.test(req.url) && (util.isNullOrUndefined(user) ||  typeof user.type === 'undefined')) {
-        this.redirect('/admin-login');
-        return;
-    }
-    if (/\/adminer-(\w*)\/*/.exec(req.url)) {
-        var type = /\/adminer-(\w*)\/*/.exec(req.url)[1];
-        if ((util.isNullOrUndefined(user) ||  typeof user.type === 'undefined')) {
-            this.redirect('/admin-login');
-            return;
-        }
-        switch (type) {
-            case 'super':
-                if (user.type != 100) {
-                    this.redirect('/admin-login');
-                    return;
-                }
-                break;
-        }
-    }
+    //var req = this.request;
+    ////auth.login(this, yield db.models.User.findOne());
+    //var user = yield auth.user(this);
+    //if (/\/user\/.*/.test(req.url)) {
+    //    if (!user) {
+    //        this.redirect('/wechat/login');
+    //        return;
+    //    } else if (user.status == -1) {
+    //        this.redirect('/user-wait');
+    //        return;
+    //    } else if (user.status == -2) {
+    //        this.redirect('/user-register');
+    //        return;
+    //    }
+    //}
+    //if (/\/adminer\/*/.test(req.url) && (util.isNullOrUndefined(user) ||  typeof user.type === 'undefined')) {
+    //    this.redirect('/admin-login');
+    //    return;
+    //}
+    //if (/\/adminer-(\w*)\/*/.exec(req.url)) {
+    //    var type = /\/adminer-(\w*)\/*/.exec(req.url)[1];
+    //    if ((util.isNullOrUndefined(user) ||  typeof user.type === 'undefined')) {
+    //        this.redirect('/admin-login');
+    //        return;
+    //    }
+    //    switch (type) {
+    //        case 'super':
+    //            if (user.type != 100) {
+    //                this.redirect('/admin-login');
+    //                return;
+    //            }
+    //            break;
+    //    }
+    //}
     yield next;
 });
 

@@ -1,13 +1,13 @@
 <% extend 'shared/admin-base' %>
 
 <% block 'head': %>
-<script src="/dist/admin-account.css"></script>
+<link rel="stylesheet" href="/dist/admin-adminer.css">
 <% end %>
 
 <div class="row">
     <div class="col-md-12">
         <!-- BEGIN EXAMPLE TABLE PORTLET-->
-        <div class="portlet box light-grey">
+        <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption"><i class="fa fa-globe"></i>人员列表</div>
                 <div class="tools">
@@ -37,17 +37,21 @@
                     <tbody>
 
                     <% for user in @admin : %>
-                    <tr datatr="<%= user.id %>" class="odd gradeX">
+                    <tr datatr="<%= user.id %>" class="odd">
                         <td><%= user.id %></td>
                         <td><%= user.nickname %></td>
                         <td><%= user.name %></td>
                         <td><%= user.phone %></td>
                         <% if user.type==1 : %>
-                        <td>普通管理员</td>
+                        <td>商品管理员</td>
                         <% else if user.type==2 : %>
-                        <td>运营员</td>
+                        <td>会员管理员</td>
                         <% else if user.type==3 : %>
-                        <td>业务员</td>
+                        <td>交易管理员</td>
+                        <% else if user.type==4 : %>
+                        <td>分销管理员</td>
+                        <% else if user.type==99 : %>
+                        <td>管理员</td>
                         <% else if user.type==100 : %>
                         <td>超级管理员</td>
                         <% end %>
@@ -55,7 +59,10 @@
                         <td>
                             <a data="<%= user.id %>" href="#addmodal" data-toggle="modal"
                                class="btn blue btn-xs editbtn"><i class="fa fa-edit"></i>修改</a>
+                            <% if user.type !=100 : %>
                             <butten class="btn delbtn btn-warning btn-xs"><i class="fa fa-times"></i>删除</butten>
+                            <% end %>
+
                         </td>
                     </tr>
                     <% end %>
@@ -78,7 +85,7 @@
             </div>
             <div class="modal-body" style="">
                 <div class="row">
-                    <form id="form" method="post" action="/adminer/accountadd" class="form">
+                    <form id="form" method="post" action="/adminer-super/adminer-add" class="form">
                         <input type="hidden" name="id" id="id" class="col-md-12 form-control">
                         <div class="form-group">
                             <div class="col-md-12">
@@ -107,11 +114,12 @@
                             <div class="col-md-12">
                                 <h4>权限</h4>
                                 <select name="type" id="type" class="form-control">
-                                    <option>请选择</option>
-                                    <option value="1">普通管理员</option>
-                                    <option value="2">运营员</option>
-                                    <option value="3">业务员</option>
-
+                                    <option value="99">管理员</option>
+                                    <option value="1">商品管理员</option>
+                                    <option value="2">会员管理员</option>
+                                    <option value="3">交易管理员</option>
+                                    <option value="4">分销管理员</option>
+                                    <option value="100" disabled id="super-option">超级管理员</option>
                                 </select>
                             </div>
 
@@ -119,7 +127,6 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <h4>密码</h4>
-
                                 <input type="password" id="password" name="password" class="form-control">
 
                             </div>
@@ -127,7 +134,6 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <h4>确认密码</h4>
-
                                 <input type="password" id="password2" name="password2" class="form-control">
                             </div>
 
@@ -138,16 +144,12 @@
                             <div class="col-md-12" style="margin-top: 10px">
                                 <button style="float: right" type="submit" id="add1btn" class="btn green">保存</button>
                             </div>
-
-
                         </div>
                     </form>
                 </div>
 
             </div>
             <div class="modal-footer">
-
-
             </div>
         </div>
     </div>
@@ -155,5 +157,5 @@
 
 
 <% block 'scripts': %>
-<script src="/dist/admin-account.js"></script>
+<script src="/dist/admin-adminer.js"></script>
 <% end %>

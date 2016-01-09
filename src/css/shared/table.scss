@@ -1,3 +1,12 @@
+table.center-table th, table.center-table td {
+  text-align: center;
+  vertical-align: middle !important;
+}
+
+table.center-table-v th, table.center-table-v td {
+  vertical-align: middle !important;
+}
+
 .id-col {
   width: 56px;
 }
@@ -6,4 +15,17 @@
 }
 .txt-col-sm {
   width: 112px;
+}
+.xs-sol {
+  width: 56px;
+}
+.sm-col {
+  width: 72px;
+}
+
+.op-sm-1-col {
+  width: 72px;
+}
+.op-sm-2-col {
+  width: 98px;
 }

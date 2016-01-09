@@ -1,7 +1,7 @@
 var util = require('util');
 
 var auth = require('../../helpers/auth.js');
-var db = require('../../models/index.js');
+var db = require('../../models/db/index');
 var render = require('../../instances/render.js');
 var debug = require('../../instances/debug.js');
 
@@ -11,31 +11,39 @@ module.exports = (router) => {
     var Goods = db.models.Goods;
     router.get('/adminer/goodstype',  function *() {
         var types = yield GoodsType.all();
-        debug(types);
+
         this.body = yield render('admin/goodstype', {
             types
         });
     });
 
 
-    router.get('/adminer/addtype',  function *() {
+    router.get('/adminer/goodstype-save',  function *() {
 
-        if(this.query.type!=1){
-            this.checkQuery('fid').toInt(0);
-        }
-        this.checkQuery('title').empty().len(2,20,"bad name.").trim().toLow();
-        if (this.errors) {
-            this.body = this.errors;
-            return;
-        }
-        yield GoodsType.create({
-            title:this.query.title,
-            type:this.query.type,
-            GoodsTypeId:this.query.fid
+        //if(this.query.type!=1){
+        //    this.checkQuery('fid').toInt(0);
+        //}
+        //this.checkQuery('title').empty().len(2,20,"bad name.").trim().toLow();
+        //if (this.errors) {
+        //    this.body = this.errors;
+        //    return;
+        //}
+        //yield GoodsType.create({
+        //    title:this.query.title,
+        //    type:this.query.type,
+        //    GoodsTypeId:this.query.fid
+        //});
+        //
+        //
+        //this.body = this.query.title ;
+
+        this.body = yield render('goodstype/save', {
+            types: yield GoodsType.findAll({
+                where: {
+                    type: 1
+                }
+            })
         });
-
-
-        this.body = this.query.title ;
 
 
     });

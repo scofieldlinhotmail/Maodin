@@ -1,4 +1,4 @@
-var sequelizex = require('../lib/sequelizex');
+var sequelizex = require('../../lib/sequelizex');
 var shortDataTypes = sequelizex.DataTypes;
 
 module.exports = function (sequelize, DataTypes) {
@@ -36,8 +36,6 @@ module.exports = function (sequelize, DataTypes) {
         associate: function (models) {
             models.User.hasMany(models.Order);
             models.Order.belongsTo(models.User);
-            models.Area.hasMany(models.Order);
-            models.Order.belongsTo(models.Area);
         },
         instanceMethods: {
         },

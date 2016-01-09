@@ -36,6 +36,8 @@
     "moment": "~2.10.6",
     "bootstrap-daterangepicker": "https://github.com/dangrossman/bootstrap-daterangepicker.git#~2.1.17",
     "eonasdan-bootstrap-datetimepicker": "https://github.com/Eonasdan/bootstrap-datetimepicker.git#~4.17.37",
-    "datatables": "https://github.com/DataTables/DataTables.git#~1.10.10"
+    "datatables": "https://github.com/DataTables/DataTables.git#~1.10.10",
+    "angular-messages": "~1.4.8",
+    "angular-animate": "~1.4.8"
   }
 }

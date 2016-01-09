@@ -1,4 +1,4 @@
-var sequelizex = require('../lib/sequelizex');
+var sequelizex = require('../../lib/sequelizex');
 var shortDataTypes = sequelizex.DataTypes;
 
 module.exports = function (sequelize, DataTypes) {
@@ -12,7 +12,7 @@ module.exports = function (sequelize, DataTypes) {
         /**
          * 拓展字段 JSON格式
          */
-        fields: shortDataTypes.Text(),
+        fields: shortDataTypes.Text()
     }, {
         timestamps: false,
         associate: function (models) {

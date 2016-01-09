@@ -1,0 +1,159 @@
+<% extend './shared/admin-base' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-goodstype-save.css">
+<% end %>
+<div class="row" ng-controller="MainCtrl">
+    <div class="col-md-12">
+        <!-- BEGIN VALIDATION STATES-->
+        <div class="portlet box purple">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-reorder"></i>编辑分类</div>
+            </div>
+            <div class="portlet-body form" ng-controller="FormCtrl">
+                <!-- BEGIN FORM-->
+                <form action="" disabled="" name="theForm" id="form_sample_1" class="form form-horizontal" method="post" >
+                    <input type="hidden" name="id" value="<%= @data?.id %>">
+                    <div class="form-body">
+                        <div class="form-group {{theForm.title.$invalid && theForm.title.$dirty ? 'has-error' : ''}}">
+                            <label class="control-label col-md-3">分类标题<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input type="text" name="title" class="form-control"
+                                       value="<%= @data?.title %>" required ng-model="title" />
+                                <span class="help-block" ng-messages="theForm.title.$error" role="alert" ng-if="theForm.title.$dirty">
+                                    <span ng-message="required">请填写内容</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group {{theForm.type.$invalid && theForm.type.$dirty ? 'has-error' : ''}}">
+                            <label class="control-label col-md-3">类别<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <select name="type" required class="form-control" ng-model="type">
+                                    <option value="1">一级类别</option>
+                                    <option value="2">二级类别</option>
+                                </select>
+                                <span class="help-block" ng-messages="theForm.type.$error" role="alert" ng-if="theForm.type.$dirty">
+                                    <span ng-message="required">请填写内容</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group {{theForm.topTypeId.$invalid && theForm.topTypeId.$dirty ? 'has-error' : ''}}" ng-if="type == 2">
+                            <label class="control-label col-md-3">上级类别<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <select name="topTypeId" class="form-control" ng-model="topTypeId">
+                                    <% for type in @types : %>
+                                    <option value="<%= type.id %>"><%= type.title %></option>
+                                    <% end %>
+                                </select>
+                                <span class="help-block" ng-messages="theForm.topTypeId.$error" role="alert" ng-if="theForm.topTypeId.$dirty">
+                                    <span ng-message="required">请填写内容</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+
+                <hr>
+                <div ng-controller="ExtCtrl">
+                    <div class="form form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">增加属性名<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input type="text"  class="form-control" ng-model="title"/>
+                            </div>
+                            <label class="control-label col-md-2">属性类型<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <select class="form-control" ng-model="type">
+                                    <option value="0">文本输入框</option>
+                                    <option value="1">数字输入框</option>
+                                    <option value="2">时间输入框</option>
+                                    <option value="3">单选下拉框</option>
+                                    <option value="4">多选下拉框</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 ">
+                                <span class="btn btn-primary" ng-click="add()">
+                                    <span ng-show="index == -1">添加</span>
+                                    <span ng-hide="index == -1">修改</span>
+                                </span></div>
+                        </div>
+                        <div ng-show="type >= 3">
+                            <div class="form-group">
+                                <div class="col-md-9 col-md-offset-2 clearfix">
+                                    <span class="label label-info  pull-left" style="margin: 6px"
+                                          ng-repeat="val in options track by $index">{{val}}
+                                        <i class="fa fa-close" ng-click="removeOption($index)"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2">候选值<span class="required">*</span></label>
+                                <div class="col-md-3">
+                                    <input type="text" class="form-control" ng-model="optionInput"/>
+                                </div>
+                                <div class="col-md-2 ">
+                                    <span class="btn btn-primary" ng-click="addOption()">添加</span></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <hr>
+                <div ng-controller="ExtListCtrl" class="am-margin">
+                    <table class="table table-bordered table-striped center-table-v">
+                        <thead>
+                        <tr>
+                            <th class="sm-col">属性ids</th>
+                            <th>属性名</th>
+                            <th>类型</th>
+                            <th>候选值</th>
+                            <th class="op-sm-2-col">操作</th>
+                        </tr>
+
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="option in options track by $index">
+                            <td>{{option.id}}</td>
+                            <td>{{option.title}}</td>
+                            <td>{{option.type | typeStr}}</td>
+                            <td>{{option.options.join(', ')}}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm radius">
+                                    <span class="btn btn-primary" ng-click="edit($index)">
+                                        <i class="fa fa-pencil" ></i>
+                                    </span>
+
+                                    <span class="btn btn-warning" ng-click="remove($index)">
+                                        <i class="fa fa-trash" ></i>
+                                    </span>
+
+                                </div>
+
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-actions fluid">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button type="button" class="btn green" ng-click="submit()"
+                                ng-disabled="theForm.$submitted || theForm.$invalid">提交</button>
+                        <a href="/adminer/goods" class="btn blue">返回列表页</a>
+                    </div>
+                </div>
+
+                <!-- END FORM-->
+            </div>
+        </div>
+        <!-- END VALIDATION STATES-->
+    </div>
+</div>
+
+
+<% block 'scripts': %>
+
+<script src="/dist/admin-goodstype-save.js"></script>
+<% end %>
+

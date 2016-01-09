@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 
 var auth = require('../../helpers/auth.js');
-var db = require('../../models/index.js');
+var db = require('../../models/db/index');
 var render = require('../../instances/render.js');
 var debug = require('../../instances/debug.js');
 
