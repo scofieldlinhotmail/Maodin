@@ -14,6 +14,20 @@ function * adminerSeed(){
     }
 }
 
+function * commentSeed(){
+    for(var i = 0; i < 40; i ++) {
+        yield db.models.Comment.create({
+            score:i%5,
+            status:i%2,
+            message:"message"+i,
+            UserId:1,
+            GoodId:1
+
+        })
+    }
+}
+
+
 function * userSeed(){
     for(var i = 0; i < 40; i ++) {
         yield db.models.User.create({
@@ -234,16 +248,17 @@ function * orderSeed() {
 
 function * init() {
     yield db.sync({force: true});
-    yield adminerSeed();
+    //yield adminerSeed();
     //yield goodsTypeSeed();
-    yield areaSeed();
-    yield userSeed();
+    //yield areaSeed();
+    //yield userSeed();
     //yield goodsSeed();
     //yield msgSeed();
-    yield addressSeed();
+    //yield addressSeed();
     //yield containerSeed();
     //yield shoppingCartSeed();
     //yield orderSeed();
+    //yield commentSeed();
 }
 
 function *addSuperAdminer() {
@@ -259,6 +274,8 @@ function *addSuperAdminer() {
 
 co(function * () {
     yield db.sync({force: true});
+   // yield db.models.Comment.sync()
+    yield init();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

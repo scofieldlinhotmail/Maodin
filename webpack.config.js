@@ -17,11 +17,12 @@ var adminEnties = {
     //'admin-goodstype': ['./src/js/admin/goodstype.js'],
     //'admin-orders':['./src/js/admin/orders.js'],
     //'admin-fare':['./src/js/admin/fare.js'],
-    ////'admin-form' : ['./src/js/admin/admin.js'],
-    'admin-adminer':['./src/js/admin/adminer.js'],
+    //'admin-form' : ['./src/js/admin/admin.js'],
+    //'admin-adminer':['./src/js/admin/adminer.js'],
     //'admin-gooddetail':['./src/js/goods/detail.js'],
-    //'admin-user-list': ['./src/js/admin/user.js'],
-    'admin-goodstype-save': ['./src/js/goodsType/save.js']
+    'admin-user-list': ['./src/js/admin/user.js'],
+    'admin-goodstype-save': ['./src/js/goodsType/save.js'],
+    'admin-comment':['./src/js/admin/Comment.js'],
 };
 
 // 手机端文件
