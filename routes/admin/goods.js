@@ -10,11 +10,11 @@ module.exports = (router) => {
     var GoodsType = db.models.GoodsType;
     var OrderItem = db.models.OrderItem;
 
-    router.get('/adminer/goods/save',  saveView);
-    router.get('/adminer/goods/save/:id',  saveView);
+    router.get('/adminer-shopkeeper/goods/save',  saveView);
+    router.get('/adminer-shopkeeper/goods/save/:id',  saveView);
 
-    router.post('/adminer/goods/save',  save);
-    router.post('/adminer/goods/save/:id',  save);
+    router.post('/adminer-shopkeeper/goods/save',  save);
+    router.post('/adminer-shopkeeper/goods/save/:id',  save);
 
     function *saveView() {
         var types = yield GoodsType.findAll({
@@ -97,12 +97,12 @@ module.exports = (router) => {
         this.redirect('/adminer/goods');
     }
 
-    router.get('/adminer/goods',function *(){
+    router.get('/adminer-shopkeeper/goods',function *(){
         this.body = yield render('goods/list.html',{
         });
     });
 
-    router.get('/adminer/goods/:status',function *(){
+    router.get('/adminer-shopkeeper/goods/:status',function *(){
         this.checkParams('status').notEmpty().isInt().toInt();
         if (this.errors) {
             this.body = this.errors;
@@ -125,7 +125,7 @@ module.exports = (router) => {
         });
     });
 
-    router.post('/adminer/goods/action',function *(){
+    router.post('/adminer-shopkeeper/goods/action',function *(){
         this.checkBody('id').notEmpty().isInt().toInt();
         this.checkBody('status').notEmpty().isInt().toInt();
         if (this.errors) {
@@ -155,7 +155,7 @@ module.exports = (router) => {
         };
     });
 
-    router.get('/adminer/goods/all',function *(){
+    router.get('/adminer-shopkeeper/goods/all',function *(){
         var goods = yield Goods.findAll({
             attributes: ['id','title', 'price','soldNum','content']
         });
@@ -163,7 +163,7 @@ module.exports = (router) => {
         this.body = JSON.stringify(goods);
     });
 
-    router.get('/adminer/goods/remove/:id',function *(){
+    router.get('/adminer-shopkeeper/goods/remove/:id',function *(){
         var id = this.params.id;
         try {
             yield Goods.destroy({
@@ -179,7 +179,7 @@ module.exports = (router) => {
     });
 
     ///商品详情
-    router.get('/adminer/goods/detail',function *(){
+    router.get('/adminer-shopkeeper/goods/detail',function *(){
 
         var id = this.query.id;
         var good= yield Goods.findById(id);
@@ -223,8 +223,5 @@ module.exports = (router) => {
         });
 
     });
-
-
-
 
 };

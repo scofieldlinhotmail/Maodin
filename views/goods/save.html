@@ -6,7 +6,6 @@
 </style>
 <% end %>
 
-
 <div class="row">
     <div class="col-md-12">
         <!-- BEGIN VALIDATION STATES-->
@@ -16,7 +15,7 @@
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form action="" id="form_sample_1" class="form-horizontal" method="post">
+                <form action="" id="form_sample_1" class="form-horizontal" method="post" ng-controller="FormCtl">
                     <input type="hidden" name="id" value="<%= @data?.id %>" >
                     <div class="form-body">
                         <div class="form-group">
@@ -27,7 +26,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">现价<span class="required">*</span></label>
+                            <label class="control-label col-md-3">价格<span class="required">*</span></label>
 
                             <div class="col-md-3">
                                 <div class="input-group">
@@ -39,7 +38,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">原价<span class="required">*</span></label>
+                            <label class="control-label col-md-3">市场价格<span class="required">*</span></label>
                             <div class="col-md-3">
                                 <div class="input-group">
                                     <input type="number" class="form-control" name="oldPrice" min="0" value="<%= @data?.oldPrice %>" >
@@ -50,41 +49,39 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">每份的量</label>
-
+                            <label class="control-label col-md-3">分级佣金（一级）<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <input type="number" class="form-control" name="perNum" min="0" value="<%= @data?.perNum %>" >
+                                <input type="number" class="form-control" name="commission1" min="0" value="<%= @data?.commission1 %>" >
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">单位</label>
-
+                            <label class="control-label col-md-3">分级佣金（二级）<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control" name="perStr" maxlength="10" value="<%= @data?.perStr %>" >
+                                <input type="number" class="form-control" name="commission2" min="0" value="<%= @data?.commission2 %>" >
                             </div>
                         </div>
-                        <!--<div class="form-group">-->
-                            <!--<label class="control-label col-md-3">会员折扣</label>-->
-
-                            <!--<div class="col-md-3">-->
-                                <!--<div class="input-group">-->
-                                    <!--<input type="number" class="form-control" name="vipDiscount" min="0" max="10" value="<%= @data?.vipDiscount %>" >-->
-                                    <!--<div class="input-group-btn">-->
-                                        <!--<a class="btn default">折</a>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
                         <div class="form-group">
-                            <label class="control-label col-md-3">剩余量<span class="required">*</span></label>
+                            <label class="control-label col-md-3">分级佣金（三级）<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control" name="commission3" min="0" value="<%= @data?.commission3 %>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">购买赠送积分<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control" name="integral" min="0" value="<%= @data?.integral %>" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">库存<span class="required">*</span></label>
                             <div class="col-md-3">
                                 <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
                             </div>
                         </div>
-                        <div class="form-group" ng-controller="TypeCtl" >
+                        <div class="form-group"  >
                             <label class="control-label col-md-3">类别<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <select ng-model="ltype" class="form-control" ng-options="option.title for option in data track by option.id" >
+                                <select ng-model="ltype" class="form-control" ng-options="option.title for option in types track by option.id" >
                                 </select>
                             </div>
                             <div class="col-md-3">
@@ -122,12 +119,20 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3">简要介绍<span class="required">*</span></label>
+                        <div class="form-group" ng-repeat="ltypes.fields">
+                            <label class="control-label col-md-3">库存<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <input name="brief" type="text" class="form-control" maxlength="100" value="<%= @data?.brief %>" />
+                                <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
                             </div>
                         </div>
+
+                        <div class="form-group" ng-repeat="field in ltypes.fields">
+                            <label class="control-label col-md-3">{{field.title}}<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label class="control-label  col-md-3">商品详情</label>
                             <div class="col-md-8">

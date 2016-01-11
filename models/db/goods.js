@@ -23,18 +23,15 @@ module.exports = function (sequelize, DataTypes) {
          * 原价
          */
         oldPrice: shortDataTypes.Double(),
-        /**
-         * 每份的量
-         */
-        perNum: shortDataTypes.Double(),
-        /**
-         * 每份的单位
-         */
-        perStr: shortDataTypes.String(100),
+        baseSoldNum: shortDataTypes.Int(0),
         /**
          * 已售数量
          */
         soldNum: shortDataTypes.Int(),
+        /**
+         * 每人限购
+         */
+        buyLimit: shortDataTypes.Int(),
         /**
          * 简要描述
          */
@@ -58,7 +55,25 @@ module.exports = function (sequelize, DataTypes) {
         status: {
             type: DataTypes.INTEGER,
             defaultValue: 0
-        }
+        },
+        /**
+         * 定时下架
+         */
+        timeToDown: shortDataTypes.Date(),
+        /**
+         * 赠送积分
+         */
+        integral: shortDataTypes.Double(),
+        /**
+         * 分级佣金
+         */
+        commission1: shortDataTypes.Double(),
+        commission2: shortDataTypes.Double(),
+        commission3: shortDataTypes.Double(),
+        /**
+         * 扩展属性值
+         */
+        extraFields: shortDataTypes.Text()
     }, {
         timestamps: false,
         paranoid: true,

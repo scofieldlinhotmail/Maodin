@@ -1,15 +1,26 @@
 var db = require('./index.js');
 var co = require('co');
 
+function *addSuperAdminer() {
+    yield db.models.Adminer.create({
+        nickname: 'super',
+        name: '超级管理员',
+        phone: '12345678901',
+        password: '123456',
+        status: 0,
+        type: 100
+    });
+}
 
 function * adminerSeed(){
+    yield addSuperAdminer();
     for(var i = 0; i < 40; i ++) {
         yield db.models.Adminer.create({
             name: '用户' + i,
             password: '123456',
             phone: '18840823910',
             nickname: '用户' + i,
-            type: i % 3 + 1
+            type: i % 4 + 1
         })
     }
 }
@@ -56,52 +67,92 @@ function * goodsSeed() {
 
 function * goodsTypeSeed() {
     var ids = [];
-    ids.push(yield db.models.GoodsType.create({
-        title: '时令水果',
-        type: 1
-    }));
-    ids.push(yield db.models.GoodsType.create({
-        title: '新鲜蔬菜',
-        type: 1
-    }));
-    ids.push(yield db.models.GoodsType.create({
-        title: '禽蛋肉类',
-        type: 1
-    }));
-    yield db.models.GoodsType.create({
-        title: '禽蛋肉类',
-        type: 1
-    });
-    yield db.models.GoodsType.create({
-        title: '叶菜类',
-        type: 2,
-        GoodsTypeId: ids[0].id
-    });
-    yield db.models.GoodsType.create({
-        title: '根茎类',
-        type: 2,
-        GoodsTypeId: ids[0].id
-    });
-    yield db.models.GoodsType.create({
-        title: '豆类',
-        type: 2,
-        GoodsTypeId: ids[0].id
-    });
-    yield db.models.GoodsType.create({
-        title: '精品类',
-        type: 2,
-        GoodsTypeId: ids[1].id
-    });
-    yield db.models.GoodsType.create({
-        title: '热带类',
-        type: 2,
-        GoodsTypeId: ids[1].id
-    });
-    yield db.models.GoodsType.create({
-        title: '苹果类',
-        type: 2,
-        GoodsTypeId: ids[1].id
-    });
+    var fields = [
+        {
+            title: "扩展属性"
+        }
+    ];
+    for(var i = 1; i < 10; i ++) {
+        var tmp = yield db.models.GoodsType.create({
+            title: '一级类型' + i,
+            type: 1,
+            fields: JSON.stringify([
+                {
+                    title: '一级扩展属性1',
+                    id: Date.now(),
+                    type: '1',
+                    options: []
+                },
+                {
+                    title: '一级扩展属性2',
+                    id: Date.now(),
+                    type: '2',
+                    options: []
+                },
+                {
+                    title: '一级扩展属性3',
+                    id: Date.now(),
+                    type: '3',
+                    options: []
+                },
+                {
+                    title: '一级扩展属性4',
+                    id: Date.now(),
+                    type: '4',
+                    options: ['1', '2', '3']
+                },
+                {
+                    title: '一级扩展属性5',
+                    id: Date.now(),
+                    type: '5',
+                    options: ['1', '2', '3']
+                }
+            ])
+        });
+        ids.push(tmp.id);
+    }
+    for(var j = 0; j < ids.length; j ++) {
+        for(var i = 1; i < 10; i ++) {
+            var tmp = yield db.models.GoodsType.create({
+                title: '二级类型' + i,
+                type: 2,
+                GoodsTypeId: ids[j],
+                fields: JSON.stringify([
+                    {
+                        title: '二级扩展属性1',
+                        id: Date.now(),
+                        type: '1',
+                        options: []
+                    },
+                    {
+                        title: '二级扩展属性2',
+                        id: Date.now(),
+                        type: '2',
+                        options: []
+                    },
+                    {
+                        title: '二级扩展属性3',
+                        id: Date.now(),
+                        type: '3',
+                        options: []
+                    },
+                    {
+                        title: '二级扩展属性4',
+                        id: Date.now(),
+                        type: '4',
+                        options: ['1', '2', '3']
+                    },
+                    {
+                        title: '二级扩展属性5',
+                        id: Date.now(),
+                        type: '5',
+                        options: ['1', '2', '3']
+                    }
+                ])
+            });
+        }
+    }
+
 }
 
 function * msgSeed(){
@@ -235,31 +286,21 @@ function * orderSeed() {
 function * init() {
     yield db.sync({force: true});
     yield adminerSeed();
-    //yield goodsTypeSeed();
-    yield areaSeed();
-    yield userSeed();
+    yield goodsTypeSeed();
+    //yield areaSeed();
+    //yield userSeed();
     //yield goodsSeed();
     //yield msgSeed();
-    yield addressSeed();
+    //yield addressSeed();
     //yield containerSeed();
     //yield shoppingCartSeed();
     //yield orderSeed();
 }
 
-function *addSuperAdminer() {
-    yield db.models.Adminer.create({
-        nickname: 'super',
-        name: '超级管理员',
-        phone: '18840823910',
-        password: '123456',
-        status: 0,
-        type: 100
-    });
-}
+
 
 co(function * () {
-    yield db.sync({force: true});
-    console.log('finished ...');
+    yield init();
 }).catch(function () {
     console.log(arguments);
 });

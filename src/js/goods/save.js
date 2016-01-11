@@ -234,17 +234,18 @@ $(function () {
     }]);
 
 
-    app.controller('TypeCtl', ['$scope', function (scope){
+    app.controller('FormCtl', ['$scope', function (scope){
 
         var typeDom = angular.element('#types');
 
-        scope.data = JSON.parse(typeDom.html());
+        scope.types = JSON.parse(typeDom.html());
 
         var typeId = typeDom.data('id');
 
         (function () {
-            for(var i in scope.data) {
-                var ltype = scope.data[i];
+            for(var i in scope.types) {
+                var ltype = scope.types[i];
+                scope.types[i].fields = JSON.parse(scope.types[i].fields);
                 for(var j in ltype.GoodsTypes) {
                     var stype = ltype.GoodsTypes[j]
                     if (stype.id == typeId) {
@@ -258,7 +259,6 @@ $(function () {
 
 
     }]);
-
 
         angular.bootstrap(document.documentElement, ['app']);
 });

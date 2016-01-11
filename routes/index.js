@@ -68,7 +68,7 @@ var loadDir = (dir) => {
             var stat = fs.statSync(nextPath);
             if (stat.isDirectory()) {
                 loadDir(nextPath);
-            } else if (stat.isFile() && file.indexOf('.') !== 0 && file !== 'index.js') {
+            } else if (stat.isFile() && file.indexOf('.') !== 0 && file !== 'index.js' && file !== 'url.js') {
                 require(nextPath)(router);
             }
         });

@@ -21,7 +21,6 @@ module.exports = function (sequelize, DataTypes) {
          * 2 => 会员管理
          * 3 => 交易管理
          * 4 => 分销管理
-         * 5 =>
          * 99 => 管理员
          * 100 => 超级管理员
          */
