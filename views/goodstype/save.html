@@ -2,7 +2,7 @@
 <% block 'head': %>
 <link rel="stylesheet" href="/dist/admin-goodstype-save.css">
 <% end %>
-<div class="row" ng-controller="MainCtrl" ng-cloak>
+<div class="row" ng-controller="MainCtrl">
     <div class="col-md-12">
         <!-- BEGIN VALIDATION STATES-->
         <div class="portlet box purple">
@@ -12,13 +12,13 @@
             <div class="portlet-body form" ng-controller="FormCtrl">
                 <!-- BEGIN FORM-->
                 <form action="" disabled="" name="theForm" id="form_sample_1" class="form form-horizontal" method="post" >
-                    <input type="hidden" name="id" value="<%= @data?.id %>" ng-model="id">
+                    <input type="hidden" name="id" value="<%= @data?.id %>">
                     <div class="form-body">
                         <div class="form-group {{theForm.title.$invalid && theForm.title.$dirty ? 'has-error' : ''}}">
                             <label class="control-label col-md-3">分类标题<span class="required">*</span></label>
                             <div class="col-md-3">
                                 <input type="text" name="title" class="form-control"
-                                       required ng-model="title" />
+                                       value="<%= @data?.title %>" required ng-model="title" />
                                 <span class="help-block" ng-messages="theForm.title.$error" role="alert" ng-if="theForm.title.$dirty">
                                     <span ng-message="required">请填写内容</span>
                                 </span>
@@ -27,7 +27,7 @@
                         <div class="form-group {{theForm.type.$invalid && theForm.type.$dirty ? 'has-error' : ''}}">
                             <label class="control-label col-md-3">类别<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <select name="type" required class="form-control" ng-model="type" ng-disabled="id > 0">
+                                <select name="type" required class="form-control" ng-model="type">
                                     <option value="1">一级类别</option>
                                     <option value="2">二级类别</option>
                                 </select>
@@ -39,7 +39,7 @@
                         <div class="form-group {{theForm.topTypeId.$invalid && theForm.topTypeId.$dirty ? 'has-error' : ''}}" ng-if="type == 2">
                             <label class="control-label col-md-3">上级类别<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <select name="topTypeId" class="form-control" >
+                                <select name="topTypeId" class="form-control" ng-model="topTypeId">
                                     <% for type in @types : %>
                                     <option value="<%= type.id %>"><%= type.title %></option>
                                     <% end %>
@@ -150,9 +150,7 @@
         <!-- END VALIDATION STATES-->
     </div>
 </div>
-<script type="text/plain" id="data">
-    <%- @data %>
-</script>
+
 
 <% block 'scripts': %>
 

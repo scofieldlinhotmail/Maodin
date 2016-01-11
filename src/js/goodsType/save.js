@@ -5,6 +5,8 @@ require('../../css/shared/table.scss');
 require('angular');
 require('angular-messages');
 require('angular-animate');
+require('imports?$=jquery!jquery-validation');
+require('ajaxform/build/ajaxform-0.1.2.js');
 
 var $ = jQuery;
 $(function () {
@@ -30,55 +32,19 @@ $(function () {
 
     app.controller('MainCtrl', ['$scope', function (scope) {
 
-
-
-    }]);
-
-    app.controller('FormCtrl', ['$scope', '$http', function (scope, $http) {
-
         scope.options = [];
 
         scope.$on('edit-emit', function (e, index) {
             scope.$broadcast('edit-broadcast', index);
         });
 
-        var ele = angular.element('#data');
-        var eleContent = ele.html().trim();
-        if(eleContent.length !== 0) {
-            var data = JSON.parse(eleContent);
-            ele.remove();
+    }]);
 
-            scope.title = data.title;
-            scope.type = data.type.toString();
-            scope.topTypeId = data.GoodsTypeId;
-            scope.options = JSON.parse(data.fields);
-            scope.id = data.id;
-        }
-
+    app.controller('FormCtrl', ['$scope', '$http', function (scope, $http) {
 
         scope.submit = function (){
             scope.theForm.$submitted = true;
-            var data  = {
-                id: scope.id,
-                title: scope.title,
-                type: scope.type,
-                fields: scope.options
-            };
-            if (data.type == '2'){
-                data.topTypeId = angular.element('[name=topTypeId]').val();
-                if (data.topTypeId.length === 0) {
-                    alert('请选择上级类别');
-                    return;
-                }
-            }
-            $http.post(window.location.href, data)
-                .success(function(ret) {
-                    window.location = ret.url;
-                })
-                .error(function () {
-                    alert('操作失败，请刷新重试');
-                    scope.theForm.$submitted = false;
-                });
+            $http.post('')
         }
 
     }]);
@@ -90,7 +56,6 @@ $(function () {
         scope.optionInput = '';
         scope.id = '';
         scope.index = -1;
-        scope.type = '0';
 
         scope.$watch('type', function (newVal, oldVal) {
             if (typeof newVal == 'undefined' || newVal === oldVal) {

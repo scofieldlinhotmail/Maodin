@@ -5,3 +5,4 @@ src/bower_components
 log/*
 public/dist
 public/upload
+.idea/jsLibraryMappings.xml
