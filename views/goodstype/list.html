@@ -1,0 +1,119 @@
+<% extend './shared/admin-base' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-goodstype.css">
+<% end %>
+<div class="row" ng-controller="MainCtrl" ng-cloak>
+    <div class="col-md-12">
+        <!-- BEGIN VALIDATION STATES-->
+        <div class="portlet box purple">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-reorder"></i>编辑分类</div>
+            </div>
+            <div class="portlet-body">
+
+                <table class="table table-bordered table-striped center-table-v table-horver">
+                    <thead>
+                    <tr>
+                        <th class="xss-col"></th>
+                        <th class="sm-col">标识符</th>
+                        <th>名称</th>
+                        <th class="op-sm-2-col">操作</th>
+                    </tr>
+
+                    </thead>
+                    <tbody>
+                    <% for ltype in @types : %>
+                        <tr data-id="<%= ltype.id %>">
+                            <td class="toggle"><i class="fa fa-plus"></i></td>
+                            <td><%= ltype.id %></td>
+                            <td><%= ltype.title %></td>
+                            <td>
+                                <div class="btn-group btn-group-sm radius">
+                                        <a href="goodstype-save?id=<%= ltype.id %>" class="btn btn-primary">
+                                            <i class="fa fa-pencil"></i>
+                                        </a>
+
+                                        <span class="btn btn-warning del-btn">
+                                            <i class="fa fa-trash"></i>
+                                        </span>
+                                </div>
+                            </td>
+                        </tr>
+                    <tr style="display: none">
+                        <% fields = JSON.parse(ltype.fields).map((item)  => item.title).join(', ') %>
+                        <td></td>
+                        <td colspan="3">
+                            <table class="table table-bordered table-striped center-table-v table-horver">
+                                <tbody>
+                                <tr>
+                                    <td class="sm-col">扩展属性</td>
+                                    <td><%= fields %></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered table-striped center-table-v table-horver">
+                                <thead>
+                                <tr>
+                                    <th class="xss-col"></th>
+                                    <th class="sm-col">标识符</th>
+                                    <th>名称</th>
+                                    <th class="op-sm-2-col">操作</th>
+                                </tr>
+
+                                </thead>
+                                <tbody>
+                                <% for stype in ltype.GoodsTypes : %>
+                                <tr data-id="<%= stype.id %>">
+                                    <td  class="toggle"><i class="fa fa-plus"></i></td>
+                                    <td><%= stype.id %></td>
+                                    <td><%= stype.title %></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm radius">
+                                            <a href="goodstype-save?id=<%= stype.id %>" class="btn btn-primary">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+
+                                            <span class="btn btn-warning del-btn">
+                                                <i class="fa fa-trash"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr style="display: none">
+                                    <% fields = JSON.parse(stype.fields).map((item) => item.title).join(', ') %>
+                                    <td></td>
+                                    <td colspan="3">
+                                        <table class="table table-bordered table-striped center-table-v table-horver">
+                                            <tbody>
+                                            <tr>
+                                                <td class="sm-col">扩展属性</td>
+                                                <td><%= fields %></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <% end %>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <% end %>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <!-- END VALIDATION STATES-->
+    </div>
+</div>
+<script type="text/plain" id="data">
+    <%- @data %>
+
+</script>
+
+<% block 'scripts': %>
+
+<script src="/dist/admin-goodstype.js"></script>
+<% end %>
+

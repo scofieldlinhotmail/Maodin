@@ -1,7 +1,7 @@
 /**
  * Created by OurEDA on 15/12/3.
  */
-require('../../../src/css/admin-base/common.js');
+require('..../../src/css/admin-base/common.js');
 
 /* js */
 require('../admin/index');
