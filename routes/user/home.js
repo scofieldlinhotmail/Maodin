@@ -8,7 +8,7 @@ var debug = require('../../instances/debug.js');
 var GoodsType = db.models.GoodsType;
 
 module.exports = (router) => {
-
+    var User = db.models.User;
     router.get('/user/index',  function *() {
         var types = yield GoodsType.findAll({
             where: {
@@ -24,13 +24,21 @@ module.exports = (router) => {
     });
 
     router.get('/user/center',  function *() {
-
-        this.body = yield render('phone/user.html', {
-            user: yield auth.user(this),
-            title: '个人中心'
+        var u= yield User.findOne();
+        debug(u);
+        this.body = yield render('phone/personalcenter.html', {
+            //user: yield auth.user(this),
+            user: u,
+            title: ''
         });
     });
-
+    //router.get('/user/center',  function *() {
+    //
+    //    this.body = yield render('phone/user.html', {
+    //        user: yield auth.user(this),
+    //        title: '个人中心'
+    //    });
+    //});
     //router.get('/all-ltype', function *() {
     //    var types = yield GoodsType.allLtype();
     //    this.body = types;

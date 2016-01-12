@@ -1,0 +1,119 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-usercenter.css">
+<% end %>
+
+<div class="user-panel">
+    <div class="am-cf ad am-padding">
+        <div class="am-fl">
+            <img src="<%= @user?.headimage %>" style="width: 48px; height: 48px;">
+        </div>
+
+        <div class="am-fl username" >
+                <span>用户名: <%= @user?.nickname %></span>
+            <br>
+            <span>用户名: <%= @user?.nickname %></span>
+
+        </div>
+        <div class="am-fr username" >
+            <span class="icon" style="font-size: 23px;"><i class="am-icon-angle-right"></i></span>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="am-g">
+    <div class="fa">
+        <a href="/user/order-list">
+            <div class="am-u-sm-12 option notop nobottom">账户余额<span class="icon">
+                <button class="am-btn am-btn-success am-btn-sm ">提现</button></span></div>
+        </a>
+
+
+
+    </div>
+</div>
+<div class="am-g">
+    <div class="da">
+
+    </div>
+</div>
+<div class="am-g">
+    <div class="fa">
+    <a  href="/user/order-list">
+        <div class="am-u-sm-12 option-sm notop">我的订单<span class="icon">查看全部订单 <i class="am-icon-angle-right"></i></span></div>
+    </a>
+    <div class="am-u-sm-12 nobottom" style="border-bottom: 1px solid #ddd;">
+        <a class="am-fl am-u-sm-3 nop"  href="/user/order-list">
+
+            <div class="am-u-sm-12 rightborder option-sm-f">
+                <div>123</div>
+                待付款</div>
+        </a>
+        <a  class="am-fl am-u-sm-3 nop"  href="/user/order-list">
+            <div class="am-u-sm-12 rightborder option-sm-f">待发货</div>
+        </a>
+        <a  class="am-fl am-u-sm-3 nop"  href="/user/order-list">
+            <div class="am-u-sm-12 rightborder option-sm-f">待收货</div>
+        </a>
+        <a class="am-fl am-u-sm-3 nop"   href="/user/order-list">
+            <div class="am-u-sm-12 option-sm-f">退换货</div>
+        </a>
+
+    </div>
+
+    </div>
+
+</div>
+
+<div class="am-g">
+    <div class="da">
+
+    </div>
+</div>
+
+<div class="am-g">
+    <div class="fa">
+        <a href="/user/order-list">
+            <div class="am-u-sm-12 option notop">我的优惠券<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+
+
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">我的购物车<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">我的收藏<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">我的浏览记录<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option nobottom">我的分销小队<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+    </div>
+</div>
+<div class="am-g">
+    <div class="da">
+
+    </div>
+</div>
+<div class="am-g">
+    <div class="fa">
+        <a href="/user/order-list">
+            <div class="am-u-sm-12 option notop">收货地址管理<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+
+
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">消息提醒设置<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        </a>
+    </div>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-usercenter.js"></script>
+<% end %>

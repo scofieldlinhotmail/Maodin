@@ -25,6 +25,16 @@ function * adminerSeed(){
     }
 }
 
+function * rankSeed(){
+    for(var i = 0; i < 40; i ++) {
+        yield db.models.Rank.create({
+          name:"name"+i,
+            min:10*i,
+            max:(i+1)*10
+        })
+    }
+}
+
 function * commentSeed(){
     for(var i = 0; i < 40; i ++) {
         yield db.models.Comment.create({
@@ -302,14 +312,15 @@ function * init() {
     yield adminerSeed();
     yield goodsTypeSeed();
     //yield areaSeed();
-    //yield userSeed();
-    //yield goodsSeed();
+    yield userSeed();
+    yield goodsSeed();
     //yield msgSeed();
     //yield addressSeed();
     //yield containerSeed();
     //yield shoppingCartSeed();
     //yield orderSeed();
     //yield commentSeed();
+    yield rankSeed();
 }
 
 
