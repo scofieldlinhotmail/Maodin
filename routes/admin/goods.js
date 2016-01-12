@@ -3,6 +3,8 @@ var db = require('../../models/db/index');
 var render = require('../../instances/render.js');
 var debug = require('../../instances/debug');
 var sequelize = require('sequelize');
+var util = require('util');
+var moment = require('moment');
 
 module.exports = (router) => {
 
@@ -21,7 +23,6 @@ module.exports = (router) => {
             where: {
                 type: 1
             },
-            attributes: ['title', 'type', 'id'],
             include: [GoodsType]
         });
 
@@ -29,7 +30,7 @@ module.exports = (router) => {
         if (this.params.id ){
             data = yield Goods.findById(this.params.id);
             data = data.dataValues;
-            data.discount = data.discount ? 'checked' : '';
+            data.timeToDown = moment(data.timeToDown).format('MM/DD/YYYY hh:mm A');
         }
 
         this.body = yield render('goods/save.html', {
@@ -45,17 +46,44 @@ module.exports = (router) => {
         this.checkBody('price').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('oldPrice').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('capacity').notEmpty().isInt().gt(0).toInt();
-        this.checkBody('perNum').notEmpty().isInt().gt(0).toInt();
-        this.checkBody('perStr').notEmpty();
         this.checkBody('GoodsTypeId').notEmpty().isInt().toInt();
-        this.checkBody('brief').notEmpty();
+        this.checkBody('baseSoldNum').notEmpty().isInt().toInt();
+        this.checkBody('commission1').notEmpty().isFloat().gt(0).toFloat();
+        this.checkBody('commission2').notEmpty().isFloat().gt(0).toFloat();
+        this.checkBody('commission3').notEmpty().isFloat().gt(0).toFloat();
+        this.checkBody('integral').notEmpty().isFloat().gt(0).toFloat();
 
         var body = this.request.body;
+
+        var type = yield GoodsType.findOne({
+            where: {
+                id: body.GoodsTypeId
+            },
+            include: [{
+                model: GoodsType,
+                as: 'ParentType'
+            }]
+        });
+
+        var fields = JSON.parse(type.fields).concat(JSON.parse(type.ParentType.fields));
+        var extraFields = [];
 
         if (this.errors) {
             this.body = this.errors;
             return;
         }
+
+        for(var key in fields) {
+            if (fields.hasOwnProperty(key)) {
+                var field = fields[key];
+                var val = body[field.id];
+                if (!util.isNullOrUndefined(field) && field.length != 0) {
+                    field.value = val;
+                    extraFields.push(field);
+                }
+            }
+        }
+
 
         var isCreate = true;
         if (body.id) {
@@ -67,12 +95,19 @@ module.exports = (router) => {
                 goods.price = body.price;
                 goods.oldPrice = body.oldPrice;
                 goods.capacity = body.capacity;
-                goods.perNum = body.perNum;
-                goods.perStr = body.perStr;
                 goods.GoodsTypeId = body.GoodsTypeId;
-                goods.brief = body.brief;
                 goods.content = body.content;
+                goods.commission1 = body.commission1;
+                goods.commission2 = body.commission2;
+                goods.commission3 = body.commission3;
+                goods.integral = body.integral;
+                goods.baseSoldNum = body.baseSoldNum;
+                goods.extraFields = JSON.stringify(extraFields);
+                goods.timeToDown = body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null;
+                goods.buyLimit = body.buyLimit ? body.buyLimit : 0;
+
                 yield goods.save();
+                debug(body.hasTimeToDown, goods.timeToDown);
                 isCreate = false;
             }
         }
@@ -85,16 +120,21 @@ module.exports = (router) => {
                 price: body.price,
                 oldPrice: body.oldPrice,
                 capacity: body.capacity,
-                perNum: body.perNum,
-                perStr: body.perStr,
+                commission1: body.commission1,
+                commission2: body.commission2,
+                commission3: body.commission3,
+                integral: body.integral,
+                baseSoldNum: body.baseSoldNum,
                 GoodsTypeId: body.GoodsTypeId,
-                brief: body.brief,
                 soldNum: 0,
-                content: body.content
+                content: body.content,
+                extraFields: JSON.stringify(extraFields),
+                timeToDown: body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null,
+                buyLimit: body.buyLimit ? body.buyLimit : 0,
             });
         }
 
-        this.redirect('/adminer/goods');
+        this.redirect('/adminer-shopkeeper/goods');
     }
 
     router.get('/adminer-shopkeeper/goods',function *(){
@@ -115,11 +155,12 @@ module.exports = (router) => {
             attributes: [
                 'id',
                 'mainImg',
-                'soldNum', 'capacity',
+                'soldNum', 'baseSoldNum', 'capacity',
                 'title',
                 'status',
                 'oldPrice', 'price',
-                'perNum', 'perStr'
+                'commission1', 'commission2', 'commission3',
+                'integral', 'buyLimit'
             ],
             include: [GoodsType]
         });

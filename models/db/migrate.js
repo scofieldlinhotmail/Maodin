@@ -79,6 +79,15 @@ function * goodsSeed() {
     }
 }
 
+function diffDate() {
+    for(var i = 1; i < 1000; i ++) {
+        for(var j = 1; j < 3000; j ++) {
+
+        }
+    }
+    return Date.now();
+}
+
 function * goodsTypeSeed() {
     var ids = [];
     var fields = [
@@ -86,39 +95,39 @@ function * goodsTypeSeed() {
             title: "扩展属性"
         }
     ];
-    for(var i = 1; i < 10; i ++) {
+    for(var i = 1; i < 5; i ++) {
         var tmp = yield db.models.GoodsType.create({
             title: '一级类型' + i,
             type: 1,
             fields: JSON.stringify([
                 {
                     title: '一级扩展属性1',
-                    id: Date.now(),
-                    type: '1',
+                    id: diffDate(),
+                    type: '0',
                     options: []
                 },
                 {
                     title: '一级扩展属性2',
-                    id: Date.now(),
-                    type: '2',
+                    id: diffDate(),
+                    type: '1',
                     options: []
                 },
                 {
                     title: '一级扩展属性3',
-                    id: Date.now(),
-                    type: '3',
+                    id: diffDate(),
+                    type: '2',
                     options: []
                 },
                 {
                     title: '一级扩展属性4',
-                    id: Date.now(),
-                    type: '4',
+                    id: diffDate(),
+                    type: '3',
                     options: ['1', '2', '3']
                 },
                 {
                     title: '一级扩展属性5',
-                    id: Date.now(),
-                    type: '5',
+                    id: diffDate(),
+                    type: '4',
                     options: ['1', '2', '3']
                 }
             ])
@@ -126,7 +135,7 @@ function * goodsTypeSeed() {
         ids.push(tmp.id);
     }
     for(var j = 0; j < ids.length; j ++) {
-        for(var i = 1; i < 10; i ++) {
+        for(var i = 1; i < 5; i ++) {
             var tmp = yield db.models.GoodsType.create({
                 title: '二级类型' + i,
                 type: 2,
@@ -134,32 +143,32 @@ function * goodsTypeSeed() {
                 fields: JSON.stringify([
                     {
                         title: '二级扩展属性1',
-                        id: Date.now(),
-                        type: '1',
+                        id: diffDate(),
+                        type: '0',
                         options: []
                     },
                     {
                         title: '二级扩展属性2',
-                        id: Date.now(),
-                        type: '2',
+                        id: diffDate(),
+                        type: '1',
                         options: []
                     },
                     {
                         title: '二级扩展属性3',
-                        id: Date.now(),
-                        type: '3',
+                        id: diffDate(),
+                        type: '2',
                         options: []
                     },
                     {
                         title: '二级扩展属性4',
-                        id: Date.now(),
-                        type: '4',
+                        id: diffDate(),
+                        type: '3',
                         options: ['1', '2', '3']
                     },
                     {
                         title: '二级扩展属性5',
-                        id: Date.now(),
-                        type: '5',
+                        id: diffDate(),
+                        type: '4',
                         options: ['1', '2', '3']
                     }
                 ])

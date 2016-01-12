@@ -10,7 +10,7 @@ var app = angular.module('app', ['simpleDatatable', 'ngRoute']);
 var getGoodsData = function ($http, scope, status) {
     if (status === 0 ? !scope.data.uncheck : !scope.data.checked) {
         $http
-            .get('/adminer/goods/' + status)
+            .get('' + status)
             .success(function (data) {
                 for(var i in data) {
                     data[i].mainImg = '<img src="' + data[i].mainImg + '" >';
@@ -81,7 +81,7 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
             status = -1;
         }
         $http
-            .post('/adminer/goods/action', {
+            .post('action', {
                 id: row.id,
                 status: status.toString()
             })

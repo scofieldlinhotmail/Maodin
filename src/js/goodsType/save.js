@@ -21,7 +21,7 @@ $(function () {
                 case 1:
                     return '数字输入框';
                 case 2:
-                    return '时间输入框';
+                    return '日期输入框';
                 case 3:
                     return '单选下拉框';
                 case 4:

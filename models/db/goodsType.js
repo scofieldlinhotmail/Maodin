@@ -17,7 +17,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: false,
         associate: function (models) {
             models.GoodsType.hasMany(models.GoodsType);
-            models.GoodsType.belongsTo(models.GoodsType);
+            models.GoodsType.belongsTo(models.GoodsType, {as: 'ParentType', foreignKey: 'GoodsTypeId', constraints: false});
             models.GoodsType.hasMany(models.Goods);
             models.Goods.belongsTo(models.GoodsType);
         },

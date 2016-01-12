@@ -33,10 +33,6 @@ module.exports = function (sequelize, DataTypes) {
          */
         buyLimit: shortDataTypes.Int(),
         /**
-         * 简要描述
-         */
-        brief: shortDataTypes.String(100, true),
-        /**
          *
          */
         //vipDiscount: shortDataTypes.Double(10),

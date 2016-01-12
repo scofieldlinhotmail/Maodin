@@ -4,3 +4,4 @@ require('imports?$=jquery!bootstrap-hover-dropdown');
 require('imports?$=jquery!jquery-slimscroll/jquery.slimscroll.js');
 require('imports?$=jquery!jquery.cookie/jquery.cookie.js');
 require('imports?$=jquery!uniform/jquery.uniform.js');
+require('uniform/themes/default/css/uniform.default.scss');

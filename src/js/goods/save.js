@@ -17,6 +17,7 @@ require('imports?$=jquery!simple-uploader');
 var Simditor = require('imports?$=jquery!simditor/lib/simditor.js');
 require('angular');
 require('imports?$=jquery!jquery-validation');
+require('imports?$=jquery!eonasdan-bootstrap-datetimepicker');
 
 
 var $ = jQuery;
@@ -40,7 +41,6 @@ $(function () {
     });
 
     var uploaded = false;
-
 
     var editor = new Simditor({
         textarea: $('#editor'),
@@ -148,24 +148,32 @@ $(function () {
                     required: true,
                     number: true
                 },
-                brief: {
-                    required: true,
-                    maxlength: 100
-                },
-                perStr: {
-                    required: true,
-                    maxlength: 10
-                },
-                perNum: {
-                    required: true,
-                    number: true
-                },
                 capacity: {
                     required: true,
                     number: true
                 },
                 content: {
                     required: true
+                },
+                baseSoldNum: {
+                    required: true,
+                    number: true
+                },
+                integral: {
+                    required: true,
+                    number: true
+                },
+                commission1: {
+                    required: true,
+                    number: true
+                },
+                commission3: {
+                    required: true,
+                    number: true
+                },
+                commission2: {
+                    required: true,
+                    number: true
                 },
                 GoodsTypeId : {
                     required: true
@@ -180,17 +188,25 @@ $(function () {
                     required: '请填写价格',
                     number: '请填写数字'
                 },
-                perStr: {
-                    required: '请填写单位',
-                    maxlength: '文字过长'
-                },
-                perNum: {
-                    required: '请填写每份的量',
+                baseSoldNum: {
+                    required: '请填写内容',
                     number: '请填写数字'
                 },
-                brief: {
-                    required: '请填写简介',
-                    maxlength: '文字过长'
+                integral: {
+                    required: '请填写内容',
+                    number: '请填写数字'
+                },
+                commission3: {
+                    required: '请填写内容',
+                    number: '请填写数字'
+                },
+                commission2: {
+                    required: '请填写内容',
+                    number: '请填写数字'
+                },
+                commission1: {
+                    required: '请填写内容',
+                    number: '请填写数字'
                 },
                 oldPrice: {
                     required: '请填写原价',
@@ -233,7 +249,6 @@ $(function () {
         });
     }]);
 
-
     app.controller('FormCtl', ['$scope', function (scope){
 
         var typeDom = angular.element('#types');
@@ -245,9 +260,11 @@ $(function () {
         (function () {
             for(var i in scope.types) {
                 var ltype = scope.types[i];
+                //console.log(ltype);
                 scope.types[i].fields = JSON.parse(scope.types[i].fields);
                 for(var j in ltype.GoodsTypes) {
-                    var stype = ltype.GoodsTypes[j]
+                    var stype = ltype.GoodsTypes[j];
+                    stype.fields = JSON.parse(stype.fields);
                     if (stype.id == typeId) {
                         scope.ltype = ltype;
                         scope.stype = stype;
@@ -257,10 +274,28 @@ $(function () {
             }
         }());
 
+        var extraFieldsStr = angular.element("#extraFields").html().trim();
+        var extraFields = {};
+        if (extraFieldsStr.length != 0) {
+            extraFieldsStr = JSON.parse(extraFieldsStr);
+            for(var key in extraFieldsStr) {
+                if (extraFieldsStr.hasOwnProperty(key)) {
+                    var field = extraFieldsStr[key];
+                    extraFields[field.id] = field.value;
+                }
+            }
+            scope.extraFields = extraFields;
+        }
+        window.s = scope;
+
 
     }]);
 
-        angular.bootstrap(document.documentElement, ['app']);
+    angular.bootstrap(document.documentElement, ['app']);
+
+    $('[type=datetime]').datetimepicker({
+
+    });
 });
 
 

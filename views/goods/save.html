@@ -73,9 +73,30 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-3">基础销量<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <input name="baseSoldNum" type="number" class="form-control" min="0" value="<%= @data?.baseSoldNum %>" />
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-3">库存<span class="required">*</span></label>
                             <div class="col-md-3">
                                 <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">每人限购数<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <div style="margin: 8px;">
+                                    <% if @data && @data.buyLimit > 0 : %>
+                                        <input type="checkbox" ng-model="buyLimit" class="form-control" checked ng-init="buyLimit = true">
+                                    <% else :%>
+                                        <input type="checkbox" ng-model="buyLimit" class="form-control">
+                                    <% end %>
+
+                                </div>
+
+                                <input name="buyLimit" type="number" class="form-control" min="0" value="<%= @data?.buyLimit %>" ng-if="buyLimit"/>
                             </div>
                         </div>
                         <div class="form-group"  >
@@ -111,7 +132,7 @@
 
                                     </div>
                                     <div>
-                                        <a href="#" class="btn blue" id="upload-picker"><i class="fa fa-cloud-upload"></i>添加文件</a>
+                                        <span class="btn blue" id="upload-picker"><i class="fa fa-cloud-upload"></i>添加文件</span>
                                     </div>
                                 </div>
                                 <span class="label label-danger">注意!</span>
@@ -119,17 +140,32 @@
                             </div>
                         </div>
 
-                        <div class="form-group" ng-repeat="ltypes.fields">
-                            <label class="control-label col-md-3">库存<span class="required">*</span></label>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">是否定时下架<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
+                                <div style="margin: 8px;">
+                                    <% if @data?.timeToDown : %>
+                                        <input type="checkbox" name="hasTimeToDown" ng-model="timeToDown" class="form-control" checked ng-init="timeToDown = true">
+                                    <% else :%>
+                                        <input type="checkbox" name="hasTimeToDown" ng-model="timeToDown" class="form-control">
+                                    <% end %>
+                                </div>
+                                <input name="timeToDown" type="datetime" class="form-control" min="0" value="<%= @data?.timeToDown %>" ng-show="timeToDown"/>
                             </div>
                         </div>
 
-                        <div class="form-group" ng-repeat="field in ltypes.fields">
-                            <label class="control-label col-md-3">{{field.title}}<span class="required">*</span></label>
+                        <div class="form-group" ng-repeat="field in (ltype.fields.concat(stype.fields))">
+                            <label class="control-label col-md-3">{{field.title}}</label>
                             <div class="col-md-3">
-                                <input name="capacity" type="number" class="form-control" min="0" value="<%= @data?.capacity %>" />
+                                <input ng-if="field.type == 0" name="{{field.id}}" type="text" class="form-control" value="{{extraFields[field.id]}}" />
+                                <input ng-if="field.type == 1" name="{{field.id}}" type="number" class="form-control" value="{{extraFields[field.id]}}" />
+                                <input ng-if="field.type == 2" name="{{field.id}}" type="date" class="form-control" value="{{extraFields[field.id] | date:'yyyy-MM-dd'}}" />
+                                <select ng-if="field.type == 3" name="{{field.id}}"  class="form-control" ng-model="extraFields[field.id]">
+                                    <option ng-repeat="option in field.options" value="{{option}}">{{option}}</option>
+                                </select>
+                                <select ng-if="field.type == 4" multiple name="{{field.id}}"  class="form-control" ng-model="extraFields[field.id]">
+                                    <option ng-repeat="option in field.options" value="{{option}}">{{option}}</option>
+                                </select>
                             </div>
                         </div>
 
@@ -159,6 +195,9 @@
 
 <script id="imgs" type="text/plain" data-main="<%- @data?.mainImg %>">
     <%- @data?.imgs %>
+</script>
+<script id="extraFields" type="text/plain">
+    <%- @data?.extraFields %>
 </script>
 <% block 'scripts': %>
 
