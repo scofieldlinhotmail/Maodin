@@ -27,13 +27,8 @@ module.exports = (router) => {
     });
 
     router.get('/user/addaddress',function *(){
-        var area = yield Area.findAll({
-            where:{
-                type:2
-            }
-        });
+
         this.body = yield render('phone/addaddress.html',{
-            area,
             title: '添加收货地址'
         });
     });
@@ -51,8 +46,6 @@ module.exports = (router) => {
     router.post('/user/address/add',function *(){
         var data = this.request.body;
         console.log(data);
-
-
         data.UserId = (yield auth.user(this)).id;
         data.isDefault = false;
         yield deliverAddress.create(data);

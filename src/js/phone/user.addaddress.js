@@ -107,15 +107,11 @@ yes.click(function () {
         var province = $("#province  option:selected").text();
         var city = $('#city option:selected').text();
         var addr = $('#addr').val();
-        var areaid = $('#area').val();
-        var area = $('#area').find("option:selected").text();
         var data = {
             recieverName: receiver,
             phone: tel,
             province: province,
             city: city,
-            AreaId: Number(areaid),
-            area: area,
             address: addr
         };
 

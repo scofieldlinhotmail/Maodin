@@ -336,6 +336,7 @@ function * init() {
 
 co(function * () {
     yield init();
+    db.models.Store.sync({force:true});
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

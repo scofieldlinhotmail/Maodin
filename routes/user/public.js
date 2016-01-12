@@ -15,14 +15,7 @@ var DeliverAddress = db.models.DeliverAddress;
 module.exports = (router) => {
 
     router.get('/user-register',  function *() {
-        var area = yield Area.findAll({
-            where: {
-                type : 2,
-                status: 0
-            }
-        });
         this.body = yield render('phone/register', {
-            area
         });
     });
 

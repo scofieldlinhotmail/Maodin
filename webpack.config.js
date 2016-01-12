@@ -31,8 +31,8 @@ var phoneEntries = {
     //'goodsType': ['./src/js/goodsType/goodsType.js'],
     //'phone-goods': ['./src/js/phone/goods.js'],
     //'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
-    //'phone-address':['./src/js/phone/user.address.js'],
-    //'phone-addaddress':['./src/js/phone/user.addaddress.js'],
+    'phone-address':['./src/js/phone/user.address.js'],
+    'phone-addaddress':['./src/js/phone/user.addaddress.js'],
     //'phone-index': ['./src/js/phone/index.js'],
     //'phone-shoppingcart': ['./src/js/phone/shoppingCart.js'],
     //'phone-order-list': ['./src/js/phone/order-list.js'],
@@ -41,6 +41,7 @@ var phoneEntries = {
     'phone-user': ['./src/js/phone/user.js'],
     'phone-pay': ['./src/js/phone/pay.js'],
     'phone-usercenter': ['./src/js/phone/usercenter.js'],
+    'phone-storeapply': ['./src/js/phone/storeapply.js'],
 };
 
 var extraEntries = {
