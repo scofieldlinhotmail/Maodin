@@ -57,7 +57,8 @@ module.exports = (router) => {
             list=list.slice((page-1)*pre);
             next=0;
         }
-        var allpage = (l + pre -1) / pre;
+
+        var allpage=((l%pre==0)?(l/pre):(l/pre+1));
         this.body = yield render('admin/Comments', {
             preurl,nexturl,list,page,next,allpage
         });

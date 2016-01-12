@@ -23,6 +23,7 @@ var adminEnties = {
     'admin-user-list': ['./src/js/admin/user.js'],
     'admin-goodstype-save': ['./src/js/goodsType/save.js'],
     'admin-comment':['./src/js/admin/Comment.js'],
+    'admin-rank':['./src/js/admin/rank.js'],
 };
 
 // 手机端文件
@@ -37,8 +38,9 @@ var phoneEntries = {
     //'phone-order-list': ['./src/js/phone/order-list.js'],
     //'phone-register': ['./src/js/phone/register.js'],
     //'phone-evaluation':['./src/js/phone/evaluation.js'],
-    //'phone-user': ['./src/js/phone/user.js'],
-    //'phone-pay': ['./src/js/phone/pay.js'],
+    'phone-user': ['./src/js/phone/user.js'],
+    'phone-pay': ['./src/js/phone/pay.js'],
+    'phone-usercenter': ['./src/js/phone/usercenter.js'],
 };
 
 var extraEntries = {
