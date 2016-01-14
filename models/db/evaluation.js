@@ -9,7 +9,6 @@ module.exports = function (sequelize, DataTypes) {
         isShow: shortDataTypes.Bool()
     }, {
         timestamps: true,
-        paranoid: true,
         associate: function (models) {
             models.Order.hasMany(models.Evaluation);
             models.Evaluation.belongsTo(models.Order);

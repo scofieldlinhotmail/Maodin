@@ -10,7 +10,7 @@ var app = angular.module('app', ['simpleDatatable', 'ngRoute']);
 var getGoodsData = function ($http, scope, status) {
     if (status === 0 ? !scope.data.uncheck : !scope.data.checked) {
         $http
-            .get('' + status)
+            .get('./goods/' + status)
             .success(function (data) {
                 for(var i in data) {
                     data[i].mainImg = '<img src="' + data[i].mainImg + '" >';

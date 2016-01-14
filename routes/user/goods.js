@@ -9,53 +9,77 @@ var sequelizex = require('../../lib/sequelizex.js');
 
 
 var Goods = db.models.Goods;
+var GoodsView = db.models.GoodsShortcutView;
 var GoodsType = db.models.GoodsType;
 var ShoppingCart = db.models.ShoppingCart;
 var GoodsCollection = db.models.GoodsCollection;
 
 module.exports = (router) => {
 
-    router.get('/user/goods',  function *() {
-        this.body = yield render('phone/goods.html', {
+    router.get('/user/goods-list',  function *() {
+
+        var types = yield GoodsType.findAll({
+            where: {
+                type: 1
+            },
+            attribute: ['id', 'title'],
+            include: [
+                {
+                    model: GoodsType,
+                    attribute: ['id', 'title']
+                }
+            ]
+        });
+
+        this.body = yield render('phone/goods-list.html', {
+            noHeaderTpl: true,
+            types
         });
     });
 
-    var goodsPerPage = 20;
+    var goodsPerPage = 10;
     router.post('/get-goods', getGoodsData);
 
     function *getGoodsData() {
 
         this.checkBody('page').notEmpty().isInt().toInt();
+        this.checkBody('orderMode').notEmpty();
 
         if (this.errors) {
             this.body = this.errors;
             return;
         }
         var body = this.request.body;
-        debug(body);
-        var where;
-        if (body.txt) {
-            where = {
-                title: {
-                    $like: `%${body.txt.trim()}%`
-                }
+
+        var where = {};
+        if (body.searchKey) {
+            where.title = {
+                $like: `%${body.searchKey.trim()}%`
             };
-        } else if (body.stype && /^\d*$/.test(body.stype)){
-            where =  {
-                GoodsTypeId: body.stype
-            };
+        }
+        if (body.typeId && /^\d*$/.test(body.typeId)){
+            where.GoodsTypeId = body.typeId;
         }
 
         where.status = 1;
-        this.body = yield Goods.findAll({
-            where: where,
+        where.capacity = {
+            $gt: 0
+        };
+
+        var conditions = {
+            where,
             offset: (body.page - 1) * goodsPerPage,
-            limit: goodsPerPage,
-            order: [['soldNum', 'DESC'], 'title'],
-            attributes: {
-                exclude: ['content']
-            }
-        });
+            limit: goodsPerPage
+        };
+
+        if (['createdAt DESC', 'compoundSoldNum DESC', 'price DESC', 'price'].indexOf(body.orderMode) < 0) {
+            this.body = 'invalid order';
+            return;
+        }
+        conditions.order = body.orderMode;
+
+        this.body = (yield GoodsView.findAll(conditions)).map((item) => item.dataValues);
+
     }
 
     router.get('/user/goods-page/:id', function *() {
