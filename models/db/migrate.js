@@ -1,6 +1,8 @@
 var db = require('./index.js');
 var co = require('co');
 
+var util = require('util');
+
 function *addSuperAdminer() {
     yield db.models.Adminer.create({
         nickname: 'super',
@@ -68,24 +70,50 @@ function * userSeed(){
 function * goodsSeed() {
     var goodsTypes = yield db.models.GoodsType.findAll({
         where: {
-            type: 2,
-            //status: 0
-        }
+            type: 2
+        },
+        include: [{
+            model: db.models.GoodsType,
+            as: 'ParentType'
+        }]
     });
     for(var i = 0; i < 40; i ++) {
+        var type = goodsTypes[i % goodsTypes.length];
+        var extraFields = JSON.parse(type.fields).concat(JSON.parse(type.ParentType.fields)).map((field) => {
+            return fillField(field);
+        });
+
         yield db.models.Goods.create({
             title: '商品' + i,
-            mainImg: '/tmp/1 (1).jpg',
-            imgs: '["/tmp/1 (2).jpg", "/tmp/1 (3).jpg"]',
+            mainImg: '/goods.png',
+            imgs: '[]',
             price: 20 + i,
             oldPrice: 10 + i,
             capacity: 20 + i,
             content: '内容' + i,
-            GoodsTypeId: goodsTypes[i % goodsTypes.length].id,
-            perStr:  i % 2 ? '每斤' : '每个',
-            brief: '简介',
-            perNum: i % 6
-        })
+            GoodsTypeId: type.id,
+            baseSoldNum: i,
+            timeToDown: null,
+            commission1: i * 5 /10 ,
+            commission2: i * 4 / 10,
+            commission3: i * 3 / 10,
+            status: 1,
+            extraFields: JSON.stringify(extraFields)
+        });
+    }
+
+    function fillField(field, i) {
+        switch(field.type) {
+            case '0':
+            case '1':
+                return util._extend({"value": i}, field);
+            case '2':
+                return util._extend({"value": '2016-01-' + i}, field);
+            case '3':
+                return util._extend({"value": i}, field);
+            case '4':
+                return util._extend({"value": [i, i + 1, i + 2 ]}, field);
+        }
     }
 }
 
@@ -320,6 +348,7 @@ function * init() {
     yield db.sync({force: true});
     yield adminerSeed();
     yield goodsTypeSeed();
+    yield goodsSeed();
     //yield areaSeed();
     yield userSeed();
     yield goodsSeed();
@@ -336,7 +365,6 @@ function * init() {
 
 co(function * () {
     yield init();
-    db.models.Store.sync({force:true});
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

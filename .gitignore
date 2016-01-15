@@ -6,3 +6,4 @@ log/*
 public/dist
 public/upload
 .idea/jsLibraryMappings.xml
+.idea/watcherTasks.xml
