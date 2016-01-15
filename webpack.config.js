@@ -29,10 +29,10 @@ var adminEnties = {
 // 手机端文件
 var phoneEntries = {
     //'goodsType': ['./src/js/goodsType/goodsType.js'],
-    //'phone-goods': ['./src/js/phone/goods.js'],
+    'phone-goods-page': ['./src/js/phone/goods-page.js'],
     //'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
-    'phone-address':['./src/js/phone/user.address.js'],
-    'phone-addaddress':['./src/js/phone/user.addaddress.js'],
+    //'phone-address':['./src/js/phone/user.address.js'],
+    //'phone-addaddress':['./src/js/phone/user.addaddress.js'],
     //'phone-index': ['./src/js/phone/index.js'],
     'phone-index': ['./src/js/phone/index.js'],
     'phone-goods-list': ['./src/js/phone/goods-list.js'],
@@ -43,7 +43,7 @@ var phoneEntries = {
     'phone-user': ['./src/js/phone/user.js'],
     'phone-pay': ['./src/js/phone/pay.js'],
     'phone-usercenter': ['./src/js/phone/usercenter.js'],
-    'phone-storeapply': ['./src/js/phone/storeapply.js'],
+    //'phone-storeapply': ['./src/js/phone/storeapply.js'],
 };
 
 var extraEntries = {

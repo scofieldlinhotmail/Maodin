@@ -22,8 +22,8 @@ router.use(function *(next) {
 
     context.set(this);
     //var req = this.request;
-    ////auth.login(this, yield db.models.User.findOne());
-    //var user = yield auth.user(this);
+    auth.login(this, yield db.models.User.findOne());
+    var user = yield auth.user(this);
     //if (/\/user\/.*/.test(req.url)) {
     //    if (!user) {
     //        this.redirect('/wechat/login');

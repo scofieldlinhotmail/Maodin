@@ -13,7 +13,9 @@
 
 <% content %>
 
+<% if !@noFooterTpl : %>
 <% include "phone/bottom-navbar.html" %>
+<% end %>
 
 <script src="/dist/phone-commons.js"></script>
 <% content 'scripts' %>

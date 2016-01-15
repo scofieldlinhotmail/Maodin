@@ -16,7 +16,7 @@ var GoodsCollection = db.models.GoodsCollection;
 
 module.exports = (router) => {
 
-    router.get('/user/goods-list',  function *() {
+    router.get('/user/goods-list', function *() {
 
         var types = yield GoodsType.findAll({
             where: {
@@ -57,7 +57,7 @@ module.exports = (router) => {
                 $like: `%${body.searchKey.trim()}%`
             };
         }
-        if (body.typeId && /^\d*$/.test(body.typeId)){
+        if (body.typeId && /^\d*$/.test(body.typeId)) {
             where.GoodsTypeId = body.typeId;
         }
 
@@ -84,35 +84,40 @@ module.exports = (router) => {
 
     router.get('/user/goods-page/:id', function *() {
 
-
+        // todo: 加上评论和分销
         this.checkParams('id').notEmpty().isInt().toInt();
+
         if (this.errors) {
             this.body = this.errors;
             return;
         }
+
         var goods = yield Goods.findById(this.params.id);
-        if (!goods || goods.status !== 1 ){
+        if (!goods || goods.status !== 1) {
             this.body = "错误访问";
             return;
         }
         goods.GoodsType = yield goods.getGoodsType();
         goods.imgs = JSON.parse(goods.imgs);
-        var shoppingCart = yield ShoppingCart.findOne({
-            where:{
+        var shoppingCart = yield ShoppingCart.count({
+            where: {
                 UserId: (yield auth.user(this)).id,
                 GoodId: this.params.id,
             }
         });
-        goods.num = shoppingCart ? shoppingCart.num : 0;
+        goods.num = shoppingCart;
         goods.isCollected = (yield GoodsCollection.count({
-            where: {
-                GoodId: goods.id,
-                UserId: (yield auth.user(this)).id,
-            }
-        })) != 0;
-        this.body = yield render('phone/goods.html', {
+                where: {
+                    GoodId: goods.id,
+                    UserId: (yield auth.user(this)).id,
+                }
+            })) != 0;
+
+        goods.extraFields = JSON.parse(goods.extraFields);
+        this.body = yield render('phone/goods-page', {
             title: '商品:' + goods.title,
-            goods: goods
+            goods: goods,
+            noFooterTpl: true
         });
     });
 

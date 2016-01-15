@@ -4,13 +4,13 @@ var shortDataTypes = sequelizex.DataTypes;
 module.exports = function (sequelize, DataTypes) {
 
 	var User = sequelize.define('User', {
-		name: shortDataTypes.String(),
         nickname: shortDataTypes.String(),
-        headimage: shortDataTypes.Url(),
+		headimgurl: shortDataTypes.Url(),
 		sex: shortDataTypes.Int(),
-        phone: shortDataTypes.Phone(true),
         openid: shortDataTypes.String(),
         joinTime: shortDataTypes.Date(),
+		subscribe_time: shortDataTypes.Date(),
+		unionid: shortDataTypes.String(),
 		/**
 		 * - 3 deleted
 		 * -2 information needed to be updated

@@ -50,20 +50,18 @@ function * commentSeed(){
     }
 }
 
-
 function * userSeed(){
     for(var i = 0; i < 40; i ++) {
         yield db.models.User.create({
-            name: '用户' + i,
             password: '123456',
-            phone: '18840823910',
+            phone: '12345678901',
             nickname: '用户' + i,
-            headimage: 'http://www.baidu.com',
-            sex: 0,
+            headimgurl: 'http://img3.shijue.cvidea.cn/tf/150613/2390340/557c39ae3dfae918de000001.JPEG',
+            sex: i % 2 + 1,
             unionid: 'unionid',
             openid: 'openid',
             joinTime: Date.now()
-        })
+        });
     }
 }
 
@@ -98,7 +96,7 @@ function * goodsSeed() {
             commission2: i * 4 / 10,
             commission3: i * 3 / 10,
             status: 1,
-            extraFields: JSON.stringify(extraFields)
+            extraFields: JSON.stringify(extraFields, i)
         });
     }
 
@@ -360,8 +358,6 @@ function * init() {
     //yield commentSeed();
     yield rankSeed();
 }
-
-
 
 co(function * () {
     yield init();
