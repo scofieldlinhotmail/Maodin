@@ -21,18 +21,7 @@ module.exports = (router) => {
 
     router.get('/user/goods-list', function *() {
 
-        var types = yield GoodsType.findAll({
-            where: {
-                type: 1
-            },
-            attribute: ['id', 'title'],
-            include: [
-                {
-                    model: GoodsType,
-                    attribute: ['id', 'title']
-                }
-            ]
-        });
+        var types = yield GoodsType.structured();
 
         this.body = yield render('phone/goods-list.html', {
             noHeaderTpl: true,
@@ -64,7 +53,6 @@ module.exports = (router) => {
             where.GoodsTypeId = body.typeId;
         }
 
-        where.status = 1;
         where.capacity = {
             $gt: 0
         };
@@ -109,36 +97,13 @@ module.exports = (router) => {
             return;
         }
 
-
         goods.GoodsType = yield goods.getGoodsType();
         goods.imgs = JSON.parse(goods.imgs);
 
+        var id = this.params.id;
 
-        if (this.params.type == 0) {
-            goods.num = yield ShoppingCart.count({
-                where: {
-                    UserId: (yield auth.user(this)).id,
-                    GoodId: this.params.id,
-                    type: this.params.type
-                }
-            });
-        } else {
-            goods.num = yield ShoppingCart.count({
-                where: {
-                    UserId: (yield auth.user(this)).id,
-                    StoreId: this.params.id,
-                    type: this.params.type
-                }
-            });
-        }
-
-        goods.isCollected = (yield GoodsCollection.count({
-                where: {
-                    GoodId: goods.id,
-                    UserId: (yield auth.user(this)).id,
-                    type: this.params.type
-                }
-            })) != 0;
+        goods.num = yield ShoppingCart.num(id, (yield auth.user(this)).id, this.params.type);
+        goods.isCollected = yield GoodsCollection.isCollected(id, (yield auth.user(this)).id, this.params.type);
 
         goods.extraFields = JSON.parse(goods.extraFields);
 
@@ -148,6 +113,7 @@ module.exports = (router) => {
                 UserId: user.id
             }
         });
+
         var isSaled = ! store ? false : (yield SalerGoods.count({
             where: {
                 GoodId: goods.id,
@@ -176,7 +142,6 @@ module.exports = (router) => {
         });
     });
 
-
     router.get('/user/sale/:id', function *() {
 
         this.checkParams('id').notEmpty().isInt().toInt();
@@ -197,6 +162,16 @@ module.exports = (router) => {
             return;
         }
 
+        if ((yield Goods.count({
+                where: {
+                    id: this.params.id,
+                    status: 1
+                }
+            })) == 0) {
+            this.body = '错误操作';
+            return;
+        }
+
         yield SalerGoods.create({
             GoodId: this.params.id,
             StoreId: store.id
@@ -213,17 +188,15 @@ module.exports = (router) => {
             return;
         }
         var id = this.params.id;
-        var item = yield GoodsCollection.findOne({
-            where: {
-                UserId: (yield auth.user(this)).id,
-                GoodId: id,
-                type: this.params.type
-            }
-        });
+        var type = this.params.type;
+
+        var user = yield auth.user(this);
+
+        var item = yield GoodsCollection.findOneWithType(id, user.id, type);
         if (item) {
             yield item.destroy();
         } else {
-            yield GoodsCollection.collect((yield auth.user(this)).id, id);
+            yield GoodsCollection.createWithType(id, user.id, type);
         }
         this.body = 'ok';
     });

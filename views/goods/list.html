@@ -83,12 +83,12 @@
 <script type="text/x-handlebars-template" id="row-btn">
     <td>
         <div class="btn-group dropup btn-group-sm">
-            <button type="button" class="btn btn-primary" sdt-row-click="remove, up" ng-show="row.status == 0">上架
+            <button type="button" class="btn btn-primary" sdt-row-click="remove, up" ng-show="row.deletedAt">上架
             </button>
-            <button type="button" class="btn btn-primary" sdt-row-click="remove, down" ng-show="row.status == 1">下架
+            <button type="button" class="btn btn-primary" sdt-row-click="remove, down" ng-hide="row.deletedAt">下架
             </button>
             <!--<button type="button" class="btn btn-success" sdt-row-click="look">查看</button>-->
-            <a class="btn btn-default" href="/adminer/goods/save/{{row.id}}">编辑</a>
+            <a class="btn btn-default" href="goods/save/{{row.id}}">编辑</a>
             <button type="button" class="btn btn-warning" sdt-row-click="remove, del">删除</button>
         </div>
     </td>

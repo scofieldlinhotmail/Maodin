@@ -33,11 +33,16 @@
             </div>
         </div>
         <div class="goods-info am-g am-text-center">
-            <div class="am-u-sm-6">
+            <div class="am-u-sm-4">
                 <span class="am-text-danger"> ￥<%= @goods.price  %><span class="am-text-sm"><%= @goods.perStr %></span></span>
                 <del class="am-text-sm">￥<%= @goods.oldPrice  %></del>
             </div>
-            <div class="am-u-sm-6">已售<%= @goods.soldNum %> / 剩余<%= @goods.capacity %></div>
+            <div class="am-u-sm-4">
+                <% if @goods.buyLimit != 0:  %>
+                    限购<%= @goods.buyLimit %>
+                <%  end %>
+            </div>
+            <div class="am-u-sm-4">已售<%= @goods.soldNum %> / 剩余<%= @goods.capacity %></div>
 
         </div>
 
@@ -98,13 +103,17 @@
                     </p>
                     <span class="am-text-sm">销量: <%= @goods.baseSoldNum + @goods.soldNum %></span>
                     <span class="am-text-sm">库存: <%= @goods.capacity %></span>
+                    <% if @goods.buyLimit != 0:  %>
+                        <span class="am-text-sm">限购: <%= @goods.buyLimit %></span>
+                    <%  end %>
+
                 </div>
             </div>
             <div class="am-g am-margin-vertical">
                 <div class="am-u-sm-5">
                     <div class=" am-input-group am-input-group-sm">
                         <span class="am-input-group-label" ng-click="add(-1)"><i class="am-icon am-icon-minus"></i></span>
-                        <input type="text" class="am-form-field" ng-model="num" pattern="[0-9]*">
+                        <input type="text" class="am-form-field" ng-model="num" pattern="[0-9]*" ng-init="buyLimit = <%= @goods.buyLimit %>">
                         <span class="am-input-group-label" ng-click="add(1)"><i class="am-icon am-icon-plus"></i></span>
                     </div>
                 </div>

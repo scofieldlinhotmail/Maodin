@@ -45,6 +45,16 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
         }
     };
 
+    scope.$watch('num', function (newVal, oldVal) {
+        if (typeof newVal === 'undefined') {
+            return;
+        }
+        console.log('change');
+        if (scope.buyLimit != 0 && newVal > scope.buyLimit) {
+            scope.num = scope.buyLimit;
+        }
+    });
+
     scope.sale = function () {
         $http.get('/user/sale/' + scope.id)
             .success(function (data) {
@@ -69,8 +79,10 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
                 .error(ajaxError);
         } else {
             var form = angular.element('<form action="/user/order-comfirm" method="post"> </form>');
-            form.append('<input name="ids" value="' + scope.id + '" >');
+            form.append('<input name="id" value="' + scope.id + '" >');
             form.append('<input name="num" value="' + scope.num + '" >');
+            form.append('<input name="goodsType" value="' + scope.type + '" >');
+            form.append('<input name="type" value="1" >');
             form.submit();
         }
     };

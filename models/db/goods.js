@@ -71,17 +71,83 @@ module.exports = function (sequelize, DataTypes) {
          */
         extraFields: shortDataTypes.Text()
     }, {
+        paranoid: true,
         associate: function (models) {
         },
-        instanceMethods: {
-        },
         classMethods: {
+            /**
+             *
+             */
+            upOrDown: function *(id, mode) {
+                yield this.update({
+                    deletedAt: mode ?  null : Date.now()
+                }, {
+                    where: {
+                        id: id
+                    },
+                    paranoid: false
+                });
+            },
+            up: function *(id) {
+                yield this.upOrDown(id, true);
+            },
+            down: function *(id) {
+                yield this.upOrDown(id, false);
+            },
+            remove: function *(id) {
+
+                var models = sequelize.models;
+                var salerGoodsIds = (yield models.SalerGoods.findAll({
+                    where: {
+                        GoodId: id
+                    },
+                    attribute: [
+                        'id'
+                    ]
+                })).map((item) => item.id);
+                var condition = {
+                    where: {
+                        $or: [
+                            { GoodId: id},
+                            {
+                                SalerGoodId: {
+                                    $in: salerGoodsIds
+                                }
+                            }
+                        ]
+                    }
+                };
+                yield models.ShoppingCart.destroy(condition);
+                yield models.GoodsCollection.destroy(condition);
+                yield this.destroy({
+                    where: {
+                        id: id
+                    },
+                    paranoid: false,
+                    force: true
+                });
+
+            }
         },
         getterMethods: {
             compoundSoldNum:()  => {
                 return this.baseSoldNum + this.soldNum;
             }
+        },
+        scopes: {
+            deleted: {
+                where: {
+                    deletedAt: {
+                        $ne: null
+                    }
+                },
+                paranoid: false,
+            },
+            all: {
+                paranoid: false,
+            }
         }
+
     });
 
     var GoodsShortcutView = sequelize.define('GoodsShortcutView', {
@@ -112,10 +178,10 @@ module.exports = function (sequelize, DataTypes) {
          * 0 下架
          * 1 已上架
          */
-        status: {
-            type: DataTypes.INTEGER,
-            defaultValue: 0
-        },
+        //status: {
+        //    type: DataTypes.INTEGER,
+        //    defaultValue: 0
+        //},
         /**
          * 赠送积分
          */

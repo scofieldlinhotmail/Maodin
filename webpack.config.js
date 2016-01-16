@@ -31,7 +31,7 @@ var adminEnties = {
 var phoneEntries = {
     //'goodsType': ['./src/js/goodsType/goodsType.js'],
     'phone-goods-page': ['./src/js/phone/goods-page.js'],
-    //'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
+    'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
     //'phone-address':['./src/js/phone/user.address.js'],
     //'phone-addaddress':['./src/js/phone/user.addaddress.js'],
     //'phone-index': ['./src/js/phone/index.js'],

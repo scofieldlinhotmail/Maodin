@@ -14,8 +14,13 @@ module.exports = function (sequelize, DataTypes) {
         area: shortDataTypes.String(),
         address: shortDataTypes.String(),
         price: shortDataTypes.Double(),
-        fare: shortDataTypes.Double(),
         num: shortDataTypes.Int(),
+        goodsNum: shortDataTypes.Int(),
+        /**
+         * 0 => 包邮
+         * 1 => 自取
+         */
+        expressWay: shortDataTypes.Int(),
         /**
          * 0 => 新建订单
          * 1 => 已支付
@@ -28,14 +33,22 @@ module.exports = function (sequelize, DataTypes) {
          * 留言
          */
         message: shortDataTypes.String(),
-        payTime: shortDataTypes.Date(),
-        sendTime: shortDataTypes.Date(),
-        recieveTime: shortDataTypes.Date(),
-        prepayId: shortDataTypes.String(64, true)
+        payTime: shortDataTypes.Date(null),
+        sendTime: shortDataTypes.Date(null),
+        recieveTime: shortDataTypes.Date(null),
+        prepayId: shortDataTypes.String(64, true),
+        /**
+         * 0 => 本店
+         * 1 => 分销
+         */
+        type: shortDataTypes.Int()
     }, {
+        paranoid: true,
         associate: function (models) {
             models.User.hasMany(models.Order);
             models.Order.belongsTo(models.User);
+            models.Store.hasMany(models.Order);
+            models.Order.belongsTo(models.Store);
         },
         instanceMethods: {
         },

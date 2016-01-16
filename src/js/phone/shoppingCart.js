@@ -27,9 +27,11 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             groupByStoreObj[key].push(item);
         }
         var groupByStoreArr = [];
+
         for(var i in groupByStoreObj) {
             if (groupByStoreObj.hasOwnProperty(i)) {
                 var item = groupByStoreObj[i];
+
                 groupByStoreArr.push({
                     shopName: item[0].SalerGood.Store.name,
                     data: item,
@@ -45,13 +47,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     }());
 
     scope.all = false;
-    //scope.selectAll = function (selected) {
-    //    scope.all = selected;
-    //    for(var i in scope.shoppingCart) {
-    //        scope.shoppingCart[i].selected  = selected;
-    //    }
-    //    scope.totalPrice = cal();
-    //};
 
     scope.totalPrice = cal();
 
@@ -62,9 +57,15 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     function cal() {
         var fee = 0;
         for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
+            }
             var shop = scope.shoppingCart[shopIndex];
-            for(var goodsIndex in shop) {
-                var goods = shop[goodsIndex];
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
                 if (goods.selected) {
                     fee += goods.Good.price * goods.num ;
                 }
@@ -80,27 +81,38 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         }
 
         var selectedIds = [];
-        for(var i in scope.shoppingCart) {
-            var goods = scope.shoppingCart[i];
-            if (goods.selected) {
-                selectedIds.push(goods.id);
+
+        for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
+            }
+            var shop = scope.shoppingCart[shopIndex];
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
+                if (goods.selected) {
+                    selectedIds.push(goods.id);
+                }
             }
         }
+
         if (selectedIds.length === 0){
             return;
         }
         submit = true;
-        var form = angular.element('<form></form>');
+        var form = angular.element('<form method="post"></form>');
         form.attr('action', '/user/order-comfirm');
         form.attr('method', 'post');
         var input = angular.element('<input />');
         input.attr('name', 'ids');
         input.val(JSON.stringify(selectedIds));
         form.append(input);
+        form.append('<input name="type" value="0" >');
         form.submit();
     };
 
-    window.s = scope;
 
 }]);
 
@@ -127,6 +139,13 @@ app.controller('ShopCtrl', ['$scope', '$http', function (scope, $http) {
 app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
 
     var timer;
+
+    scope.checkLimit = function () {
+        if (scope.goods.Good.buyLimit != 0 &&  scope.goods.num > scope.goods.Good.buyLimit) {
+            scope.goods.num = scope.goods.Good.buyLimit;
+        }
+    };
+
     scope.$watch('goods.num', function (newVal, oldVal) {
         if (newVal === oldVal || typeof newVal === 'undefined') {
             return;
@@ -134,21 +153,26 @@ app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
         if (scope.goods.num < 0) {
             scope.goods.num = 0;
         }
+
+        scope.checkLimit();
+
         if (timer) {
             clearInterval(timer);
         }
         timer = setInterval(function () {
             clearInterval(timer);
-            $http.get('/user/shoppingcart/' + goods.type + '/'  + scope.goods.GoodId + '/' + scope.goods.num);
+            $http.get('/user/shoppingcart/' + scope.goods.type + '/'  + scope.goods.GoodId + '/' + scope.goods.num);
         },  800);
         scope.$emit('price-change');
     });
 
+    scope.checkLimit();
+
     scope.remove = function () {
-        var goods = scope.$parent.$parent.shoppingCart[scope.shopIndex].splice(scope.goodsIndex, 1)[0];
+        var goods = scope.$parent.$parent.shoppingCart[scope.shopIndex].data.splice(scope.goodsIndex, 1)[0];
         scope.$emit('price-change');
         $http.get('/user/shoppingcart/' + goods.type + '/' + goods.GoodId + '/-1');
-        scope.emit('item-remove');
+        scope.$emit('item-remove');
     };
 
     scope.$watch('goods.selected', function (newVal, oldVal) {

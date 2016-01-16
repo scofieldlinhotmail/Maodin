@@ -15,26 +15,68 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     scope.shoppingCart = [];
     var src = JSON.parse(angular.element('#shoppingCart').html());
 
-    scope.shoppingCart = src;
+    (function () {
+        var fromSaler = src[1];
+        var groupByStoreObj = {};
+        for(var i = 0; i < fromSaler.length; i ++) {
+            var item = fromSaler[i];
+            item.Good = item.SalerGood.Good;
+            item.GoodId = item.SalerGood.id;
+            item.selected = false;
+            var key = item.SalerGood.StoreId;
+            if (!groupByStoreObj[key]) {
+                groupByStoreObj[key] = [];
+            }
+            groupByStoreObj[key].push(item);
+        }
+        var groupByStoreArr = [];
 
-    var totalPrice = cal();
+        for(var i in groupByStoreObj) {
+            if (groupByStoreObj.hasOwnProperty(i)) {
+                var item = groupByStoreObj[i];
+                groupByStoreArr.push({
+                    shopName: item[0].SalerGood.Store.name,
+                    storeId: item[0].SalerGood.StoreId,
+                    data: item,
+                    selected: false
+                });
+            }
+        }
 
+        if (src[0]) {
+            scope.shoppingCart = [{
+                shopName: '夷沃农特微商',
+                data: src[0],
+                selected: false,
+                storeId: 0
+            }].concat(groupByStoreArr);
+        } else {
+            scope.shoppingCart = groupByStoreArr;
+        }
 
-    scope.fareData = JSON.parse(angular.element('#fare').html());
+    }());
 
-    if (totalPrice >  parseFloat(scope.fareData.freeLine)) {
-        scope.fare = 0;
-        scope.totalPrice = totalPrice;
-    } else {
-        scope.fare = scope.fareData.basicFare;
-        scope.totalPrice = totalPrice + scope.fare;
-    }
+    scope.totalPrice = cal();
 
     function cal() {
         var fee = 0;
-        for(var i in scope.shoppingCart) {
-            var goods = scope.shoppingCart[i];
-            fee += goods.Good.price * goods.num * goods.Good.perNum;
+        for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
+            }
+            var shop = scope.shoppingCart[shopIndex];
+            //shop.expressWay = 0;
+            var totalPrice = 0;
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
+
+                totalPrice += goods.Good.price * goods.num ;
+            }
+            shop.totalPrice = totalPrice;
+            fee += totalPrice;
         }
         return fee;
     }
@@ -58,16 +100,45 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             return;
         }
         submit = true;
-        var order = scope.shoppingCart.map(function (item) {
-            return {
-                id: item.id,
-                num: item.num
+
+
+        var orders = [];
+
+        for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
             }
-        });
+            var shop = scope.shoppingCart[shopIndex];
+            var order = {
+                msg: shop.msg,
+                expressWay: shop.expressWay,
+                suborders: [],
+                storeId: shop.storeId
+            };
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
+                order.suborders.push({
+                    id: goods.id,
+                    num: goods.num,
+                    GoodsId: goods.GoodId,
+
+                });
+            }
+            orders.push(order);
+        }
+
+        if (orders.length === 0){
+            return;
+        }
+
         var form = angular.element('#order-form');
-        form.find('[name=order]').val(JSON.stringify(order));
+        form.find('[name=order]').val(JSON.stringify(orders));
         form.find('[name=address]').val(scope.address[scope.addressIndex].id);
         form.find('[name=msg]').val(scope.msg);
+        form.find('[name=type]').val(scope.type);
         form.submit();
     };
 
@@ -78,6 +149,10 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     };
 }]);
 
+
+app.controller('ShopCtrl', ['$scope', '$http', function (scope, $http) {
+
+}]);
 
 app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
 }]);
@@ -104,3 +179,7 @@ app.controller('AddressCtrl', ['$scope', '$http', function (scope, $http) {
 }]);
 
 angular.bootstrap(document.documentElement, ['app']);
+
+$(function () {
+    $('.am-radio-inline-default').trigger('click');
+});

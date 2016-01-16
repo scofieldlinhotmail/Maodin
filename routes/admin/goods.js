@@ -11,6 +11,8 @@ module.exports = (router) => {
     var Goods = db.models.Goods;
     var GoodsType = db.models.GoodsType;
     var OrderItem = db.models.OrderItem;
+    var ShoppingCart = db.models.ShoppingCart;
+    var GoodsCollection = db.models.GoodsCollection;
 
     router.get('/adminer-shopkeeper/goods/save',  saveView);
     router.get('/adminer-shopkeeper/goods/save/:id',  saveView);
@@ -28,8 +30,7 @@ module.exports = (router) => {
 
         var data;
         if (this.params.id ){
-            data = yield Goods.findById(this.params.id);
-            data = data.dataValues;
+            data = yield Goods.scope('all').findById(this.params.id);
             data.timeToDown = moment(data.timeToDown).format('MM/DD/YYYY hh:mm A');
         }
 
@@ -87,7 +88,7 @@ module.exports = (router) => {
 
         var isCreate = true;
         if (body.id) {
-            var goods = yield Goods.findById(body.id);
+            var goods = yield Goods.scope('all').findById(body.id);
             if (goods != null) {
                 goods.title = body.title;
                 goods.mainImg = body.mainImg;
@@ -131,6 +132,8 @@ module.exports = (router) => {
                 extraFields: JSON.stringify(extraFields),
                 timeToDown: body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null,
                 buyLimit: body.buyLimit ? body.buyLimit : 0,
+                // todo: ok?
+                deletedAt: Date.now()
             });
         }
 
@@ -148,16 +151,17 @@ module.exports = (router) => {
             this.body = this.errors;
             return;
         }
-        this.body = yield Goods.findAll({
-            where: {
-                status: this.params.status
-            },
+        var model = Goods;
+        if (this.params.status < 1) {
+            model = model.scope('deleted');
+        }
+        this.body = yield model.findAll({
             attributes: [
                 'id',
                 'mainImg',
                 'soldNum', 'baseSoldNum', 'capacity',
                 'title',
-                'status',
+                'deletedAt',
                 'oldPrice', 'price',
                 'commission1', 'commission2', 'commission3',
                 'integral', 'buyLimit'
@@ -167,28 +171,22 @@ module.exports = (router) => {
     });
 
     router.post('/adminer-shopkeeper/goods/action',function *(){
+
         this.checkBody('id').notEmpty().isInt().toInt();
-        this.checkBody('status').notEmpty().isInt().toInt();
+        this.checkBody('action').notEmpty();
         if (this.errors) {
             this.body = this.errors;
             return;
         }
         var body = this.request.body;
-        yield Goods.update({
-            status: body.status
-        }, {
-            where: {
-                id: body.id
-            }
-        });
+        var action = body.action;
 
-        if (body.status == 0 ){
-            // 购物车清理
-            yield db.models.ShoppingCart.destroy({
-                where: {
-                    GoodId:  body.id
-                }
-            });
+        if (action == 'up') {
+            yield Goods.up(body.id);
+        } else if (action == 'down') {
+            yield Goods.down(body.id);
+        } else if (action == 'del') {
+            yield Goods.remove(body.id);
         }
 
         this.body = {
@@ -196,28 +194,27 @@ module.exports = (router) => {
         };
     });
 
-    router.get('/adminer-shopkeeper/goods/all',function *(){
-        var goods = yield Goods.findAll({
-            attributes: ['id','title', 'price','soldNum','content']
-        });
-        console.log(JSON.stringify(goods));
-        this.body = JSON.stringify(goods);
-    });
-
-    router.get('/adminer-shopkeeper/goods/remove/:id',function *(){
-        var id = this.params.id;
-        try {
-            yield Goods.destroy({
-                where: {
-                    id: id
-                }
-            });
-            this.body = '1';
-        }catch(err){
-            this.body = '0';
-            console.log(error);
-        }
-    });
+    //router.get('/adminer-shopkeeper/goods/all',function *(){
+    //    var goods = yield Goods.findAll({
+    //        attributes: ['id','title', 'price','soldNum','content']
+    //    });
+    //    this.body = JSON.stringify(goods);
+    //});
+    //
+    //router.get('/adminer-shopkeeper/goods/remove/:id',function *(){
+    //    var id = this.params.id;
+    //    try {
+    //        yield Goods.destroy({
+    //            where: {
+    //                id: id
+    //            }
+    //        });
+    //        this.body = '1';
+    //    }catch(err){
+    //        this.body = '0';
+    //        console.log(error);
+    //    }
+    //});
 
     ///商品详情
     router.get('/adminer-shopkeeper/goods/detail',function *(){
