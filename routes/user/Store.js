@@ -16,12 +16,15 @@ var GoodsCollection = db.models.GoodsCollection;
 module.exports = (router) => {
 
     router.get('/user-store/apply',  function *() {
+        var upstore=this.query.id;
+        debug(upstore);
         this.body = yield render('phone/storeapply.html', {
+            upstore
         });
     });
-    router.post('user-store/apply', function *() {
+    router.post('/user-store/apply', function *() {
         var body = this.request.body;
-        this.checkBody('name').notEmpty();
+        debug(body);
         this.checkBody('phone').notEmpty().match(/^1[3-8]+\d{9}$/);
         this.checkBody('username').notEmpty();
         if (this.errors) {
@@ -35,11 +38,23 @@ module.exports = (router) => {
             return;
         }
 
-        yield Store.create({
-            name:body.username+"的店铺",
-            username:body.username,
-            phone:body.phone
-        });
+        if(body.upstore==""){
+            yield Store.create({
+                name:body.username+"的店铺",
+                username:body.username,
+                phone:body.phone,
+                UserId:user.id
+            });
+        }else{
+            yield Store.create({
+                name:body.username+"的店铺",
+                username:body.username,
+                phone:body.phone,
+                UserId:user.id,
+                StoreId:body.upstore
+            });
+        }
+
         this.redirect('/user-wait');
     });
 
