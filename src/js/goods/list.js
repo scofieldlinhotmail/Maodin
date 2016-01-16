@@ -66,24 +66,20 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
         var remover = extraParams[1];
 
         if (extraParams[0] === 'up') {
-            status = 1;
-            row.status = status;
+            row.deleted = null;
             if (scope.data.active) {
                 scope.data.active.push(row);
             }
         } else if (extraParams[0] === 'down') {
-            status = 0;
-            row.status = status;
+            row.status = new Date();
             if (scope.data.inactive) {
                 scope.data.inactive.push(row);
             }
-        } else if (extraParams[0] === 'del') {
-            status = -1;
         }
         $http
-            .post('action', {
+            .post('./goods/action', {
                 id: row.id,
-                status: status.toString()
+                action: extraParams[0]
             })
             .success(function (ret) {
                 if (ret.status) {

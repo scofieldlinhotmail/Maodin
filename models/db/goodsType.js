@@ -31,6 +31,20 @@ module.exports = function (sequelize, DataTypes) {
                     },
                     include: [this]
                 });
+            },
+            structured: function *() {
+                return yield this.findAll({
+                    where: {
+                        type: 1
+                    },
+                    attribute: ['id', 'title'],
+                    include: [
+                        {
+                            model: this,
+                            attribute: ['id', 'title']
+                        }
+                    ]
+                });
             }
         }
     });

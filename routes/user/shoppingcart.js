@@ -35,7 +35,7 @@ module.exports = (router) => {
             shoppingCart = yield ShoppingCart.findOne({
                 where:{
                     UserId: (yield auth.user(this)).id,
-                    StoreId: this.params.id,
+                    SalerGoodId: this.params.id,
                     type: this.params.type
                 }
             });
@@ -59,7 +59,7 @@ module.exports = (router) => {
             } else {
                 yield ShoppingCart.create({
                     UserId: (yield auth.user(this)).id,
-                    StoreId: this.params.id,
+                    SalerGoodId: this.params.id,
                     num: this.params.num,
                     type: 1
                 });
@@ -81,7 +81,7 @@ module.exports = (router) => {
     router.get('/user/shoppingcart-view', function *() {
 
         var goodsAttributes = {
-            exclude: ['content', 'extraFields']
+            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'timeToDown', 'createdAt', 'updatedAt']
         };
         debug((yield auth.user(this)).id);
         var shoppingCart = yield [
@@ -117,9 +117,6 @@ module.exports = (router) => {
                 ]
             })
         ];
-
-        //debug(shoppingCart[1]);
-        //shoppingCart = [shoppingCart[0]].concat(shoppingCart.slice(1));
 
         this.body = yield render('phone/shoppingCart', {
             title: '购物车',

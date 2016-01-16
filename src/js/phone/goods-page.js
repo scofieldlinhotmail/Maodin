@@ -69,8 +69,10 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
                 .error(ajaxError);
         } else {
             var form = angular.element('<form action="/user/order-comfirm" method="post"> </form>');
-            form.append('<input name="ids" value="' + scope.id + '" >');
+            form.append('<input name="id" value="' + scope.id + '" >');
             form.append('<input name="num" value="' + scope.num + '" >');
+            form.append('<input name="goodsType" value="' + scope.type + '" >');
+            form.append('<input name="type" value="1" >');
             form.submit();
         }
     };

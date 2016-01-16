@@ -102,10 +102,10 @@ function * goodsSeed() {
     for(var i = 0; i < 40; i ++) {
         var type = goodsTypes[i % goodsTypes.length];
         var extraFields = JSON.parse(type.fields).concat(JSON.parse(type.ParentType.fields)).map((field) => {
-            return fillField(field);
+            return fillField(field, i);
         });
 
-        yield db.models.Goods.create({
+        var goods = yield db.models.Goods.create({
             title: '商品' + i,
             mainImg: '/goods.png',
             imgs: '[]',
@@ -120,8 +120,11 @@ function * goodsSeed() {
             commission2: i * 4 / 10,
             commission3: i * 3 / 10,
             status: 1,
-            extraFields: JSON.stringify(extraFields, i)
+            extraFields: JSON.stringify(extraFields)
         });
+        if (i % 2) {
+            yield goods.destroy();
+        }
     }
 
     function fillField(field, i) {
@@ -272,11 +275,6 @@ function * areaSeed() {
 
 function * addressSeed() {
     var users = yield db.models.User.findAll({});
-    var areas = yield db.models.Area.findAll({
-        where: {
-            type: 2
-        }
-    });
     var defaults = {};
     for(var i = 0; i < 160; i ++) {
         yield db.models.DeliverAddress.create({
@@ -288,8 +286,7 @@ function * addressSeed() {
             address: '大连理工大学软件学院',
             isDefault: defaults[users[i % users.length].id] ? false : true,
             UserId: users[i % users.length].id,
-            AreaId: areas[i % areas.length].id
-        })
+        });
         defaults[users[i % users.length].id] = true;
     }
 }
@@ -388,7 +385,7 @@ function * init() {
     yield salerGoodsSeed();
     yield shoppingCartSeed();
     //yield msgSeed();
-    //yield addressSeed();
+    yield addressSeed();
     //yield containerSeed();
     //yield orderSeed();
     //yield commentSeed();
@@ -396,8 +393,8 @@ function * init() {
 }
 
 co(function * () {
-    //yield init();
-    yield shoppingCartSeed();
+    yield init();
+    //yield addressSeed();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

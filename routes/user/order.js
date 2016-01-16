@@ -22,30 +22,100 @@ var OrderItem = db.models.OrderItem;
 
 module.exports = function (router) {
 
+    /**
+     * type: 0 => from shoppingCart 1 => buy directly
+     */
     router.post('/user/order-comfirm', function *() {
 
-        this.checkBody('ids').notEmpty();
+
+        this.checkBody('type').notEmpty().isInt().toInt();
+
+        var body = this.request.body;
+
+        if (body.type == 0) {
+            this.checkBody('ids').notEmpty();
+        } else {
+            this.checkBody('id').notEmpty();
+            this.checkBody('num').notEmpty().gt(0).isInt().toInt();
+            this.checkBody('goodsType').notEmpty().ge(0).le(1).isInt().toInt();
+        }
+
         if (this.errors) {
             this.body = this.errors;
             return;
         }
-        var body = this.request.body;
-        var ids = JSON.parse(body.ids);
-        var order = yield ShoppingCart.findAll({
-            where: {
-                UserId: (yield auth.user(this)).id,
-                id: {
-                    $in: ids
-                }
-            },
-            attributes: ['id', 'num', 'GoodId'],
-            include: [{
-                model: db.models.Goods,
-                attributes: {
-                    exclude: ['content']
-                }
-            }]
-        });
+
+        var order;
+        var goodsAttributes = {
+            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'timeToDown', 'createdAt', 'updatedAt']
+        };
+        if (body.type == 0) {
+            var ids = JSON.parse(body.ids);
+
+            order = yield [
+                ShoppingCart.findAll({
+                    where: {
+                        UserId: (yield auth.user(this)).id,
+                        id: {
+                            $in: ids
+                        },
+                        type: 0
+                    },
+                    include: [{
+                        model: db.models.Goods,
+                        attributes: goodsAttributes
+                    }],
+                    raw:true
+                }),
+                ShoppingCart.findAll({
+                    where: {
+                        UserId: (yield auth.user(this)).id,
+                        id: {
+                            $in: ids
+                        },
+                        type: 1
+                    },
+                    include: [
+                        {
+                            model: SalerGoods,
+                            include: [
+                                {
+                                    model: Goods,
+                                    attributes: goodsAttributes
+                                }
+                            ]
+                        }
+                    ],
+                    raw:true
+                })
+            ];
+
+
+        } else {
+            order = ShoppingCart.build({
+                num: body.num,
+                type: body.goodsType
+            });
+            if (body.goodsType == 0 ){
+                order.setGood(yield Goods.findByOne({
+                    where: {
+                        id: body.id
+                    },
+                    attributes: goodsAttributes
+                }));
+            } else {
+                order.setSalerGood(yield SalerGoods.findByOne({
+                    where: {
+                        id: body.id
+                    },
+                    include: [{
+                        model: db.models.Goods,
+                        attributes: goodsAttributes
+                    }]
+                }));
+            }
+        }
+
 
         var addresses = yield DeliverAddress.findAll({
             where: {
@@ -54,12 +124,10 @@ module.exports = function (router) {
             include: [Area]
         });
 
-        var fare = yield Container.fare();
-        this.body = yield render('phone/order-comfirm.html', {
+        this.body = yield render('phone/order-comfirm', {
             title: '订单确认',
             order: JSON.stringify(order),
-            addresses: JSON.stringify(addresses),
-            fare: JSON.stringify(fare)
+            addresses: JSON.stringify(addresses)
         });
     });
 
@@ -111,13 +179,13 @@ module.exports = function (router) {
 
             return co(function *() {
                 var orderItems = [];
-                for(var i in orderInfo) {
+                for (var i in orderInfo) {
                     var buyItem = orderInfo[i];
                     var price = 0;
                     var shoppingCartItem = shoppingCart.filter(function (item) {
                         return item.id === buyItem.id
                     })[0];
-                    if (util.isNullOrUndefined(shoppingCartItem)){
+                    if (util.isNullOrUndefined(shoppingCartItem)) {
                         throw 'invalid op';
                     }
                     if (buyItem.num === shoppingCartItem.num) {
@@ -129,7 +197,7 @@ module.exports = function (router) {
                         //} else {
                         //    promise = shoppingCartItem.destroy({transaction: t});
                         //}
-                    } else if(buyItem.num < shoppingCartItem.num){
+                    } else if (buyItem.num < shoppingCartItem.num) {
                         shoppingCartItem.num -= item.num;
                         yield shoppingCartItem.save({transaction: t});
                         //if (promise) {
@@ -150,10 +218,11 @@ module.exports = function (router) {
                         num: buyItem.num,
                         GoodId: shoppingCartItem.Good.id
                     }));
-                    shoppingCartItem.Good.capacity --;
-                    shoppingCartItem.Good.soldNum ++;
+                    shoppingCartItem.Good.capacity--;
+                    shoppingCartItem.Good.soldNum++;
                     yield shoppingCartItem.Good.save({transaction: t});
-                };
+                }
+                ;
 
                 var orderFare = 0;
                 if (price < parseFloat(fare.freeLine)) {
@@ -176,7 +245,7 @@ module.exports = function (router) {
                     AreaId: address.AreaId
                 }, {transaction: t});
 
-                for(var i in orderItems) {
+                for (var i in orderItems) {
                     var orderItem = orderItems[i];
                     orderItem.OrderId = order.id;
                     yield orderItem.save({transaction: t});

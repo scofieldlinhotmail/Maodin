@@ -45,13 +45,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     }());
 
     scope.all = false;
-    //scope.selectAll = function (selected) {
-    //    scope.all = selected;
-    //    for(var i in scope.shoppingCart) {
-    //        scope.shoppingCart[i].selected  = selected;
-    //    }
-    //    scope.totalPrice = cal();
-    //};
 
     scope.totalPrice = cal();
 
@@ -62,10 +55,17 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     function cal() {
         var fee = 0;
         for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
+            }
             var shop = scope.shoppingCart[shopIndex];
-            for(var goodsIndex in shop) {
-                var goods = shop[goodsIndex];
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(shopIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
                 if (goods.selected) {
+                    console.log(goods);
                     fee += goods.Good.price * goods.num ;
                 }
             }
@@ -139,16 +139,16 @@ app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
         }
         timer = setInterval(function () {
             clearInterval(timer);
-            $http.get('/user/shoppingcart/' + goods.type + '/'  + scope.goods.GoodId + '/' + scope.goods.num);
+            $http.get('/user/shoppingcart/' + scope.goods.type + '/'  + scope.goods.GoodId + '/' + scope.goods.num);
         },  800);
         scope.$emit('price-change');
     });
 
     scope.remove = function () {
-        var goods = scope.$parent.$parent.shoppingCart[scope.shopIndex].splice(scope.goodsIndex, 1)[0];
+        var goods = scope.$parent.$parent.shoppingCart[scope.shopIndex].data.splice(scope.goodsIndex, 1)[0];
         scope.$emit('price-change');
         $http.get('/user/shoppingcart/' + goods.type + '/' + goods.GoodId + '/-1');
-        scope.emit('item-remove');
+        scope.$emit('item-remove');
     };
 
     scope.$watch('goods.selected', function (newVal, oldVal) {

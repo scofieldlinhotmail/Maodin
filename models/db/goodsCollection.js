@@ -10,29 +10,29 @@ module.exports = function (sequelize, DataTypes) {
          * 1 => 用户手动添加
          * 2 => 分销商品
          */
-        type: shortDataTypes.Int(),
-        GoodId: shortDataTypes.Int()
+        type: shortDataTypes.Int()
     }, {
-        timestamps: false,
         associate: function (models) {
             models.User.hasMany(models.GoodsCollection);
             models.GoodsCollection.belongsTo(models.User);
-        },
-        instanceMethods: {
+            models.GoodsCollection.belongsTo(models.Goods);
+            models.GoodsCollection.belongsTo(models.SalerGoods);
         },
         classMethods: {
-            /**
-             * 收藏
-             * @param userId
-             * @param goodsId
-             * @param isAuto 是否为自动收藏
-             */
-            collect: function * (userId, goodsId, isAuto) {
-                yield GoodsCollection.create({
-                    UserId: userId,
-                    GoodId: goodsId,
-                    type: isAuto ? 0 : 1
-                });
+            isCollected: function *(goodsId, userId, type) {
+                var condition = {
+                    where: {
+                        UserId: userId,
+                        type: type
+                    }
+                };
+                if (type == 0) {
+                    condition.where.GoodId = goodsId;
+                } else {
+                    condition.where.SalerGoodId = goodsId;
+
+                }
+                return (yield this.count(condition)) != 0;
             }
         }
     });
