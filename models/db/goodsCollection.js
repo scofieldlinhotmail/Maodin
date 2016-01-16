@@ -8,15 +8,15 @@ module.exports = function (sequelize, DataTypes) {
          * 添加类型
          * 0 => 系统自动添加
          * 1 => 用户手动添加
+         * 2 => 分销商品
          */
-        type: shortDataTypes.Int()
+        type: shortDataTypes.Int(),
+        GoodId: shortDataTypes.Int()
     }, {
         timestamps: false,
         associate: function (models) {
             models.User.hasMany(models.GoodsCollection);
             models.GoodsCollection.belongsTo(models.User);
-            models.Goods.hasMany(models.GoodsCollection);
-            models.GoodsCollection.belongsTo(models.Goods);
         },
         instanceMethods: {
         },

@@ -6,27 +6,38 @@
 
 <div ng-controller="AppCtrl" ng-cloak>
     <div class="am-padding-sm" >
-        <div class="am-panel am-panel-default shoppingcart">
+        <div class="am-panel am-panel-default shoppingcart" ng-repeat="shop in shoppingCart" ng-controller="ShopCtrl" ng-init="shopIndex = $index">
             <div class="am-panel-hd shoppingcart-shop-title">
-                <i class="am-icon am-icon-circle-o"  ng-hide="all" ng-click="selectAll(true)" ></i>
-                <i class="am-icon am-icon-check-circle" ng-show="all" ng-click="selectAll(false)" ></i>
+                <i class="am-icon am-icon-circle-o"  ng-hide="shop.selected" ng-click="shop.selected = true" ></i>
+                <i class="am-icon am-icon-check-circle" ng-show="shop.selected" ng-click="shop.selected = false" ></i>
+                <span>{{shop.shopName}}</span>
             </div>
             <div class="am-panel-bd">
-                <div class="shoppingcart-item" ng-controller="GoodsCtrl" ng-repeat="goods in shoppingCart" ng-init="goodsIndex = $index">
+                <div class="shoppingcart-item" ng-controller="GoodsCtrl" ng-repeat="goods in shop.data" ng-init="goodsIndex = $index">
                     <div class="shoppingcart-item-checkbox" ng-click="goods.selected = !goods.selected">
                         <i class="am-icon am-icon-circle-o" ng-hide="goods.selected"></i>
                         <i class="am-icon am-icon-check-circle" ng-show="goods.selected" ></i>
                     </div>
                     <div class="shoppingcart-item-main">
-                        <a href="/user/goods-page/{{goods.id}}">
+                        <a href="/user/goods-page/goods.type/{{goods.GoodId}}">
                             <img ng-src="{{goods.Good.mainImg}}" >
                         </a>
-                        <a href="/user/goods-page/{{goods.id}}">
+                        <a href="/user/goods-page/goods.type/{{goods.GoodId}}">
                             <h3>{{goods.Good.title}}</h3>
-                            <small>{{goods.Good.brief}}</small>
                         </a>
 
-                        <p class="am-text-sm">￥ {{goods.Good.price * goods.Good.perNum}}/{{goods.Good.perStr}} <del>{{goods.Good.oldPrice * goods.Good.perNum}}</del></p>
+                        <p class="am-text-sm">{{goods.Good.price | currency: '￥'}} <del>{{goods.Good.oldPrice | currency: '￥'}}</del></p>
+
+                        <!--<div class="am-g">-->
+                            <!--<div class="am-u-sm-5">-->
+                                <!--<div class=" am-input-group am-input-group-sm">-->
+                                    <!--<span class="am-input-group-label" ng-click="add(-1)"><i class="am-icon am-icon-minus"></i></span>-->
+                                    <!--<input type="text" class="am-form-field" ng-model="num" pattern="[0-9]*">-->
+                                    <!--<span class="am-input-group-label" ng-click="add(1)"><i class="am-icon am-icon-plus"></i></span>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+
                         <div class="am-cf">
                             <div class="goods-counter am-fl">
                                 <div class="btn minus am-text-warning" ng-click="goods.num = goods.num - 1">

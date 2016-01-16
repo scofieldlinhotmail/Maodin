@@ -11,6 +11,8 @@ module.exports = function (sequelize, DataTypes) {
         joinTime: shortDataTypes.Date(),
 		subscribe_time: shortDataTypes.Date(),
 		unionid: shortDataTypes.String(),
+		totalIntegral: shortDataTypes.Double(),
+		integral: shortDataTypes.Double(),
 		/**
 		 * - 3 deleted
 		 * -2 information needed to be updated

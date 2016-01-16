@@ -51,7 +51,7 @@ function * commentSeed(){
 }
 
 function * userSeed(){
-    for(var i = 0; i < 40; i ++) {
+    for(var i = 0; i < 20; i ++) {
         yield db.models.User.create({
             password: '123456',
             phone: '12345678901',
@@ -61,6 +61,30 @@ function * userSeed(){
             unionid: 'unionid',
             openid: 'openid',
             joinTime: Date.now()
+        });
+    }
+}
+
+function * storeSeed() {
+    var users = yield db.models.User.findAll();
+    for(var i = 0; i < 10; i ++ ){
+        yield db.models.Store.create({
+            username: 'username' + i,
+            name: '店铺' + i,
+            phone: '12345678901',
+            UserId: users[i].id
+        });
+    }
+}
+
+function * salerGoodsSeed() {
+    var goods = yield db.models.Goods.findAll();
+    var store = yield db.models.Store.findAll();
+
+    for(var i = 0; i < 40; i ++) {
+        yield db.models.SalerGoods.create({
+            StoreId: store[i % store.length].id,
+            GoodId: goods[i % goods.length].id
         });
     }
 }
@@ -280,12 +304,22 @@ function * containerSeed() {
 function * shoppingCartSeed() {
     var users = yield db.models.User.findAll({});
     var goods = yield db.models.Goods.findAll({});
+    var salerGoods = yield db.models.SalerGoods.findAll({});
     for(var i = 0; i < users.length; i ++) {
-        for(var j = 0 ; j < goods.length; j ++) {
+        for(var j = 0 ; j < goods.length && j < 5; j ++) {
             s = yield db.models.ShoppingCart.create({
                 num: i + j + 1,
                 UserId: users[i % users.length].id,
-                GoodId: goods[j % goods.length].id
+                GoodId: goods[j % goods.length].id,
+                type: 0,
+            });
+        }
+        for(var j = 0 ; j < salerGoods.length && j < 5; j ++) {
+            s = yield db.models.ShoppingCart.create({
+                num: i + j + 1,
+                UserId: users[i % users.length].id,
+                SalerGoodId: salerGoods[j % salerGoods.length].id,
+                type: 1
             });
         }
     }
@@ -343,24 +377,27 @@ function * orderSeed() {
 }
 
 function * init() {
-    yield db.sync({force: true});
+    yield db.sync({
+        force: true
+    });
+    yield userSeed();
     yield adminerSeed();
+    yield storeSeed();
     yield goodsTypeSeed();
     yield goodsSeed();
-    //yield areaSeed();
-    yield userSeed();
-    yield goodsSeed();
+    yield salerGoodsSeed();
+    yield shoppingCartSeed();
     //yield msgSeed();
     //yield addressSeed();
     //yield containerSeed();
-    //yield shoppingCartSeed();
     //yield orderSeed();
     //yield commentSeed();
     yield rankSeed();
 }
 
 co(function * () {
-    yield init();
+    //yield init();
+    yield shoppingCartSeed();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

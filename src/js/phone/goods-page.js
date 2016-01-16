@@ -18,7 +18,7 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
 
     var modal = angular.element('#goods-select-num');
     scope.toggleCollect = function () {
-        $http.get('/user/goods-collect/' + scope.id)
+        $http.get('/user/goods-collect/' + scope.type + '/' + scope.id)
             .success(function () {
                 scope.isCollected = ! scope.isCollected;
                 scope.$applyAsync();
@@ -45,9 +45,22 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
         }
     };
 
+    scope.sale = function () {
+        $http.get('/user/sale/' + scope.id)
+            .success(function (data) {
+                if (data == 'ok') {
+                    scope.isSaled = ! scope.isSaled;
+                    scope.$applyAsync();
+                } else {
+                    alert('错误操作');
+                }
+            })
+            .error(ajaxError);
+    };
+
     scope.submit = function () {
         if (modalMode == 'shopping-cart') {
-            $http.get('/user/shoppingcart/' + scope.id + '/' + scope.num)
+            $http.get('/user/shoppingcart/' + scope.type + '/' + scope.id + '/' + scope.num)
                 .success(function () {
                     scope.isInShoppingCart = ! scope.isInShoppingCart;
                     modal.modal('close');

@@ -10,16 +10,24 @@ module.exports = function (sequelize, DataTypes) {
     var Store = sequelize.define('Store', {
 
         username: shortDataTypes.String(),
+
         name: shortDataTypes.String(),//店铺名称
+
         phone: shortDataTypes.Phone(true),
+
         status:shortDataTypes.Int(),
-        money:shortDataTypes.Int(),//佣金
+
+        money:shortDataTypes.Double(),//佣金
+
+        totalMoney: shortDataTypes.Double()
     }, {
         timestamps: true,
         paranoid: true,
         associate: function (models) {
             models.User.hasOne(models.Store);
             models.Store.belongsTo(models.User);
+            models.Store.hasMany(models.Store);
+            models.Store.belongsTo(models.Store, {as: 'TopStore', foreignKey: 'StoreId', constraints: false});
         },
         instanceMethods: {
         },

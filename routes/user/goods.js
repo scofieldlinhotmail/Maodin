@@ -4,12 +4,15 @@ var auth = require('../../helpers/auth.js');
 var db = require('../../models/db/index');
 var render = require('../../instances/render.js');
 var debug = require('../../instances/debug.js');
+var util = require('util');
 
 var sequelizex = require('../../lib/sequelizex.js');
 
 
 var Goods = db.models.Goods;
 var GoodsView = db.models.GoodsShortcutView;
+var SalerGoods = db.models.SalerGoods;
+var Store = db.models.Store;
 var GoodsType = db.models.GoodsType;
 var ShoppingCart = db.models.ShoppingCart;
 var GoodsCollection = db.models.GoodsCollection;
@@ -82,42 +85,83 @@ module.exports = (router) => {
 
     }
 
-    router.get('/user/goods-page/:id', function *() {
+    router.get('/user/goods-page/:type/:id', function *() {
 
         // todo: 加上评论和分销
         this.checkParams('id').notEmpty().isInt().toInt();
+        this.checkParams('type').notEmpty().isInt().toInt();
 
         if (this.errors) {
             this.body = this.errors;
             return;
         }
 
-        var goods = yield Goods.findById(this.params.id);
+        var goods;
+        if (this.params.type == 0) {
+            goods = yield Goods.findById(this.params.id);
+        } else {
+            var salerGoods = yield SalerGoods.findById(this.params.id);
+            goods = salerGoods ? yield salerGoods.getGood() : null;
+        }
+
         if (!goods || goods.status !== 1) {
             this.body = "错误访问";
             return;
         }
+
+
         goods.GoodsType = yield goods.getGoodsType();
         goods.imgs = JSON.parse(goods.imgs);
-        var shoppingCart = yield ShoppingCart.count({
-            where: {
-                UserId: (yield auth.user(this)).id,
-                GoodId: this.params.id,
-            }
-        });
-        goods.num = shoppingCart;
+
+
+        if (this.params.type == 0) {
+            goods.num = yield ShoppingCart.count({
+                where: {
+                    UserId: (yield auth.user(this)).id,
+                    GoodId: this.params.id,
+                    type: this.params.type
+                }
+            });
+        } else {
+            goods.num = yield ShoppingCart.count({
+                where: {
+                    UserId: (yield auth.user(this)).id,
+                    StoreId: this.params.id,
+                    type: this.params.type
+                }
+            });
+        }
+
         goods.isCollected = (yield GoodsCollection.count({
                 where: {
                     GoodId: goods.id,
                     UserId: (yield auth.user(this)).id,
+                    type: this.params.type
                 }
             })) != 0;
 
         goods.extraFields = JSON.parse(goods.extraFields);
+
+        var user = yield auth.user(this);
+        var store = yield Store.findOne({
+            where: {
+                UserId: user.id
+            }
+        });
+        var isSaled = ! store ? false : (yield SalerGoods.count({
+            where: {
+                GoodId: goods.id,
+                StoreId: store.id
+            }
+        })) == 0;
+
         this.body = yield render('phone/goods-page', {
             title: '商品:' + goods.title,
             goods: goods,
-            noFooterTpl: true
+            noFooterTpl: true,
+            isSaler: typeof store === 'undefined',
+            isSaled,
+            type: this.params.type
         });
     });
 
@@ -132,8 +176,38 @@ module.exports = (router) => {
         });
     });
 
-    router.get('/user/goods-collect/:id', function *() {
+
+    router.get('/user/sale/:id', function *() {
+
+        this.checkParams('id').notEmpty().isInt().toInt();
+
+        if (this.errors) {
+            this.body = this.errors;
+            return;
+        }
+
+        var user = yield auth.user(this);
+        var store = yield Store.findOne({
+            where: {
+                UserId: user.id
+            }
+        });
+        if (util.isNullOrUndefined(store)) {
+            this.body = '错误操作';
+            return;
+        }
+
+        yield SalerGoods.create({
+            GoodId: this.params.id,
+            StoreId: store.id
+        });
+
+        this.body = 'ok';
+    });
+
+    router.get('/user/goods-collect/:type/:id', function *() {
         this.checkParams('id').notEmpty();
+        this.checkParams('type').notEmpty();
         if (this.errors) {
             this.body = this.errors;
             return;
@@ -142,7 +216,8 @@ module.exports = (router) => {
         var item = yield GoodsCollection.findOne({
             where: {
                 UserId: (yield auth.user(this)).id,
-                GoodId: id
+                GoodId: id,
+                type: this.params.type
             }
         });
         if (item) {

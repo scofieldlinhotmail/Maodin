@@ -4,7 +4,7 @@
 <!--<script src="/dist/phone-goods-page.css"></script>-->
 <% end %>
 
-<div ng-controller="MainCtrl" ng-init="id = <%= @goods.id %>">
+<div ng-controller="MainCtrl" ng-init="id = <%= @goods.id %> ">
     <div class="swiper-container">
         <div class="swiper-wrapper" >
             <% for img in @goods.imgs.concat([@goods.mainImg]) : %>
@@ -21,7 +21,13 @@
                 <h2><%= @goods.title %></h2>
             </div>
             <div class="am-text-center goods-price">
-                <span class="am-btn am-btn-default am-radius">我要分销</span>
+                <% if @goods.isSaler : %>
+                    <span class="am-btn am-btn-default am-radius" ng-click="sale()" ng-disabled="isSaled"  ng-init="isSaled = <%= @goods.isSaled %>">{{isSaled ? '我已分销' : '我要分销'}}</span>
+                <% else : %>
+                    <!--todo: 地址-->
+                    <a href="/user/storeapply" class="am-btn am-btn-default am-radius">成为分销商</a>
+                <% end %>
+
                 <!--<span class="am-text-danger"><%= @goods.price  %><span class="am-text-sm">/<%= @goods.perStr %></span> ￥</span>-->
                 <!--<del class="am-text-sm"><%= @goods.oldPrice  %></del>-->
             </div>
@@ -79,7 +85,6 @@
         </div>
     </div>
 
-
     <div class="am-modal-actions" id="goods-select-num">
         <div class="am-modal-actions-group">
             <div class="goods-item">
@@ -109,7 +114,7 @@
             <i class="am-icon am-icon-close" data-am-modal-close></i>
         </div>
         <div class="am-modal-actions-group">
-            <button class="am-btn am-btn-secondary am-btn-block" ng-click="submit()">确定</button>
+            <button class="am-btn am-btn-secondary am-btn-block" ng-click="submit()" ng-init="type = <%= @type %>">确定</button>
         </div>
     </div>
 </div>
