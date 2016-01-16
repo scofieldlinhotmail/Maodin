@@ -20,15 +20,7 @@ module.exports = function (sequelize, DataTypes) {
         instanceMethods: {
         },
         classMethods: {
-            my: function *(id) {
-                return sequelizex.Func.val(yield ShoppingCart.findAll({
-                    where: {
-                        UserId: id
-                    },
-                    attributes: ['id', 'num', 'GoodId']
-                }));
-            },
-            num: function *(goodsId, userId, type) {
+            buildConditionWithType: (goodsId, userId, type) => {
                 var condition = {
                     where: {
                         UserId: userId,
@@ -41,7 +33,18 @@ module.exports = function (sequelize, DataTypes) {
                     condition.where.SalerGoodId = goodsId;
 
                 }
-                return yield this.count(condition);
+                return condition;
+            },
+            num: function *(goodsId, userId, type) {
+                return yield this.count(this.buildConditionWithType(goodsId, userId, type));
+            },
+            findOneWithType: function *(id, userId, type) {
+                return yield this.findOne(this.buildConditionWithType(id, userId, type));
+            },
+            createWithType: function *(id, userId, type, num) {
+                var params = this.buildConditionWithType(id, userId, type).where;
+                params.num = num;
+                return yield this.create(params);
             }
         }
     });

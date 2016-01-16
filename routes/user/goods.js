@@ -188,48 +188,15 @@ module.exports = (router) => {
             return;
         }
         var id = this.params.id;
-        var item = yield GoodsCollection.findOne({
-            where: {
-                UserId: (yield auth.user(this)).id,
-                type: this.params.type
-            }
-        });
+        var type = this.params.type;
+
+        var user = yield auth.user(this);
+
+        var item = yield GoodsCollection.findOneWithType(id, user.id, type);
         if (item) {
             yield item.destroy();
         } else {
-
-            var type = this.params.type;
-            if (type == 0 && (yield Goods.count({
-                    where: {
-                        id: this.params.id,
-                        status: 1
-                    }
-                })) == 0) {
-                this.body = '错误操作';
-                return;
-            } else if ((yield SalerGoods.count({
-                    where: {
-                        GoodId: this.params.id
-                    },
-                    include: [
-                        {
-                            model: Goods,
-                            where: {
-                                statua: 1
-                            }
-                        }
-                    ]
-                })) == 0) {
-                this.body = '错误操作';
-                return;
-            }
-
-
-            yield GoodsCollection.create({
-                type: type,
-                UserId: (yield auth.user(this)).id,
-                GoodId: this.params.id
-            });
+            yield GoodsCollection.createWithType(id, user.id, type);
         }
         this.body = 'ok';
     });

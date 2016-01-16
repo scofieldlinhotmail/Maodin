@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
             models.GoodsCollection.belongsTo(models.SalerGoods);
         },
         classMethods: {
-            isCollected: function *(goodsId, userId, type) {
+            buildConditionWithType: (goodsId, userId, type) => {
                 var condition = {
                     where: {
                         UserId: userId,
@@ -32,7 +32,18 @@ module.exports = function (sequelize, DataTypes) {
                     condition.where.SalerGoodId = goodsId;
 
                 }
-                return (yield this.count(condition)) != 0;
+                return condition;
+            },
+            isCollected: function *(goodsId, userId, type) {
+                return (yield this.count(
+                        this.buildConditionWithType(goodsId, userId, type)
+                    )) != 0;
+            },
+            findOneWithType: function *(id, userId, type) {
+                return yield this.findOne(this.buildConditionWithType(id, userId, type));
+            },
+            createWithType: function *(id, userId, type) {
+                return yield this.create(this.buildConditionWithType(id, userId, type).where);
             }
         }
     });

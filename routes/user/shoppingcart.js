@@ -22,49 +22,23 @@ module.exports = (router) => {
             this.body = this.errors;
             return;
         }
-        var shoppingCart;
-        if (this.params.type == 0) {
-            shoppingCart = yield ShoppingCart.findOne({
-                where:{
-                    UserId: (yield auth.user(this)).id,
-                    GoodId: this.params.id,
-                    type: this.params.type
-                }
-            });
-        } else {
-            shoppingCart = yield ShoppingCart.findOne({
-                where:{
-                    UserId: (yield auth.user(this)).id,
-                    SalerGoodId: this.params.id,
-                    type: this.params.type
-                }
-            });
-        }
+
+        var id = this.params.id;
+        var type = this.params.type;
+        var num = this.params.num;
+        var user = yield auth.user(this);
+
+        var shoppingCart = yield ShoppingCart.findOneWithType(id, user.id, type);
 
         if (shoppingCart) {
-            if (this.params.num >= 0 ) {
+            if (num >= 0 ) {
                 shoppingCart.num = this.params.num;
                 yield shoppingCart.save();
             } else {
                 yield shoppingCart.destroy();
             }
-        } else if (this.params.num >= 0){
-            if (this.params.type == 0) {
-                yield ShoppingCart.create({
-                    UserId: (yield auth.user(this)).id,
-                    GoodId: this.params.id,
-                    num: this.params.num,
-                    type: 0
-                });
-            } else {
-                yield ShoppingCart.create({
-                    UserId: (yield auth.user(this)).id,
-                    SalerGoodId: this.params.id,
-                    num: this.params.num,
-                    type: 1
-                });
-            }
-
+        } else if (num >= 0){
+            yield ShoppingCart.createWithType(id, user.id, type, num);
         }
         this.body = 'ok';
     });
