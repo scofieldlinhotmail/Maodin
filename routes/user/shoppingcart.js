@@ -80,11 +80,13 @@ module.exports = (router) => {
                         include: [
                             {
                                 model: Goods,
-                                attributes: goodsAttributes
+                                attributes: goodsAttributes,
+                                required: true
                             },
                             {
                                 model: Store,
-                                attributes: ['name']
+                                attributes: ['name'],
+                                required: true
                             }
                         ]
                     }

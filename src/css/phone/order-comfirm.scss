@@ -80,6 +80,8 @@ body{
   width: 90% !important;
   left: 5% !important;
   margin-left: 0 !important;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .address{

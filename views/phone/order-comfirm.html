@@ -18,18 +18,17 @@
     </div>
 
     <div class="am-padding-sm" >
-        <div class="am-panel am-panel-default shoppingcart am-margin-bottom-sm">
+        <div class="am-panel am-panel-default shoppingcart am-margin-bottom-sm" ng-repeat="shop in shoppingCart" ng-controller="ShopCtrl" ng-init="shopIndex = $index">
             <div class="am-panel-hd shoppingcart-shop-title">
                 <span>共{{shoppingCart.length}}件</span>
-                <span>运费:{{fare}}元</span>
             </div>
             <div class="am-panel-bd">
-                <div class="shoppingcart-item" ng-controller="GoodsCtrl" ng-repeat="goods in shoppingCart" ng-init="goodsIndex = $index">
+                <div class="shoppingcart-item" ng-controller="GoodsCtrl" ng-repeat="goods in shop.data" ng-init="goodsIndex = $index">
                     <div class="shoppingcart-item-main">
                         <img ng-src="{{goods.Good.mainImg}}" >
                         <h3>{{goods.Good.title}}</h3>
                         <p class="am-text-sm am-cf">
-                            <span class="am-text-danger">￥ {{goods.Good.price * goods.Good.perNum}} <span class="am-text-sm">/{{goods.Good.perStr}}</span> </span>
+                            <span class="am-text-danger">{{goods.Good.price | currency: '￥'}} </span>
                             <span class="am-fr am-margin-right-sm">x {{goods.num}}</span>
                         </p>
                     </div>

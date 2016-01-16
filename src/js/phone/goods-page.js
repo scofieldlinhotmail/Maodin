@@ -45,6 +45,16 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
         }
     };
 
+    scope.$watch('num', function (newVal, oldVal) {
+        if (typeof newVal === 'undefined') {
+            return;
+        }
+        console.log('change');
+        if (scope.buyLimit != 0 && newVal > scope.buyLimit) {
+            scope.num = scope.buyLimit;
+        }
+    });
+
     scope.sale = function () {
         $http.get('/user/sale/' + scope.id)
             .success(function (data) {

@@ -27,9 +27,11 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             groupByStoreObj[key].push(item);
         }
         var groupByStoreArr = [];
+
         for(var i in groupByStoreObj) {
             if (groupByStoreObj.hasOwnProperty(i)) {
                 var item = groupByStoreObj[i];
+
                 groupByStoreArr.push({
                     shopName: item[0].SalerGood.Store.name,
                     data: item,
@@ -60,12 +62,11 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             }
             var shop = scope.shoppingCart[shopIndex];
             for(var goodsIndex in shop.data) {
-                if (!shop.data.hasOwnProperty(shopIndex)) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
                     continue;
                 }
                 var goods = shop.data[goodsIndex];
                 if (goods.selected) {
-                    console.log(goods);
                     fee += goods.Good.price * goods.num ;
                 }
             }
@@ -80,27 +81,38 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         }
 
         var selectedIds = [];
-        for(var i in scope.shoppingCart) {
-            var goods = scope.shoppingCart[i];
-            if (goods.selected) {
-                selectedIds.push(goods.id);
+
+        for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
+            }
+            var shop = scope.shoppingCart[shopIndex];
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
+                if (goods.selected) {
+                    selectedIds.push(goods.id);
+                }
             }
         }
+
         if (selectedIds.length === 0){
             return;
         }
         submit = true;
-        var form = angular.element('<form></form>');
+        var form = angular.element('<form method="post"></form>');
         form.attr('action', '/user/order-comfirm');
         form.attr('method', 'post');
         var input = angular.element('<input />');
         input.attr('name', 'ids');
         input.val(JSON.stringify(selectedIds));
         form.append(input);
+        form.append('<input name="type" value="0" >');
         form.submit();
     };
 
-    window.s = scope;
 
 }]);
 
@@ -127,6 +139,13 @@ app.controller('ShopCtrl', ['$scope', '$http', function (scope, $http) {
 app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
 
     var timer;
+
+    scope.checkLimit = function () {
+        if (scope.goods.Good.buyLimit != 0 &&  scope.goods.num > scope.goods.Good.buyLimit) {
+            scope.goods.num = scope.goods.Good.buyLimit;
+        }
+    };
+
     scope.$watch('goods.num', function (newVal, oldVal) {
         if (newVal === oldVal || typeof newVal === 'undefined') {
             return;
@@ -134,6 +153,9 @@ app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
         if (scope.goods.num < 0) {
             scope.goods.num = 0;
         }
+
+        scope.checkLimit();
+
         if (timer) {
             clearInterval(timer);
         }
@@ -143,6 +165,8 @@ app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
         },  800);
         scope.$emit('price-change');
     });
+
+    scope.checkLimit();
 
     scope.remove = function () {
         var goods = scope.$parent.$parent.shoppingCart[scope.shopIndex].data.splice(scope.goodsIndex, 1)[0];

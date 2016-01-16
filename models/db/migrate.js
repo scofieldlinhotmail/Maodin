@@ -120,7 +120,8 @@ function * goodsSeed() {
             commission2: i * 4 / 10,
             commission3: i * 3 / 10,
             status: 1,
-            extraFields: JSON.stringify(extraFields)
+            extraFields: JSON.stringify(extraFields),
+            buyLimit: i % 5
         });
         if (i % 2) {
             yield goods.destroy();
@@ -393,7 +394,7 @@ function * init() {
 }
 
 co(function * () {
-    yield init();
+    yield goodsSeed();
     //yield addressSeed();
     console.log('finished ...');
 }).catch(function () {

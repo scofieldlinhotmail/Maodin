@@ -15,26 +15,61 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     scope.shoppingCart = [];
     var src = JSON.parse(angular.element('#shoppingCart').html());
 
-    scope.shoppingCart = src;
+    (function () {
+        var fromSaler = src[1];
+        var groupByStoreObj = {};
+        for(var i = 0; i < fromSaler.length; i ++) {
+            var item = fromSaler[i];
+            item.Good = item.SalerGood.Good;
+            item.GoodId = item.SalerGood.id;
+            item.selected = false;
+            var key = item.SalerGood.StoreId;
+            if (!groupByStoreObj[key]) {
+                groupByStoreObj[key] = [];
+            }
+            groupByStoreObj[key].push(item);
+        }
+        var groupByStoreArr = [];
 
-    var totalPrice = cal();
+        for(var i in groupByStoreObj) {
+            if (groupByStoreObj.hasOwnProperty(i)) {
+                var item = groupByStoreObj[i];
+
+                groupByStoreArr.push({
+                    shopName: item[0].SalerGood.Store.name,
+                    data: item,
+                    selected: false
+                });
+            }
+        }
+        scope.shoppingCart = [{
+            shopName: '夷沃农特微商',
+            data: src[0],
+            selected: false
+        }].concat(groupByStoreArr);
+    }())
 
 
-    scope.fareData = JSON.parse(angular.element('#fare').html());
+    scope.totalPrice = cal();
 
-    if (totalPrice >  parseFloat(scope.fareData.freeLine)) {
-        scope.fare = 0;
-        scope.totalPrice = totalPrice;
-    } else {
-        scope.fare = scope.fareData.basicFare;
-        scope.totalPrice = totalPrice + scope.fare;
-    }
+
 
     function cal() {
         var fee = 0;
-        for(var i in scope.shoppingCart) {
-            var goods = scope.shoppingCart[i];
-            fee += goods.Good.price * goods.num * goods.Good.perNum;
+        for(var shopIndex in scope.shoppingCart) {
+            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+                continue;
+            }
+            var shop = scope.shoppingCart[shopIndex];
+            for(var goodsIndex in shop.data) {
+                if (!shop.data.hasOwnProperty(goodsIndex)) {
+                    continue;
+                }
+                var goods = shop.data[goodsIndex];
+                if (goods.selected) {
+                    fee += goods.Good.price * goods.num ;
+                }
+            }
         }
         return fee;
     }
@@ -52,6 +87,44 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         }
     }());
 
+    //var submit = false;
+    //scope.buy = function () {
+    //    if (submit) {
+    //        return;
+    //    }
+    //
+    //    var selectedIds = [];
+    //
+    //    for(var shopIndex in scope.shoppingCart) {
+    //        if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
+    //            continue;
+    //        }
+    //        var shop = scope.shoppingCart[shopIndex];
+    //        for(var goodsIndex in shop.data) {
+    //            if (!shop.data.hasOwnProperty(goodsIndex)) {
+    //                continue;
+    //            }
+    //            var goods = shop.data[goodsIndex];
+    //            if (goods.selected) {
+    //                selectedIds.push(goods.id);
+    //            }
+    //        }
+    //    }
+    //
+    //    if (selectedIds.length === 0){
+    //        return;
+    //    }
+    //    submit = true;
+    //    var form = angular.element('<form method="post"></form>');
+    //    form.attr('action', '/user/order-comfirm');
+    //    form.attr('method', 'post');
+    //    var input = angular.element('<input />');
+    //    input.attr('name', 'ids');
+    //    input.val(JSON.stringify(selectedIds));
+    //    form.append(input);
+    //    form.append('<input name="type" value="0" >');
+    //    form.submit();
+    //};
     var submit = false;
     scope.buy = function () {
         if (submit) {
@@ -78,6 +151,10 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     };
 }]);
 
+
+app.controller('ShopCtrl', ['$scope', '$http', function (scope, $http) {
+
+}]);
 
 app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {
 }]);

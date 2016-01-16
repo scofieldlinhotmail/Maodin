@@ -13,11 +13,12 @@ var sequelizex = require('../../lib/sequelizex.js');
 
 
 var Container = db.models.Container;
-var Area = db.models.Area;
 var Goods = db.models.Goods;
+var SalerGoods = db.models.SalerGoods;
 var ShoppingCart = db.models.ShoppingCart;
 var DeliverAddress = db.models.DeliverAddress;
 var Order = db.models.Order;
+var Store = db.models.Store;
 var OrderItem = db.models.OrderItem;
 
 module.exports = function (router) {
@@ -45,9 +46,11 @@ module.exports = function (router) {
             return;
         }
 
+        var user = yield auth.user(this);
+
         var order;
         var goodsAttributes = {
-            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'timeToDown', 'createdAt', 'updatedAt']
+            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'timeToDown']
         };
         if (body.type == 0) {
             var ids = JSON.parse(body.ids);
@@ -55,21 +58,21 @@ module.exports = function (router) {
             order = yield [
                 ShoppingCart.findAll({
                     where: {
-                        UserId: (yield auth.user(this)).id,
+                        UserId: user.id,
                         id: {
                             $in: ids
                         },
                         type: 0
                     },
                     include: [{
-                        model: db.models.Goods,
-                        attributes: goodsAttributes
+                        model: Goods,
+                        attributes: goodsAttributes,
+                        required: true
                     }],
-                    raw:true
                 }),
                 ShoppingCart.findAll({
                     where: {
-                        UserId: (yield auth.user(this)).id,
+                        UserId: user.id,
                         id: {
                             $in: ids
                         },
@@ -81,15 +84,19 @@ module.exports = function (router) {
                             include: [
                                 {
                                     model: Goods,
-                                    attributes: goodsAttributes
+                                    attributes: goodsAttributes,
+                                    required: true
+                                },
+                                {
+                                    model: Store,
+                                    attributes: ['name'],
+                                    required: true
                                 }
                             ]
                         }
-                    ],
-                    raw:true
+                    ]
                 })
             ];
-
 
         } else {
             order = ShoppingCart.build({
@@ -120,14 +127,14 @@ module.exports = function (router) {
         var addresses = yield DeliverAddress.findAll({
             where: {
                 UserId: (yield auth.user(this)).id
-            },
-            include: [Area]
+            }
         });
 
         this.body = yield render('phone/order-comfirm', {
             title: '订单确认',
             order: JSON.stringify(order),
-            addresses: JSON.stringify(addresses)
+            addresses: JSON.stringify(addresses),
+            type: body.type
         });
     });
 

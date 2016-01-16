@@ -19,14 +19,19 @@
                         <i class="am-icon am-icon-check-circle" ng-show="goods.selected" ></i>
                     </div>
                     <div class="shoppingcart-item-main">
-                        <a href="/user/goods-page/goods.type/{{goods.GoodId}}">
+                        <a href="/user/goods-page/{{goods.type}}/{{goods.GoodId}}">
                             <img ng-src="{{goods.Good.mainImg}}" >
                         </a>
-                        <a href="/user/goods-page/goods.type/{{goods.GoodId}}">
+                        <a href="/user/goods-page/{{goods.type}}/{{goods.GoodId}}">
                             <h3>{{goods.Good.title}}</h3>
                         </a>
 
-                        <p class="am-text-sm">{{goods.Good.price | currency: '￥'}} <del>{{goods.Good.oldPrice | currency: '￥'}}</del></p>
+                        <p class="am-text-sm">
+                            {{goods.Good.price | currency: '￥'}}
+                            <del>{{goods.Good.oldPrice | currency: '￥'}}</del>
+                            <span ng-if="goods.Good.buyLimit != 0">限购: {{goods.Good.buyLimit}}</span>
+                            <span >库存: {{goods.Good.capacity}}</span>
+                        </p>
 
                         <!--<div class="am-g">-->
                             <!--<div class="am-u-sm-5">-->
