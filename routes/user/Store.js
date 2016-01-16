@@ -59,4 +59,105 @@ module.exports = (router) => {
     });
 
 
+    router.get('/adminer-store/check',  function *() {
+
+        var key=this.query.key;
+        var list= yield Store.findAll({
+            where:{
+                status:0
+            }
+        });
+        if(key!=null){
+            list=yield Store.findAll({
+                where:{
+                    username:{$like: '%'+key+'%'},
+                    status:0
+                }
+            })
+        }
+        var page=this.query.page;
+        ///每页几个
+        var pre=10;
+        var preurl="#";
+        var nexturl="#";
+        if(page==null) {
+            page=1;
+        }else if(page>1){
+            var prepage=Number(page)-1;
+            preurl=changeURLPar(this.url,"page",prepage);
+        }
+        var l=list.length;
+        var next;
+        if(page*pre<l){
+            list=list.slice((page-1)*pre,(page-1)*pre+pre);
+            next= Number(page)+1;
+            nexturl=changeURLPar(this.url,"page",next);
+        }else if(page*pre==l) {
+            list=list.slice((page-1)*pre,(page-1)*pre+pre);
+            next=0;
+        }else{
+            list=list.slice((page-1)*pre);
+            next=0;
+        }
+
+        var allpage=((l%pre==0)?(l/pre):(l/pre+1));
+        this
+
+        this.body = yield render('admin/storecheck.html', {
+            preurl,nexturl,list,page,next,allpage
+        });
+    });
+    router.get('/adminer-store/ChangeOneS',function *(){
+        var id =this.query.id;
+        var s =this.query.s;
+        yield cstatus(id,s);
+        this.body=1;
+    });
+    router.get('/adminer-store/ChangeManyS',function *(){
+        var ids = JSON.parse(this.query.list);
+        var s =this.query.s;
+
+        for(var i=0;i<ids.length;i++)
+        {
+            yield cstatus(ids[i],s);
+        }
+        this.body=1;
+    });
+    ///拒绝或通过
+    function * cstatus(id,s){
+        debug(id);
+        var one=yield Store.findById(id);
+        if(one!=null) {
+            if(s==1){
+                one.status = s;
+                yield one.save();
+            }else{
+                one.destroy();
+            }
+        }
+    }
+
 };
+function changeURLPar(destiny, par, par_value)
+{
+    var pattern = par+'=([^&]*)';
+    var replaceText = par+'='+par_value;
+    if (destiny.match(pattern))
+    {
+        var tmp = '/\\'+par+'=[^&]*/';
+        tmp = destiny.replace(eval(tmp), replaceText);
+        return (tmp);
+    }
+    else
+    {
+        if (destiny.match('[\?]'))
+        {
+            return destiny+'&'+ replaceText;
+        }
+        else
+        {
+            return destiny+'?'+replaceText;
+        }
+    }
+    return destiny+'\n'+par+'\n'+par_value;
+}

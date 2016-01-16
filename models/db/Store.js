@@ -15,6 +15,8 @@ module.exports = function (sequelize, DataTypes) {
 
         phone: shortDataTypes.Phone(true),
 
+        //0未审核
+        //1通过
         status:shortDataTypes.Int(),
 
         money:shortDataTypes.Double(),//佣金

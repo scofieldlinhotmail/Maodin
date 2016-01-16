@@ -23,6 +23,7 @@ var adminEnties = {
     'admin-user-list': ['./src/js/admin/user.js'],
     'admin-goodstype-save': ['./src/js/goodsType/save.js'],
     'admin-comment':['./src/js/admin/Comment.js'],
+    'admin-storecheck':['./src/js/admin/storecheck.js'],
     'admin-rank':['./src/js/admin/rank.js'],
 };
 
