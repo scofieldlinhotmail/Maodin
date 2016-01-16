@@ -4,13 +4,16 @@
 <link rel="stylesheet" href="/dist/phone-evaluation.css">
 <% end %>
 
-<form class="am-form " method="get" action="/user/addevaluation">
+<form class="am-form " method="get" action="add">
     <fieldset>
         <legend>评价</legend>
 
         <input type="hidden" name="id" value="<%= @id %>">
 
-
+        <div class="am-form-group">
+            <label for="doc-ta-1">评分</label>
+            <input type="number" class="form-control" name="score">
+        </div>
         <div class="am-form-group">
             <label for="doc-ta-1">评价内容</label>
             <textarea name="text" class="" rows="5" id="doc-ta-1" required></textarea>
