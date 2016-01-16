@@ -99,28 +99,36 @@ module.exports = function (router) {
             ];
 
         } else {
-            order = ShoppingCart.build({
+            order = {
                 num: body.num,
                 type: body.goodsType
-            });
+            };
             if (body.goodsType == 0 ){
-                order.setGood(yield Goods.findByOne({
+                order.Good = yield Goods.findOne({
                     where: {
                         id: body.id
                     },
                     attributes: goodsAttributes
-                }));
+                });
             } else {
-                order.setSalerGood(yield SalerGoods.findByOne({
+                order.SalerGood = yield SalerGoods.findOne({
                     where: {
                         id: body.id
                     },
-                    include: [{
-                        model: db.models.Goods,
-                        attributes: goodsAttributes
-                    }]
-                }));
+                    include: [
+                        {
+                            model: db.models.Goods,
+                            attributes: goodsAttributes
+                        },
+                        {
+                            model: Store,
+                            attributes: ['name'],
+                            required: true
+                        }
+                    ]
+                });
             }
+            order = [null, [order]];
         }
 
 

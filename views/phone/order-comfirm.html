@@ -20,7 +20,7 @@
     <div class="am-padding-sm" >
         <div class="am-panel am-panel-default shoppingcart am-margin-bottom-sm" ng-repeat="shop in shoppingCart" ng-controller="ShopCtrl" ng-init="shopIndex = $index">
             <div class="am-panel-hd shoppingcart-shop-title">
-                <span>共{{shoppingCart.length}}件</span>
+                <span>{{shop.shopName}}</span>
             </div>
             <div class="am-panel-bd">
                 <div class="shoppingcart-item" ng-controller="GoodsCtrl" ng-repeat="goods in shop.data" ng-init="goodsIndex = $index">
@@ -37,10 +37,25 @@
                     <div class="am-form-group">
                         <label class="am-u-sm-3 am-form-label">留言</label>
                         <div class="am-u-sm-9">
-                            <input class="am-form-field" placeholder="买家留言" ng-model="msg">
+                            <input class="am-form-field" placeholder="买家留言" ng-model="shop.msg">
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">配送方式</label>
+                        <div class="am-u-sm-9">
+                            <label class="am-radio-inline am-radio-inline-default">
+                                <input name="expressWay-{{shopIndex}}-{{$index}}" class="am-form-field" type="radio"  value="0" data-am-ucheck ng-model="shop.expressWay" ng-init="shop.expressWay = '0'" checked="checked"> 包邮
+                            </label>
+                            <label class="am-radio-inline">
+                                <input name="expressWay-{{shopIndex}}-{{$index}}" class="am-form-field" type="radio"  value="1" data-am-ucheck ng-model="shop.expressWay"> 自取
+                            </label>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="am-panel-footer am-text-right">
+                <span>共 {{shop.data.length }} 件</span>
+                <span class="am-text-success"> {{shop.totalPrice | currency: '￥'}}</span>
             </div>
         </div>
     </div>
