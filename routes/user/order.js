@@ -190,8 +190,7 @@ module.exports = function (router) {
                         $in: ids
                     }
                 },
-                attributes: ['id', 'num', 'GoodId'],
-                include: [Goods]
+                attributes: ['id', 'num']
             });
         } else {
 
@@ -202,100 +201,81 @@ module.exports = function (router) {
         yield db.transaction(function (t) {
 
             return co(function *() {
-                var orderItems = [];
-                for (var i in orderInfo) {
-                    var buyItem = orderInfo[i];
+
+                // 每个店铺的订单
+                for(var shopOrderIndex = 0; shopOrderIndex < orderInfo.length; shopOrderIndex ++) {
+                    var shopOrder = orderInfo[shopOrderIndex];
+                    var orderItems = [];
+
                     var price = 0;
-                    var shoppingCartItem = shoppingCart.filter(function (item) {
-                        return item.id === buyItem.id
-                    })[0];
-                    if (util.isNullOrUndefined(shoppingCartItem)) {
-                        throw 'invalid op';
+                    var goodsNum = 0;
+                    // 子订单
+                    for(var orderItemIndex = 0; orderItemIndex < shopOrder.goods.length; orderItemIndex ++) {
+
+                        var buyItem = shopOrder.goods[orderItemIndex];
+
+
+                        if (type == 0) {
+                            // 购物车清理操作
+                            var shoppingCartItem = shoppingCart.filter((item) => {
+                                return item.id === buyItem.id
+                            })[0];
+                            if (util.isNullOrUndefined(shoppingCartItem)) {
+                                throw 'invalid op';
+                            }
+                            if (buyItem.num === shoppingCartItem.num) {
+                                yield shoppingCartItem.destroy({transaction: t});
+                            } else if (buyItem.num < shoppingCartItem.num) {
+                                shoppingCartItem.num -= item.num;
+                                yield shoppingCartItem.save({transaction: t});
+                            } else {
+                                throw "提交参数有误";
+                            }
+                        }
+
+                        var buyGoods = yield ShoppingCart.getGoodWithType(buyItem.id, type);
+
+                        if (buyGoods.capacity > buyItem.num) {
+                            throw "商品库存不足";
+                        }
+
+                        price += buyItem.num * buyGoods.price;
+                        goodsNum += buyItem.num;
+
+                        orderItems.push(OrderItem.build({
+                            goods: JSON.stringify(buyGoods),
+                            price: buyItem.num * buyGoods.price,
+                            num: buyItem.num,
+                            GoodId: buyGoods.id
+                        }));
+                        buyGoods.capacity--;
+                        buyGoods.soldNum++;
+                        yield buyGoods.save({transaction: t});
                     }
-                    if (buyItem.num === shoppingCartItem.num) {
-                        yield shoppingCartItem.destroy({transaction: t});
-                        //if (promise) {
-                        //    promise = promise.then(function () {
-                        //        return shoppingCartItem.destroy({transaction: t});
-                        //    }, {transaction: t});
-                        //} else {
-                        //    promise = shoppingCartItem.destroy({transaction: t});
-                        //}
-                    } else if (buyItem.num < shoppingCartItem.num) {
-                        shoppingCartItem.num -= item.num;
-                        yield shoppingCartItem.save({transaction: t});
-                        //if (promise) {
-                        //    promise = promise.then(function () {
-                        //        return goods.save({transaction: t});
-                        //    }, {transaction: t});
-                        //} else {
-                        //    promise = goods.save({transaction: t});
-                        //}
-                    } else {
-                        throw "invalid num";
+
+                    order = yield Order.create({
+                        recieverName: address.recieverName,
+                        phone: address.phone,
+                        province: address.province,
+                        city: address.city,
+                        area: address.area,
+                        address: address.address,
+                        price,
+                        num: orderItems.length,
+                        status: 0,
+                        message: shopOrder.msg ? shopOrder.msg : '',
+                        UserId: userId,
+                        expressWay: shopOrder.expressWay
+                    }, {transaction: t});
+
+                    for (var i in orderItems) {
+                        var orderItem = orderItems[i];
+                        orderItem.OrderId = order.id;
+                        yield orderItem.save({transaction: t});
                     }
-                    price += buyItem.num * shoppingCartItem.Good.price;
-
-                    orderItems.push(OrderItem.build({
-                        goods: JSON.stringify(shoppingCartItem),
-                        price: buyItem.num * shoppingCartItem.Good.price,
-                        num: buyItem.num,
-                        GoodId: shoppingCartItem.Good.id
-                    }));
-                    shoppingCartItem.Good.capacity--;
-                    shoppingCartItem.Good.soldNum++;
-                    yield shoppingCartItem.Good.save({transaction: t});
                 }
-                ;
-
-                var orderFare = 0;
-                if (price < parseFloat(fare.freeLine)) {
-                    orderFare = fare.basicFare;
-                    price += orderFare;
-                }
-                order = yield Order.create({
-                    recieverName: address.recieverName,
-                    phone: address.phone,
-                    province: address.province,
-                    city: address.city,
-                    area: address.area,
-                    address: address.address,
-                    price,
-                    num: orderItems.length,
-                    status: 0,
-                    fare: orderFare,
-                    message: body.msg ? body.msg : '',
-                    UserId: userId,
-                    AreaId: address.AreaId
-                }, {transaction: t});
-
-                for (var i in orderItems) {
-                    var orderItem = orderItems[i];
-                    orderItem.OrderId = order.id;
-                    yield orderItem.save({transaction: t});
-                }
-                //promise = promise.then(function () {
-                //    return Order.create({
-                //        address: JSON.stringify(address),
-                //        price,
-                //        num: orderItems.length,
-                //        status: 0,
-                //        message: shop.msg,
-                //        UserId: userId,
-                //        SellerId: shop.id
-                //    });
-                //}, {transaction: t});
-                //for(var i in orderItems) {
-                //    var orderItem = orderItems[i];
-                //    (function (orderItem) {
-                //        promise = promise.then(function (data) {
-                //            orderItem.OrderId = data.id;
-                //            return orderItem.save({transaction: t}).then(function () {
-                //                return data.id;
-                //            });
-                //        });
-                //    }(orderItem));
-                //}
+            }).catch((err) => {
+                // todo: err
             });
 
         });

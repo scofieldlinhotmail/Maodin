@@ -41,6 +41,14 @@ module.exports = function (sequelize, DataTypes) {
             findOneWithType: function *(id, userId, type) {
                 return yield this.findOne(this.buildConditionWithType(id, userId, type));
             },
+            getGoodWithType: function *(id, type) {
+                if (type == 0) {
+                    return yield sequelize.models.Goods.findById(id);
+                } else {
+                    var salerGoods = yield sequelize.models.findById(id);
+                    return yield salerGoods.getGood();
+                }
+            },
             createWithType: function *(id, userId, type, num) {
                 var params = this.buildConditionWithType(id, userId, type).where;
                 params.num = num;

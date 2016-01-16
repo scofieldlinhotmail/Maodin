@@ -33,10 +33,15 @@ module.exports = function (sequelize, DataTypes) {
          * 留言
          */
         message: shortDataTypes.String(),
-        payTime: shortDataTypes.Date(),
-        sendTime: shortDataTypes.Date(),
-        recieveTime: shortDataTypes.Date(),
-        prepayId: shortDataTypes.String(64, true)
+        payTime: shortDataTypes.Date(true),
+        sendTime: shortDataTypes.Date(true),
+        recieveTime: shortDataTypes.Date(true),
+        prepayId: shortDataTypes.String(64, true),
+        /**
+         * 0 => 本店
+         * 1 => 分销
+         */
+        type: shortDataTypes.Int()
     }, {
         paranoid: true,
         associate: function (models) {
