@@ -14,8 +14,13 @@ module.exports = function (sequelize, DataTypes) {
         area: shortDataTypes.String(),
         address: shortDataTypes.String(),
         price: shortDataTypes.Double(),
-        fare: shortDataTypes.Double(),
         num: shortDataTypes.Int(),
+        goodsNum: shortDataTypes.Int(),
+        /**
+         * 0 => 包邮
+         * 1 => 自取
+         */
+        expressWay: shortDataTypes.Int(),
         /**
          * 0 => 新建订单
          * 1 => 已支付
@@ -33,6 +38,7 @@ module.exports = function (sequelize, DataTypes) {
         recieveTime: shortDataTypes.Date(),
         prepayId: shortDataTypes.String(64, true)
     }, {
+        paranoid: true,
         associate: function (models) {
             models.User.hasMany(models.Order);
             models.Order.belongsTo(models.User);

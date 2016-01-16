@@ -92,44 +92,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         }
     }());
 
-    //var submit = false;
-    //scope.buy = function () {
-    //    if (submit) {
-    //        return;
-    //    }
-    //
-    //    var selectedIds = [];
-    //
-    //    for(var shopIndex in scope.shoppingCart) {
-    //        if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
-    //            continue;
-    //        }
-    //        var shop = scope.shoppingCart[shopIndex];
-    //        for(var goodsIndex in shop.data) {
-    //            if (!shop.data.hasOwnProperty(goodsIndex)) {
-    //                continue;
-    //            }
-    //            var goods = shop.data[goodsIndex];
-    //            if (goods.selected) {
-    //                selectedIds.push(goods.id);
-    //            }
-    //        }
-    //    }
-    //
-    //    if (selectedIds.length === 0){
-    //        return;
-    //    }
-    //    submit = true;
-    //    var form = angular.element('<form method="post"></form>');
-    //    form.attr('action', '/user/order-comfirm');
-    //    form.attr('method', 'post');
-    //    var input = angular.element('<input />');
-    //    input.attr('name', 'ids');
-    //    input.val(JSON.stringify(selectedIds));
-    //    form.append(input);
-    //    form.append('<input name="type" value="0" >');
-    //    form.submit();
-    //};
     var submit = false;
     scope.buy = function () {
         if (submit) {
@@ -172,10 +134,11 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         form.find('[name=order]').val(JSON.stringify(orders));
         form.find('[name=address]').val(scope.address[scope.addressIndex].id);
         form.find('[name=msg]').val(scope.msg);
-        //form.submit();
+        form.find('[name=type]').val(scope.type);
+        form.submit();
     };
 
-    window.s = scope;
+    //window.s = scope;
 
     scope.changeAddress = function () {
         scope.$broadcast('address-modal');

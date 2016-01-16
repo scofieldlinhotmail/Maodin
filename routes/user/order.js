@@ -28,7 +28,6 @@ module.exports = function (router) {
      */
     router.post('/user/order-comfirm', function *() {
 
-
         this.checkBody('type').notEmpty().isInt().toInt();
 
         var body = this.request.body;
@@ -148,9 +147,9 @@ module.exports = function (router) {
 
     router.post('/user/buy', function *() {
 
-
         this.checkBody('order').notEmpty();
         this.checkBody('address').notEmpty();
+        this.checkBody('type').notEmpty().isInt().ge(0).le(1).toInt();
         if (this.errors) {
             this.body = this.errors;
             return;
@@ -159,6 +158,7 @@ module.exports = function (router) {
         var orderInfo = JSON.parse(body.order);
         var addressId = body.address;
         var userId = (yield auth.user(this)).id;
+        var type = body.type;
 
         var address = yield DeliverAddress.findOne({
             where: {
@@ -167,28 +167,37 @@ module.exports = function (router) {
             }
         });
 
-        var fare = yield Container.fare();
-
         if (!address) {
             this.body = 'invalid address';
             return;
         }
 
-        var ids = orderInfo.map(function (item) {
-            return item.id;
-        });
-        debug(ids);
-        var shoppingCart = yield ShoppingCart.findAll({
-            where: {
-                UserId: (yield auth.user(this)).id,
-                id: {
-                    $in: ids
-                }
-            },
-            attributes: ['id', 'num', 'GoodId'],
-            include: [Goods]
-        });
+        var shoppingCart;
+        if (type == 0) {
+            var ids = [];
+            orderInfo.forEach((shopOrder)  => {
+                shopOrder.goods.forEach((item) => {
+                    ids.push(item.id);
+                });
+            });
 
+            debug(ids);
+
+            shoppingCart = yield ShoppingCart.findAll({
+                where: {
+                    UserId: (yield auth.user(this)).id,
+                    id: {
+                        $in: ids
+                    }
+                },
+                attributes: ['id', 'num', 'GoodId'],
+                include: [Goods]
+            });
+        } else {
+
+        }
+
+        var orders;
         var order;
         yield db.transaction(function (t) {
 

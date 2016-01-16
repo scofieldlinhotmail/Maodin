@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="/dist/phone-order-comfirm.css">
 <% end %>
 
-<div ng-controller="AppCtrl" ng-cloak>
+<div ng-controller="AppCtrl" ng-cloak ng-init="type = <%= @type %>">
     <div class="order-address">
         <i class="am-icon am-icon-map-marker left"></i>
         <i class="am-icon am-icon-angle-right right" ng-click="changeAddress()"></i>
