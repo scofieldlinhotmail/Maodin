@@ -46,6 +46,9 @@ module.exports = function (sequelize, DataTypes) {
                     return yield sequelize.models.Goods.findById(id);
                 } else {
                     var salerGoods = yield sequelize.models.findById(id);
+                    if (!salerGoods ) {
+                        return null;
+                    }
                     return yield salerGoods.getGood();
                 }
             },

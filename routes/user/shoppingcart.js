@@ -57,7 +57,7 @@ module.exports = (router) => {
         var goodsAttributes = {
             exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'timeToDown', 'createdAt', 'updatedAt']
         };
-        debug((yield auth.user(this)).id);
+
         var shoppingCart = yield [
             ShoppingCart.findAll({
                 where: {

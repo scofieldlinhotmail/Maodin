@@ -394,7 +394,7 @@ function * init() {
 }
 
 co(function * () {
-    yield goodsSeed();
+    yield init();
     //yield addressSeed();
     console.log('finished ...');
 }).catch(function () {

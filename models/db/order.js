@@ -33,9 +33,9 @@ module.exports = function (sequelize, DataTypes) {
          * 留言
          */
         message: shortDataTypes.String(),
-        payTime: shortDataTypes.Date(true),
-        sendTime: shortDataTypes.Date(true),
-        recieveTime: shortDataTypes.Date(true),
+        payTime: shortDataTypes.Date(null),
+        sendTime: shortDataTypes.Date(null),
+        recieveTime: shortDataTypes.Date(null),
         prepayId: shortDataTypes.String(64, true),
         /**
          * 0 => 本店
@@ -47,6 +47,8 @@ module.exports = function (sequelize, DataTypes) {
         associate: function (models) {
             models.User.hasMany(models.Order);
             models.Order.belongsTo(models.User);
+            models.Store.hasMany(models.Order);
+            models.Order.belongsTo(models.Store);
         },
         instanceMethods: {
         },

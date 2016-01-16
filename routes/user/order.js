@@ -176,12 +176,10 @@ module.exports = function (router) {
         if (type == 0) {
             var ids = [];
             orderInfo.forEach((shopOrder)  => {
-                shopOrder.goods.forEach((item) => {
+                shopOrder.suborders.forEach((item) => {
                     ids.push(item.id);
                 });
             });
-
-            debug(ids);
 
             shoppingCart = yield ShoppingCart.findAll({
                 where: {
@@ -192,12 +190,47 @@ module.exports = function (router) {
                 },
                 attributes: ['id', 'num']
             });
+
         } else {
 
         }
 
-        var orders;
-        var order;
+        var goodsIds = [];
+        var storeIds = [];
+
+        orderInfo.forEach((shopOrder)  => {
+            storeIds.push(shopOrder.storeId);
+            shopOrder.suborders.forEach((item) => {
+                goodsIds.push(item.GoodsId);
+
+            });
+        });
+
+        var storeData = yield Store.findAll({
+            where: {
+                id: {
+                    $in: storeIds
+                }
+            }
+        });
+
+
+        var goodsData = yield Goods.findAll({
+            where: {
+                id: {
+                    $in: goodsIds
+                },
+                capacity: {
+                    $gt: 0
+                }
+            }
+        });
+
+        if (goodsData.length !== goodsIds.length) {
+            throw "商品已售完或已下架";
+        }
+
+        var orders = [];
         yield db.transaction(function (t) {
 
             return co(function *() {
@@ -210,9 +243,9 @@ module.exports = function (router) {
                     var price = 0;
                     var goodsNum = 0;
                     // 子订单
-                    for(var orderItemIndex = 0; orderItemIndex < shopOrder.goods.length; orderItemIndex ++) {
+                    for(var orderItemIndex = 0; orderItemIndex < shopOrder.suborders.length; orderItemIndex ++) {
 
-                        var buyItem = shopOrder.goods[orderItemIndex];
+                        var buyItem = shopOrder.suborders[orderItemIndex];
 
 
                         if (type == 0) {
@@ -233,9 +266,16 @@ module.exports = function (router) {
                             }
                         }
 
-                        var buyGoods = yield ShoppingCart.getGoodWithType(buyItem.id, type);
+                        var buyGoods = goodsData.filter((item) => {
+                            return item.id === buyItem.GoodsId
+                        })[0];
 
-                        if (buyGoods.capacity > buyItem.num) {
+
+                        if (!buyGoods) {
+                            throw '未能锁定商品信息';
+                        }
+
+                        if (buyGoods.capacity < buyItem.num) {
                             throw "商品库存不足";
                         }
 
@@ -253,7 +293,11 @@ module.exports = function (router) {
                         yield buyGoods.save({transaction: t});
                     }
 
-                    order = yield Order.create({
+                    var store = storeData.filter((item) => {
+                        return item.id === shopOrder.storeId
+                    })[0];
+
+                    var order = yield Order.create({
                         recieverName: address.recieverName,
                         phone: address.phone,
                         province: address.province,
@@ -265,7 +309,9 @@ module.exports = function (router) {
                         status: 0,
                         message: shopOrder.msg ? shopOrder.msg : '',
                         UserId: userId,
-                        expressWay: shopOrder.expressWay
+                        expressWay: shopOrder.expressWay,
+                        type: store ? 1 : 0,
+                        StoreId: store ? store.id : null
                     }, {transaction: t});
 
                     for (var i in orderItems) {
@@ -273,15 +319,24 @@ module.exports = function (router) {
                         orderItem.OrderId = order.id;
                         yield orderItem.save({transaction: t});
                     }
+
+                    orders.push(order);
                 }
             }).catch((err) => {
                 // todo: err
+                throw err;
             });
 
         });
 
         // todo: pay
-        this.redirect('/user/order/pay?id=' + order.id);
+        if (orders.length === 1) {
+            this.redirect('/user/order/pay?id=' + orders[0].id);
+        } else {
+            //todo:
+            this.redirect('/user/order-list');
+        }
+
     });
 
     router.get('/user/order-list/:status/:page', function *() {

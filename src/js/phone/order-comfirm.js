@@ -36,6 +36,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
                 var item = groupByStoreObj[i];
                 groupByStoreArr.push({
                     shopName: item[0].SalerGood.Store.name,
+                    storeId: item[0].SalerGood.StoreId,
                     data: item,
                     selected: false
                 });
@@ -46,7 +47,8 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             scope.shoppingCart = [{
                 shopName: '夷沃农特微商',
                 data: src[0],
-                selected: false
+                selected: false,
+                storeId: 0
             }].concat(groupByStoreArr);
         } else {
             scope.shoppingCart = groupByStoreArr;
@@ -110,7 +112,8 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             var order = {
                 msg: shop.msg,
                 expressWay: shop.expressWay,
-                suborders: []
+                suborders: [],
+                storeId: shop.storeId
             };
             for(var goodsIndex in shop.data) {
                 if (!shop.data.hasOwnProperty(goodsIndex)) {
@@ -119,7 +122,9 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
                 var goods = shop.data[goodsIndex];
                 order.suborders.push({
                     id: goods.id,
-                    num: goods.num
+                    num: goods.num,
+                    GoodsId: goods.GoodId,
+
                 });
             }
             orders.push(order);
@@ -129,7 +134,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             return;
         }
 
-        console.log(orders);
         var form = angular.element('#order-form');
         form.find('[name=order]').val(JSON.stringify(orders));
         form.find('[name=address]').val(scope.address[scope.addressIndex].id);
