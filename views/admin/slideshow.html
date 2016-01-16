@@ -1,0 +1,107 @@
+<% extend 'shared/admin-base' %>
+
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-comment.css">
+<% end %>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            轮播图管理
+            <small></small>
+        </h3>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+
+
+<table class="table table-striped table-bordered table-hover" id="sample_1">
+    <thead>
+    <tr>
+        <th class="table-checkbox"><input type="checkbox" class="checkboxes group-checkable"/></th>
+        <th >图片</th>
+        <th >链接</th>
+        <th >评分</th>
+        <th style="width: 400px;">内容</th>
+        <th >评论时间</th>
+        <th >是否显示</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% for e in @list : %>
+    <tr class="odd gradeX">
+        <td><input type="checkbox" data-id="<%= e.id %>" name="many" class=" many checkboxes" /></td>
+        <td><a href="mailto:shuxer@gmail.com"><%= e.Good.title %></a></td>
+        <td ><%= e.User.name %></td>
+        <td class="numeric"><%= e.score %></td>
+        <td style=""><%= e.message %></td>
+        <td class="center"><%= e.createdAt.toLocaleString() %></td>
+        <td>
+            <% if e.status==1 : %>
+            <label class="radio-inline">
+                <input type="radio" data-id="<%= e.id %>" checked="checked"  name="optionsRadios<%= e.id %>" value="1" >显示
+            </label>
+            <label class="radio-inline">
+                <input type="radio" data-id="<%= e.id %>" name="optionsRadios<%= e.id %>" value="0" >隐藏
+            </label>
+            <% else :%>
+            <label class="radio-inline">
+                <input type="radio" data-id="<%= e.id %>"  name="optionsRadios<%= e.id %>" value="1" >显示
+            </label>
+            <label class="radio-inline">
+                <input type="radio" data-id="<%= e.id %>" checked="checked"  name="optionsRadios<%= e.id %>" value="0" >隐藏
+            </label>
+            <% end %>
+
+
+        </td>
+    </tr>
+
+    <% end %>
+
+    </tbody>
+    <tfoot>
+    <tr>
+        <td colspan="7">
+            <button type="button" id="btn1" class="btn default">全选</button>
+            <button type="button" id="btn2" class="btn default">显示</button>
+            <button type="button" id="btn3" class="btn default">隐藏</button>
+        </td>
+    </tr>
+
+    </tfoot>
+</table>
+
+<div  style="text-align: center">
+    <div class="dataTables_paginate paging_bootstrap">
+        <ul class="pagination" style="visibility: visible;">
+            <% if @page==1 : %>
+            <li class="prev disabled"><a href="#" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% else : %>
+            <li class="prev "><a href="<%=  @preurl %>" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% end %>
+
+            <input  value="<%=  @page %>" class="inputcenter form-control" id="focus" style="float: left;width: 60px" type="number" min="1" max="<%=  @allpage %>"/>
+            <input class="inputcenter form-control" value="/<%=  @allpage %>" disabled="disabled"
+                   style="width: 40px;float: left;"/>
+            <input  value="<%=  @page %>" id="page" disabled="disabled" style="display: none"/>
+
+            <% if @next>0 : %>
+            <li class="next"><a href="<%=  @nexturl  %>" title="Next"><i class="fa fa-angle-right"></i></a></li>
+            <% else : %>
+            <li class="next disabled"><a href="#" title="Next">下一页<i class="fa fa-angle-right"></i></a></li>
+            <% end %>
+        </ul>
+    </div>
+</div>
+
+
+
+
+</body>
+
+<% block 'scripts': %>
+<script src="/dist/admin-comment.js"></script>
+<% end %>
