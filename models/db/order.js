@@ -25,7 +25,6 @@ module.exports = function (sequelize, DataTypes) {
          * 0 => 新建订单
          * 1 => 已支付
          * 2 => 已发货
-         * 3 => 已签收
          * 4 => 退货中
          * 10 => 完成
          * 11 => 已评价

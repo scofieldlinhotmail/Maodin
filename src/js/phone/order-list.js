@@ -13,16 +13,27 @@ var ajaxErrorCb = function () {
 var app = angular.module('app', ['ngRoute']);
 
 app.filter('statusStr', function () {
-    return function (val){
-        switch (val) {
-            case 0:
-                return '待付款';
-            case 1:
-                return '待发货';
-            case 2:
-                return '已发货';
-            case 3:
-                return '已签收';
+    return function (order){
+        if (order.status <= 2){
+            switch (order.status) {
+                case 0:
+                    return '待付款';
+                case 1:
+                    return '待发货';
+                case 2:
+                    return '已发货';
+                case 3:
+                    return '已签收';
+            }
+        } else if (order.returnStatus != 0) {
+            switch (order.returnStatus) {
+                case 1:
+                    return '退货中';
+                case 2:
+                    return '退货完成';
+            }
+        } else if (order.status >= 10) {
+            return '已签收';
         }
     };
 });
@@ -121,15 +132,19 @@ app.controller('StatusCtrl', ['$scope', '$routeParams', function (scope, $routeP
 
 app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
-    scope.action = function (status, cb) {
+    scope.action = function (status, cb, keepStatus) {
         $http
             .post('/user/order/action', {
                 id: scope.order.id,
                 status: status
             })
             .success(function () {
-                scope.order.status = status;
-                cb();
+                if (!keepStatus) {
+                    scope.order.status = status;
+                }
+                if (typeof cb == 'function') {
+                    cb();
+                }
                 scope.$applyAsync();
             }).error(ajaxErrorCb);
     };
@@ -139,7 +154,7 @@ app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
     };
 
     scope.return = function () {
-        scope.action(-2);
+        scope.action(-2, null, true);
     };
 
     scope.cancel = function (index) {

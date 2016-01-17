@@ -407,8 +407,11 @@ module.exports = function (router) {
             where: {
                 UserId: userId,
                 status: this.params.status >= 3 ? {
-                    $gt: 2
-                } : this.params.status
+                    $gte: 0
+                } : this.params.status,
+                returnStatus: this.params.status >= 3 ? {
+                    $gte: 0
+                } : 0,
             },
             include: [OrderItem],
             offset: ( this.params.page - 1) * orderLimitNum,
@@ -466,14 +469,14 @@ module.exports = function (router) {
             if (order.type == 1 && order.Store) {
                 stores.push(order.Store);
 
-                var topStore = order.Store.getTopStore();
+                var topStore = yield order.Store.getTopStore();
 
                 if (topStore) {
                     stores.push(topStore);
                 }
 
                 if (stores.length === 2){
-                    topStore = topStore.getTopStore();
+                    topStore = yield topStore.getTopStore();
                     if (topStore) {
                         stores.push(topStore);
                     }
@@ -487,7 +490,7 @@ module.exports = function (router) {
                 user.totalIntegral += goods.integral;
 
                 for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
-                    commissions[storeIndex] += goods["comission" + (storeIndex + 1)];
+                    commissions[storeIndex] += goods["commission" + (storeIndex + 1)];
                 }
 
             }
@@ -496,11 +499,10 @@ module.exports = function (router) {
 
             for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
                 var store = stores[storeIndex];
-                store.money += commissions[storeIndex] ;
-                store.totalMoney += commissions[storeIndex] ;
+                store.money += commissions[storeIndex];
+                store.totalMoney += commissions[storeIndex];
                 yield store.save();
             }
-
             this.body = 'ok';
 
         } else if (status == -1) {
