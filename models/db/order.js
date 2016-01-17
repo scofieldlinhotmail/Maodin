@@ -26,10 +26,19 @@ module.exports = function (sequelize, DataTypes) {
          * 1 => 已支付
          * 2 => 已发货
          * 3 => 已签收
+         * 4 => 退货中
+         * 10 => 完成
+         * 11 => 已评价
          *
-         * -1 => 已取消
          */
         status: shortDataTypes.Int(),
+        /**
+         * 0 => 未退货
+         * 1 => 申请退货
+         * 2 => 退货中
+         * 3 => 退货完成
+         */
+        returnStatus: shortDataTypes.Int(),
         /**
          * 留言
          */
@@ -37,6 +46,8 @@ module.exports = function (sequelize, DataTypes) {
         payTime: shortDataTypes.Date(null),
         sendTime: shortDataTypes.Date(null),
         recieveTime: shortDataTypes.Date(null),
+        returnRequestTime:  shortDataTypes.Date(null),
+        returnTime: shortDataTypes.Date(null),
         prepayId: shortDataTypes.String(64, true),
         /**
          * 0 => 本店

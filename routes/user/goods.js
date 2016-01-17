@@ -19,15 +19,21 @@ var GoodsCollection = db.models.GoodsCollection;
 
 module.exports = (router) => {
 
-    router.get('/user/goods-list', function *() {
+    router.get('/user/goods-list', goodsListView);
+    router.get('/user/goods-list/:id', goodsListView);
 
+    function * goodsListView() {
+
+        if (this.params.id) {
+            
+        }
         var types = yield GoodsType.structured();
 
         this.body = yield render('phone/goods-list.html', {
             noHeaderTpl: true,
             types
         });
-    });
+    }
 
     var goodsPerPage = 10;
     router.post('/get-goods', getGoodsData);
@@ -42,6 +48,7 @@ module.exports = (router) => {
             return;
         }
         var body = this.request.body;
+
 
         var where = {};
         if (body.searchKey) {
@@ -68,6 +75,20 @@ module.exports = (router) => {
             return;
         }
         conditions.order = body.orderMode;
+
+        var storeId = body.storeId;
+        if (storeId) {
+            var goodsIds = (yield SalerGoods.findAll({
+                attribute: ['GoodId'],
+                where: {
+                    StoreId: storeId
+                },
+                include: [Store]
+            })).map((item) => item.GoodId);
+            conditions.where.id = {
+                $in: goodsIds
+            }
+        }
 
         this.body = (yield GoodsView.findAll(conditions)).map((item) => item.dataValues);
 

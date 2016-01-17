@@ -309,16 +309,16 @@ module.exports = function (router) {
                         buyGoods.capacity--;
                         buyGoods.soldNum++;
                         yield buyGoods.save({transaction: t});
-                        // 赠送积分
-                        user.integral += buyGoods.integral;
-                        user.totalIntegral += buyGoods.integral;
-
-                        // 佣金
-                        if (type == 1) {
-                            commission[0] += buyGoods.commission1;
-                            commission[1] += buyGoods.commission2;
-                            commission[2] += buyGoods.commission3;
-                        }
+                        //// 赠送积分
+                        //user.integral += buyGoods.integral;
+                        //user.totalIntegral += buyGoods.integral;
+                        //
+                        //// 佣金
+                        //if (type == 1) {
+                        //    commission[0] += buyGoods.commission1;
+                        //    commission[1] += buyGoods.commission2;
+                        //    commission[2] += buyGoods.commission3;
+                        //}
                     }
 
                     var order = yield Order.create({
@@ -344,36 +344,36 @@ module.exports = function (router) {
                         yield orderItem.save({transaction: t});
                     }
 
-                    yield user.save({transaction: t});
+                    //yield user.save({transaction: t});
 
                     // 佣金
-                    if(type == 1 && store) {
-                        var storesContainer = [];
-                        store.money += commission[0];
-                        store.totalMoney += commission[0];
-
-                        storesContainer.push(store);
-
-                        var secondStore = yield store.getTopStore();
-
-                        if (secondStore) {
-                            secondStore.money += commission[1];
-                            secondStore.totalMoney += commission[1];
-
-                            storesContainer.push(secondStore);
-
-                            var ThirdStore = yield secondStore.getTopStore();
-
-                            if (ThirdStore) {
-                                ThirdStore.money += commission[2];
-                                ThirdStore.totalMoney += commission[2];
-                                storesContainer.push(ThirdStore);
-                            }
-                        }
-                        for(var l = 0; l < storesContainer.length; l ++) {
-                            yield storesContainer[l].save({transaction: t})
-                        }
-                    }
+                    //if(type == 1 && store) {
+                    //    var storesContainer = [];
+                    //    store.money += commission[0];
+                    //    store.totalMoney += commission[0];
+                    //
+                    //    storesContainer.push(store);
+                    //
+                    //    var secondStore = yield store.getTopStore();
+                    //
+                    //    if (secondStore) {
+                    //        secondStore.money += commission[1];
+                    //        secondStore.totalMoney += commission[1];
+                    //
+                    //        storesContainer.push(secondStore);
+                    //
+                    //        var ThirdStore = yield secondStore.getTopStore();
+                    //
+                    //        if (ThirdStore) {
+                    //            ThirdStore.money += commission[2];
+                    //            ThirdStore.totalMoney += commission[2];
+                    //            storesContainer.push(ThirdStore);
+                    //        }
+                    //    }
+                    //    for(var l = 0; l < storesContainer.length; l ++) {
+                    //        yield storesContainer[l].save({transaction: t})
+                    //    }
+                    //}
 
                     orders.push(order);
                 }
@@ -394,6 +394,7 @@ module.exports = function (router) {
 
     });
 
+    var orderLimitNum = 5;
     router.get('/user/order-list/:status/:page', function *() {
         this.checkParams('status').notEmpty().isInt().toInt();
         this.checkParams('page').notEmpty().isInt().toInt();
@@ -410,8 +411,8 @@ module.exports = function (router) {
                 } : this.params.status
             },
             include: [OrderItem],
-            offset: ( this.params.page - 1) * 4,
-            limit: 4
+            offset: ( this.params.page - 1) * orderLimitNum,
+            limit: orderLimitNum
         });
 
         this.body = yield order;
@@ -431,15 +432,98 @@ module.exports = function (router) {
             return;
         }
 
-        this.body = yield Order.update({
-            status: 3,
-            recieveTime: Date.now(),
-        }, {
-            where: {
-                id: this.request.body.id,
-                UserId: (yield auth.user(this)).id
+        var status = this.body.status;
+        var id = this.request.body.id;
+        var userId = (yield auth.user(this)).id;
+
+        var user = yield User.findById(userId);
+
+        if (util.isNullOrUndefined(user)){
+            this.body = '用户不存在';
+            return;
+        }
+
+        if (status == 10) {
+            // 签收
+            var order = yield order.findOne({
+                where: {
+                    id: id,
+                    UserId: userId
+                },
+                include: [OrderItem, Store]
+            });
+
+            order.status = 10;
+            order.recieveTime = Date.now();
+
+            yield order.save();
+            // 积分和佣金
+
+            var stores = [];
+
+            var commissions = [0, 0, 0];
+
+            if (order.type == 1 && order.Store) {
+                stores.push(order.Store);
+
+                var topStore = order.Store.getTopStore();
+
+                if (topStore) {
+                    stores.push(topStore);
+                }
+
+                if (stores.length === 2){
+                    topStore = topStore.getTopStore();
+                    if (topStore) {
+                        stores.push(topStore);
+                    }
+                }
             }
-        });
+
+            for(var orderItemIndex  = 0; orderItemIndex < order.OrderItems.length; orderItemIndex ++) {
+                var orderItem = order.OrderItems[orderItemIndex];
+                var goods = JSON.parse(orderItem.goods);
+                user.integral += goods.integral;
+                user.totalIntegral += goods.integral;
+
+                for(let storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
+                    commissions[storeIndex] += goods["comission" + (storeIndex + 1)];
+                }
+
+            }
+
+            yield user.save();
+
+            for(let storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
+                var store = stores[storeIndex];
+                store.money += commissions[storeIndex] ;
+                store.totalMoney += commissions[storeIndex] ;
+                yield store.save();
+            }
+
+        } else if (status == -1) {
+            // 取消
+            this.body = yield Order.destroy({
+                where: {
+                    id: id,
+                    UserId: userId
+                }
+            });
+            // 退款
+        } else if (status == -2) {
+            // 退货
+            this.body = yield Order.update({
+                returnStatus: 1,
+                returnRequestTime: Date.now()
+            },{
+                where: {
+                    id: id,
+                    UserId: userId
+                }
+            });
+        }
+
+
     });
 
     router.get('/user/order/pay', function *() {

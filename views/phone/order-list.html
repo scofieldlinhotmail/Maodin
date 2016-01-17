@@ -53,9 +53,11 @@
             </div>
             <div class="am-panel-footer am-text-right">
                 <div class="am-btn-group-sm">
-                    <a class="am-btn am-btn-danger" ng-show="order.status == 0" >付款</a>
-                    <div class="am-btn am-btn-success" ng-show="order.status == 2" ng-click="check(order.id)">确认收货</div>
-                    <a href="/user/evaluation?id={{order.id}}" class="am-btn am-btn-danger" ng-show="order.status == 3">评价</a>
+                    <a class="am-btn am-btn-danger am-radius" ng-show="order.status == 0" >付款</a>
+                    <a class="am-btn am-btn-warning am-radius" ng-show="order.status == 0" ng-click="cancel($index)">取消</a>
+                    <a class="am-btn am-btn-warning am-radius" ng-show="order.status == 2" ng-click="return()">退货</a>
+                    <div class="am-btn am-btn-success am-radius" ng-show="order.status == 2" ng-click="check()">确认收货</div>
+                    <a href="/user/evaluation?id={{order.id}}" class="am-btn am-btn-danger am-radius" ng-show="order.status == 3">评价</a>
                 </div>
             </div>
         </div>

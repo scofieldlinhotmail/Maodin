@@ -76,7 +76,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         $http
             .get('/user/order-list/' + status + '/' + page)
             .success(function (data) {
-                if (data.length < 4 ){
+                if (data.length < 5 ){
                     scope.loading = 2;
                 } else {
                     scope.loading = 0;
@@ -121,16 +121,31 @@ app.controller('StatusCtrl', ['$scope', '$routeParams', function (scope, $routeP
 
 app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
-    scope.check = function () {
+    scope.action = function (status, cb) {
         $http
             .post('/user/order/action', {
                 id: scope.order.id,
-                status: 3
+                status: status
             })
             .success(function () {
-                scope.order.status = 3;
+                scope.order.status = status;
+                cb();
                 scope.$applyAsync();
             }).error(ajaxErrorCb);
+    };
+
+    scope.check = function () {
+        scope.action(10);
+    };
+
+    scope.return = function () {
+        scope.action(-2);
+    };
+
+    scope.cancel = function (index) {
+        scope.action(-1, function () {
+            scope.$parent.list.splice(index, 1);
+        });
     };
 
 }]);
