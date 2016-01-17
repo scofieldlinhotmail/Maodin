@@ -9,6 +9,7 @@ var GoodsType = db.models.GoodsType;
 
 module.exports = (router) => {
     var User = db.models.User;
+    var Rank = db.models.Rank;
     router.get('/user/index',  function *() {
         var types = yield GoodsType.findAll({
             where: {
@@ -24,10 +25,23 @@ module.exports = (router) => {
     });
 
     router.get('/user/center',  function *() {
-        var u= yield User.findOne();
+        var user=yield auth.user(this);
+        var u= yield User.findById(user.id);
+        var i=u.totalIntegral;
+        var rank=yield Rank.findOne({
+            where:{
+                min:{
+                    $lte:i,
+                },
+                max:{
+                    $gt:i
+                }
+            }
+        })
         debug(u);
         this.body = yield render('phone/personalcenter.html', {
             //user: yield auth.user(this),
+            rank,
             user: u,
             title: ''
         });
