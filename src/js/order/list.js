@@ -285,18 +285,23 @@ app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
         if (typeof newVal === 'undefined' || newVal == oldVal || newVal != true){
             return;
         }
-        if (loading) {
+        if (loading || scope.order.orderItems) {
             return;
         }
         loading = true;
+        scope.loadItem();
+    });
+
+    scope.loadItem = function () {
         $http
-            .get('./get-orderitem/' + scope.order.id)
+            .get('/adminer-order/get-orderitem/' + scope.order.id)
             .success(function (data) {
                 scope.order.orderItems = data;
             }).error(ajaxErrorCb);
-    });
+    };
 
     scope.see = function (order) {
+        scope.loadItem();
         scope.$emit('see', order);
     };
 
