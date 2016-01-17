@@ -10,7 +10,7 @@ var ajaxErrorCb = function () {
     alert('操作失败，请刷新重试');
 };
 
-var app = angular.module('app', []);
+var app = angular.module('app', ['ngRoute']);
 
 app.filter('statusStr', function () {
     return function (val){
@@ -27,17 +27,35 @@ app.filter('statusStr', function () {
     };
 });
 
+app.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider
+        .when('/:status', {
+            template: '',
+            controller: 'StatusCtrl'
+        })
+        .otherwise({
+            redirectTo: '/2'
+        });
+}]);
 
 app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
 
+    scope.statusStr = [
+        { status: 0, str: '待付款'},
+        { status: 1, str: '待发货'},
+        { status: 2, str: '待收货'},
+        { status: 3, str: '全部'}
+    ];
+
     scope.data = {};
 
-    scope.status = 0;
+    //scope.status = 0;
     scope.page = 1;
     scope.list = [];
     scope.loading = 0;
 
     scope.$watch('status', function (newVal, oldVal) {
+        console.log(scope.status);
         if (typeof newVal === 'undefined'){
             return
         }
@@ -58,7 +76,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         $http
             .get('/user/order-list/' + status + '/' + page)
             .success(function (data) {
-                if (data.length < 4 ){
+                if (data.length < 5 ){
                     scope.loading = 2;
                 } else {
                     scope.loading = 0;
@@ -93,24 +111,43 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         scope.get();
     };
 
+    window.s = scope;
 
+}]);
+
+app.controller('StatusCtrl', ['$scope', '$routeParams', function (scope, $routeParams) {
+    scope.$parent.status = $routeParams.status;
 }]);
 
 app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
-    scope.check = function () {
+    scope.action = function (status, cb) {
         $http
             .post('/user/order/action', {
                 id: scope.order.id,
-                status: 3
+                status: status
             })
             .success(function () {
-                scope.order.status = 3;
+                scope.order.status = status;
+                cb();
                 scope.$applyAsync();
             }).error(ajaxErrorCb);
     };
 
-}]);
+    scope.check = function () {
+        scope.action(10);
+    };
 
+    scope.return = function () {
+        scope.action(-2);
+    };
+
+    scope.cancel = function (index) {
+        scope.action(-1, function () {
+            scope.$parent.list.splice(index, 1);
+        });
+    };
+
+}]);
 
 angular.bootstrap(document.documentElement, ['app']);

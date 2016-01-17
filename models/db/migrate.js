@@ -324,32 +324,38 @@ function * shoppingCartSeed() {
 }
 
 function * orderSeed() {
-    var fare = yield db.models.Container.fare();
+
     var users = yield db.models.User.findAll({});
-    var areas = yield db.models.Area.findAll({
-        where: {
-            type: 2
-        }
-    });
     var goods = yield db.models.Goods.findAll({});
-    for(var i = 0; i < users.length; i ++) {
-        for(var j = 0 ; j < 80; j ++) {
+    var stores = yield db.models.Store.findAll({});
+    for(var i = 0; i < users.length && i < 10; i ++) {
+        console.log('i:', i);
+        for(var j = 0 ; j < 10; j ++) {
+            //console.log('j:', j);
             var items = [];
             var price = 0;
-            for(var k = 0 ; k < (i + j % 10) + 1; k ++ ){
-                var goodsItem = goods[(i+j+k) % goods.length];
-                price += (i+j+k) * goodsItem.price;
+            var type = j % 2;
+            var num = 0;
+            var store = stores[i % stores.length];
+            var salerGoods = yield db.models.SalerGoods.findAll({
+                where: {
+                    StoreId: store.id
+                },
+                include: [db.models.Goods]
+            });
+            for(var k = 0 ; k < (i + j % 10) + 1 && k < 5; k ++ ){
+                //console.log('k:', k);
+                var goodsItem = type  == 0 ? goods[(i+j+k) % goods.length] : salerGoods[(i+j+k) % salerGoods.length].Good;
+                price += ((i + j % 10) + 1) * goodsItem.price;
                 items.push(db.models.OrderItem.build({
                     goods: JSON.stringify(goodsItem),
                     price: ((i + j % 10) + 1) * goodsItem.price,
                     num: (i + j % 10) + 1,
-                    GoodId: goodsItem.id
+                    type,
+                    SalerGoodId: type == 1 ? goodsItem.id : null,
+                    GoodId: type == 0 ? goodsItem.id : null
                 }));
-            }
-            var orderFare = 0;
-            if (price < parseFloat(fare.freeLine)) {
-                orderFare = fare.basicFare;
-                price += orderFare;
+                num += (i + j % 10) + 1;
             }
             var order = yield db.models.Order.create({
                 recieverName: '收货人' + i,
@@ -360,11 +366,13 @@ function * orderSeed() {
                 address: '大连理工大学软件学院',
                 price,
                 num: items.length,
-                status: 1,
-                fare: orderFare,
+                goodsNum: num,
+                status: (i + j) % 4,
+                exressWay: j % 2,
                 message: '留言啊',
-                UserId: users[i].id,
-                AreaId: areas[i % areas.length].id,
+                UserId: users[i % users.length].id,
+                type: type,
+                StoreId: type == 1 ? store.id : null
             });
             for(var k = 0 ; k < items.length; k ++ ){
                 items[k].OrderId = order.id;
@@ -388,7 +396,7 @@ function * init() {
     //yield msgSeed();
     yield addressSeed();
     //yield containerSeed();
-    //yield orderSeed();
+    yield orderSeed();
     //yield commentSeed();
     yield rankSeed();
 }
@@ -396,6 +404,7 @@ function * init() {
 co(function * () {
     yield init();
     //yield addressSeed();
+    //yield orderSeed();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);
