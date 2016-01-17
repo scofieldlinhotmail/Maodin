@@ -121,15 +121,19 @@ app.controller('StatusCtrl', ['$scope', '$routeParams', function (scope, $routeP
 
 app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
-    scope.action = function (status, cb) {
+    scope.action = function (status, cb, keepStatus) {
         $http
             .post('/user/order/action', {
                 id: scope.order.id,
                 status: status
             })
             .success(function () {
-                scope.order.status = status;
-                cb();
+                if (!keepStatus) {
+                    scope.order.status = status;
+                }
+                if (typeof cb == 'function') {
+                    cb();
+                }
                 scope.$applyAsync();
             }).error(ajaxErrorCb);
     };
@@ -139,7 +143,7 @@ app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
     };
 
     scope.return = function () {
-        scope.action(-2);
+        scope.action(-2, null, true);
     };
 
     scope.cancel = function (index) {

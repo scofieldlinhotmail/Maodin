@@ -10,21 +10,29 @@ var fs = require('fs');
 
 module.exports = (router) => {
 
-    var Goods=db.models.Goods;
+    var Goods = db.models.Goods;
+    var User = db.models.User;
     var Order = db.models.Order;
     var OrderItem = db.models.OrderItem;
 
-    router.get('/adminer-order/order-list',  function *() {
+    router.get('/adminer-order/order-list', orderListView);
+    router.get('/adminer-order/order-list/ts/:type/:status', orderListView);
+    router.get('/adminer-order/order-list/t/:type', orderListView);
+    router.get('/adminer-order/order-list/s/:status', orderListView);
+
+    function *orderListView() {
 
         var goods = yield Goods.findAll({
             attributes: ['id', 'title']
         });
 
         this.body = yield render('order/list', {
-            goods
+            goods,
+            type: typeof this.params.type !== 'undefined' ? this.params.type : 'null',
+            status: typeof this.params.status  !== 'undefined' ? this.params.status : 'null',
         });
 
-    });
+    }
 
     router.post('/adminer-order/get-order', function *() {
 
@@ -56,19 +64,38 @@ module.exports = (router) => {
 
         var body = this.request.body;
 
-        debug(body);
+        var status = body.status;
 
-        this.body = yield Order.update({
-            status: 2,
-            sendTime: Date.now()
-        },{
-            where: {
-                id: {
-                    in: body.ids
-                },
-                status: 1
-            }
-        });
+        if (status == 2) {
+            // 发货
+            this.body = yield Order.update({
+                status: 2,
+                sendTime: Date.now()
+            }, {
+                where: {
+                    id: {
+                        in: body.ids
+                    },
+                    status: 1
+                }
+            });
+        } else if(status == 3) {
+            // 收到发货
+            this.body = yield Order.update({
+                status: 10,
+                returnTime: Date.now(),
+                returnStatus: 2
+            }, {
+                where: {
+                    id: {
+                        in: body.ids
+                    },
+                    returnStatus: 1
+                }
+            });
+        }
+
+
     });
 
     function * getOrders(body, withItem) {
@@ -80,13 +107,23 @@ module.exports = (router) => {
 
         var conditions = {
             where: {
-                status: body.status ? body.status : {
-                    in: [1, 2, 3]
+            },
+            include: [
+                {
+                    model: User
                 }
-            }
+            ]
             //offset: (body.page - 1) * body.limit,
             //limit: body.limit
         };
+
+        if (body.status < 0) {
+            conditions.where.returnStatus =  - body.status;
+        } else {
+            conditions.where.status = body.status ? (body.status) : {
+                $gt: 0
+            };
+        }
 
         if (body.type) {
             conditions.where.type = body.type;

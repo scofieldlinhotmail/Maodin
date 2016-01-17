@@ -40,18 +40,21 @@
                         <div class="form-group">
                             <label class="control-label col-md-3">订单状态</label>
                             <div class="col-md-4">
-                                <select class="form-control" ng-model="status">
+                                <select class="form-control" ng-model="status" ng-init="status = '<%= @status %>'">
                                     <option value="1">待发货</option>
                                     <option value="2">已发货</option>
-                                    <option value="3">已签收</option>
+                                    <option value="10">已签收</option>
+                                    <option value="-1">退货中</option>
+                                    <option value="-2">退货完成</option>
+                                    <option value="">全部</option>
                                 </select>
-                                <span class="help-block">可多选</span>
+                                <!--<span class="help-block">可多选</span>-->
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3">类型</label>
                             <div class="col-md-4">
-                                <select class="form-control" ng-model="type">
+                                <select class="form-control" ng-model="type" ng-init="type = '<%- @type %>'">
                                     <option value="0">普通订单</option>
                                     <option value="1">分销订单</option>
                                 </select>
@@ -110,6 +113,8 @@
                     <input type="checkbox" ng-click="select('all')" ng-checked="all" id="all-checkbox">
                 </th>
                 <th>订单号</th>
+                <th>用户id</th>
+                <th>用户昵称</th>
                 <th>收货人姓名</th>
                 <th>收货人手机号</th>
                 <th>数量</th>
@@ -131,13 +136,15 @@
                     <input type="checkbox" ng-click="select(order.id)" ng-checked="order.selected">
                 </td>
                 <td>{{order.id}}</td>
+                <td>{{order.User.id}}</td>
+                <td>{{order.User.nickname}}</td>
                 <td>{{order.recieverName}}</td>
                 <td>{{order.phone}}</td>
                 <td>{{order.num}}</td>
                 <td>{{order.price}}</td>
                 <td>{{order.expressWay == 0 ? '包邮' : '自取'}}</td>
                 <td>{{order.payTime}}</td>
-                <td>{{order.status | statusStr}}</td>
+                <td>{{order | statusStr}}</td>
                 <td> {{order.message ? '有': '无'}}</td>
                 <td> {{order.type == 0 ? '普通': '分销'}}</td>
                 <td>
@@ -146,15 +153,16 @@
                             操作 <i class="fa fa-angle-down"></i>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li ng-click="action(2, order.id)" ng-show="order.status == 1"><a href="#">发货</a></li>
-                            <li ng-click="action(2, order.id)" ><a href="#">发货</a></li>
+                            <li ng-click="action(2, order.id)" ng-show="order.status == 1"><a href="">发货</a></li>
+                            <li ng-click="action(3, order.id)" ng-show="order.returnStatus == 1"><a href="">收到退货</a></li>
+                            <!--<li ng-click="action(2, order.id)" ><a href="#">发货</a></li>-->
                         </ul>
                     </div>
                 </td>
             </tr>
             <tr ng-repeat-end="" ng-show="order.opened" ng-controller="OrderCtrl">
                 <td></td>
-                <td colspan="13">
+                <td colspan="14">
                     <table class="table  table-bordered table-hover">
                         <thead>
                         <tr>
@@ -173,13 +181,13 @@
                         <tr ng-repeat="item in order.orderItems">
                             <td>{{item.goods.id}}</td>
                             <td><img ng-src="{{item.goods.mainImg}}" ></td>
-                            <td>{{item.goods.price}}</td>
                             <td>{{item.num}}</td>
-                            <td>{{item.price}}</td>
-                            <td>{{item.integral}}</td>
-                            <td>{{item.commission1}}</td>
-                            <td>{{item.commission2}}</td>
-                            <td>{{item.commission3}}</td>
+                            <td>{{item.goods.price}}</td>
+                            <td>{{item.goods.price * item.num}}</td>
+                            <td>{{item.goods.integral}}</td>
+                            <td>{{item.goods.commission1}}</td>
+                            <td>{{item.goods.commission2}}</td>
+                            <td>{{item.goods.commission3}}</td>
                         </tr>
                         </tbody>
                     </table>

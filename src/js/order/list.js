@@ -51,16 +51,27 @@ $(function () {
 });
 
 app.filter('statusStr', function () {
-    return function (val){
-        switch (val) {
-            case 0:
-                return '';
-            case 1:
-                return '待发货';
-            case 2:
-                return '已发货';
-            case 3:
-                return '已签收';
+    return function (order){
+        if (order.status <= 2){
+            switch (order.status) {
+                case 0:
+                    return '待付款';
+                case 1:
+                    return '待发货';
+                case 2:
+                    return '已发货';
+                case 3:
+                    return '已签收';
+            }
+        } else if (order.returnStatus != 0) {
+            switch (order.returnStatus) {
+                case 1:
+                    return '退货中';
+                case 2:
+                    return '退货完成';
+            }
+        } else if (order.status >= 10) {
+            return '已签收';
         }
     };
 });
@@ -98,7 +109,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
         var page = scope.page;
         var start = scope.data.length;
         $http
-            .post('./get-order', {
+            .post('/adminer-order/get-order', {
                 page: scope.page,
                 status: scope.status,
                 first: page == 1,
@@ -121,7 +132,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
                 }
                 for(var i in data) {
                     data[i].opened = false;
-                    data[i].payTime = moment(data[i].payTime).format("YY/MM/DD hh:mm:ss");
+                    data[i].payTime = data[i].payTime ? moment(data[i].payTime).format("YY/MM/DD hh:mm:ss") : '';
                 }
                 scope.data = scope.data.concat(data);
                 scope.list = scope.data.slice(start, scope.data.length);
@@ -210,7 +221,6 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
         } else {
             ids = scope.selectedIds;
         }
-        console.log(ids);
         $http
             .post('./order/status', {
                 ids: ids,
@@ -220,11 +230,12 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
                 for(var i in ids) {
                     var order = find(scope.data, ids[i], 'id');
                     if (order) {
-                        scope.data[order.key].status = status;
-                    }
-                    order = find(scope.list, ids[i], 'id');
-                    if (order) {
-                        scope.list[order.key].status = status;
+                        if (scope.data[order.key].status == 1 && status == 2) {
+                            scope.data[order.key].status = status;
+                        } else if (scope.data[order.key].status == 2  && status == 3) {
+                            scope.data[order.key].status = 10;
+                            scope.data[order.key].returnStatus = 2;
+                        }
                     }
                 }
                 scope.$applyAsync();
@@ -232,33 +243,15 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
             }).error(ajaxErrorCb);
     };
 
+
     var form = angular.element('#export-form');
     var inputs = form.find('input');
-    scope.export = function (type) {
 
-        inputs.eq(0).val(JSON.stringify(scope.selectedIds));
-        inputs.eq(1).val(type);
-        inputs.eq(2).val("false");
-        form.submit();
-    };
 
-    scope.exportAll = function (type) {
-        inputs.eq(0).val(JSON.stringify({
-            page: scope.page,
-            status: scope.status,
-            startDate: daterange.eq(0).val(),
-            endDate: daterange.eq(1).val(),
-            recieverName: scope.recieverName,
-            phone: scope.phone,
-            goodsIds: scope.goodsIds,
-            areas: scope.areas
-        }));
-        inputs.eq(1).val(type);
-        inputs.eq(2).val("true");
-        form.submit();
-    };
+    scope.$applyAsync(function () {
+        scope.get();
+    });
 
-    scope.get();
 
     window.s = scope;
 
