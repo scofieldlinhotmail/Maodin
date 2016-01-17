@@ -13,16 +13,27 @@ var ajaxErrorCb = function () {
 var app = angular.module('app', ['ngRoute']);
 
 app.filter('statusStr', function () {
-    return function (val){
-        switch (val) {
-            case 0:
-                return '待付款';
-            case 1:
-                return '待发货';
-            case 2:
-                return '已发货';
-            case 3:
-                return '已签收';
+    return function (order){
+        if (order.status <= 2){
+            switch (order.status) {
+                case 0:
+                    return '待付款';
+                case 1:
+                    return '待发货';
+                case 2:
+                    return '已发货';
+                case 3:
+                    return '已签收';
+            }
+        } else if (order.returnStatus != 0) {
+            switch (order.returnStatus) {
+                case 1:
+                    return '退货中';
+                case 2:
+                    return '退货完成';
+            }
+        } else if (order.status >= 10) {
+            return '已签收';
         }
     };
 });

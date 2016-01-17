@@ -407,7 +407,7 @@ module.exports = function (router) {
             where: {
                 UserId: userId,
                 status: this.params.status >= 3 ? {
-                    $gte: 1
+                    $gte: 0
                 } : this.params.status,
                 returnStatus: this.params.status >= 3 ? {
                     $gte: 0
