@@ -9,13 +9,15 @@ module.exports = function (sequelize, DataTypes) {
          */
         goods: shortDataTypes.String(),
         price: shortDataTypes.Double(),
-        num: shortDataTypes.Int()
+        num: shortDataTypes.Int(),
+        type: shortDataTypes.Int()
     }, {
         associate: function (models) {
             models.Order.hasMany(models.OrderItem);
             models.OrderItem.belongsTo(models.Order);
             models.Goods.hasMany(models.OrderItem);
             models.OrderItem.belongsTo(models.Goods);
+            models.OrderItem.belongsTo(models.SalerGoods);
         },
         instanceMethods: {
         },

@@ -242,6 +242,11 @@ module.exports = function (router) {
 
                     var price = 0;
                     var goodsNum = 0;
+
+                    var store = storeData.filter((item) => {
+                        return item.id === shopOrder.storeId
+                    })[0];
+
                     // 子订单
                     for(var orderItemIndex = 0; orderItemIndex < shopOrder.suborders.length; orderItemIndex ++) {
 
@@ -286,16 +291,14 @@ module.exports = function (router) {
                             goods: JSON.stringify(buyGoods),
                             price: buyItem.num * buyGoods.price,
                             num: buyItem.num,
-                            GoodId: buyGoods.id
+                            type: store ? 1 : 0,
+                            SalerGoodId: store ? buyItem.SalerGoodId : null,
+                            GoodId: store ? null :buyGoods.id
                         }));
                         buyGoods.capacity--;
                         buyGoods.soldNum++;
                         yield buyGoods.save({transaction: t});
                     }
-
-                    var store = storeData.filter((item) => {
-                        return item.id === shopOrder.storeId
-                    })[0];
 
                     var order = yield Order.create({
                         recieverName: address.recieverName,

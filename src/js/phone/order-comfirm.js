@@ -124,7 +124,8 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
                     id: goods.id,
                     num: goods.num,
                     GoodsId: goods.GoodId,
-
+                    type: goods.type,
+                    SalerGoodId: goods.type == 1 ? goods.SalerGoodId : null
                 });
             }
             orders.push(order);

@@ -26,6 +26,7 @@ module.exports = function (sequelize, DataTypes) {
          * 1 => 已支付
          * 2 => 已发货
          * 3 => 已签收
+         *
          * -1 => 已取消
          */
         status: shortDataTypes.Int(),
