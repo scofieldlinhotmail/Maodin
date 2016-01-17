@@ -328,8 +328,10 @@ function * orderSeed() {
     var users = yield db.models.User.findAll({});
     var goods = yield db.models.Goods.findAll({});
     var stores = yield db.models.Store.findAll({});
-    for(var i = 0; i < users.length; i ++) {
-        for(var j = 0 ; j < 80; j ++) {
+    for(var i = 0; i < users.length && i < 10; i ++) {
+        console.log('i:', i);
+        for(var j = 0 ; j < 10; j ++) {
+            //console.log('j:', j);
             var items = [];
             var price = 0;
             var type = j % 2;
@@ -341,8 +343,8 @@ function * orderSeed() {
                 },
                 include: [db.models.Goods]
             });
-            for(var k = 0 ; k < (i + j % 10) + 1; k ++ ){
-
+            for(var k = 0 ; k < (i + j % 10) + 1 && k < 5; k ++ ){
+                //console.log('k:', k);
                 var goodsItem = type  == 0 ? goods[(i+j+k) % goods.length] : salerGoods[(i+j+k) % salerGoods.length].Good;
                 price += ((i + j % 10) + 1) * goodsItem.price;
                 items.push(db.models.OrderItem.build({

@@ -19,6 +19,7 @@ var ShoppingCart = db.models.ShoppingCart;
 var DeliverAddress = db.models.DeliverAddress;
 var Order = db.models.Order;
 var Store = db.models.Store;
+var User = db.models.User;
 var OrderItem = db.models.OrderItem;
 
 module.exports = function (router) {
@@ -167,6 +168,14 @@ module.exports = function (router) {
             }
         });
 
+        var user = yield User.findById(userId);
+
+        if (util.isNullOrUndefined(user)) {
+            this.body = '用户不存在';
+            return;
+        }
+
+
         if (!address) {
             this.body = 'invalid address';
             return;
@@ -243,6 +252,8 @@ module.exports = function (router) {
                     var price = 0;
                     var goodsNum = 0;
 
+                    var commission = [0, 0, 0];
+
                     var store = storeData.filter((item) => {
                         return item.id === shopOrder.storeId
                     })[0];
@@ -298,6 +309,16 @@ module.exports = function (router) {
                         buyGoods.capacity--;
                         buyGoods.soldNum++;
                         yield buyGoods.save({transaction: t});
+                        // 赠送积分
+                        user.integral += buyGoods.integral;
+                        user.totalIntegral += buyGoods.integral;
+
+                        // 佣金
+                        if (type == 1) {
+                            commission[0] += buyGoods.commission1;
+                            commission[1] += buyGoods.commission2;
+                            commission[2] += buyGoods.commission3;
+                        }
                     }
 
                     var order = yield Order.create({
@@ -321,6 +342,37 @@ module.exports = function (router) {
                         var orderItem = orderItems[i];
                         orderItem.OrderId = order.id;
                         yield orderItem.save({transaction: t});
+                    }
+
+                    yield user.save({transaction: t});
+
+                    // 佣金
+                    if(type == 1 && store) {
+                        var storesContainer = [];
+                        store.money += commission[0];
+                        store.totalMoney += commission[0];
+
+                        storesContainer.push(store);
+
+                        var secondStore = yield store.getTopStore();
+
+                        if (secondStore) {
+                            secondStore.money += commission[1];
+                            secondStore.totalMoney += commission[1];
+
+                            storesContainer.push(secondStore);
+
+                            var ThirdStore = yield secondStore.getTopStore();
+
+                            if (ThirdStore) {
+                                ThirdStore.money += commission[2];
+                                ThirdStore.totalMoney += commission[2];
+                                storesContainer.push(ThirdStore);
+                            }
+                        }
+                        for(var l = 0; l < storesContainer.length; l ++) {
+                            yield storesContainer[l].save({transaction: t})
+                        }
                     }
 
                     orders.push(order);
