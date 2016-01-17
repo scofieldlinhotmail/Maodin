@@ -155,6 +155,7 @@
                         <ul class="dropdown-menu" role="menu">
                             <li ng-click="action(2, order.id)" ng-show="order.status == 1"><a href="">发货</a></li>
                             <li ng-click="action(3, order.id)" ng-show="order.returnStatus == 1"><a href="">收到退货</a></li>
+                            <li ><a ng-click="see(order)" data-toggle="modal" href="#modal">查看详情</a></li>
                             <!--<li ng-click="action(2, order.id)" ><a href="#">发货</a></li>-->
                         </ul>
                     </div>
@@ -209,6 +210,123 @@
             </div>
         </div>
     </div>
+
+    <div id="modal" class="modal fade modal-scroll" tabindex="-1" data-replace="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4 class="modal-title">订单详情</h4>
+                </div>
+                <style>
+                    .col-txt {
+                        width: 88px;
+                    }
+                </style>
+                <div class="modal-body">
+                    <table class="table  table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th colspan="4">订单基本信息</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="col-txt">订单号</td>
+                                <td>{{modalData.id}}</td>
+                                <td class="col-txt">状态</td>
+                                <td>{{modalData | statusStr}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">用户id</td>
+                                <td>{{modalData.User.id}}</td>
+                                <td class="col-txt">用户昵称</td>
+                                <td>{{modalData.User.nickname}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">收货人姓名</td>
+                                <td>{{modalData.recieverName}}</td>
+                                <td class="col-txt">收货人手机号</td>
+                                <td>{{modalData.phone}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">收货人地址</td>
+                                <td colspan="3">
+                                    {{modalData.province}}
+                                    {{modalData.city}}
+                                    {{modalData.area}}
+                                    {{modalData.address}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">总价</td>
+                                <td>{{modalData.price}}</td>
+                                <td class="col-txt">配送方式</td>
+                                <td>{{modalData.expressWay == 0 ? '包邮' : '自取'}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">类型</td>
+                                <td>{{modalData.type == 0 ? '普通' : '分销'}}</td>
+                                <td class="col-txt">件数</td>
+                                <td>{{modalData.goodsNum}}</td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">留言</td>
+                                <td colspan="3">
+                                    {{modalData.message}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-txt">发货时间</td>
+                                <td>{{modalData.sendTime}}</td>
+                                <td class="col-txt">收货时间</td>
+                                <td>{{modalData.recieveTime}}</td>
+                            </tr>
+                            <tr ng-show="modalData.returnStatus != 0">
+                                <td class="col-txt">请求退货时间</td>
+                                <td>{{modalData.returnRequestTime}}</td>
+                                <td class="col-txt">收到退货时间</td>
+                                <td>{{modalData.returnTime}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table  table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>商品id</th>
+                            <th>图片</th>
+                            <th>购买数量</th>
+                            <th>单价</th>
+                            <th>总价</th>
+                            <th>积分</th>
+                            <th>一级佣金</th>
+                            <th>二级佣金</th>
+                            <th>三级佣金</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in modalData.orderItems">
+                            <td>{{item.goods.id}}</td>
+                            <td><img ng-src="{{item.goods.mainImg}}" ></td>
+                            <td>{{item.num}}</td>
+                            <td>{{item.goods.price}}</td>
+                            <td>{{item.goods.price * item.num}}</td>
+                            <td>{{item.goods.integral}}</td>
+                            <td>{{item.goods.commission1}}</td>
+                            <td>{{item.goods.commission2}}</td>
+                            <td>{{item.goods.commission3}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 

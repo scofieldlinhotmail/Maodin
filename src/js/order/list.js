@@ -76,8 +76,21 @@ app.filter('statusStr', function () {
     };
 });
 
+var _modal;
+var modal = function () {
+    if (!_modal) {
+        _model = angular.element('#modal');
+    }
+    return _modal;
+};
 
 app.controller('AppCtrl', ['$scope', function (scope) {
+
+    scope.modalData = {};
+
+    scope.$on('see', function (e, data) {
+        scope.modalData = data;
+    });
 
 }]);
 
@@ -132,7 +145,12 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
                 }
                 for(var i in data) {
                     data[i].opened = false;
+                    data[i].createdAt = data[i].createdAt ? moment(data[i].createdAt).format("YY/MM/DD hh:mm:ss") : '';
                     data[i].payTime = data[i].payTime ? moment(data[i].payTime).format("YY/MM/DD hh:mm:ss") : '';
+                    data[i].sendTime = data[i].sendTime ? moment(data[i].sendTime).format("YY/MM/DD hh:mm:ss") : '';
+                    data[i].recieveTime = data[i].recieveTime ? moment(data[i].recieveTime).format("YY/MM/DD hh:mm:ss") : '';
+                    data[i].returnRequestTime = data[i].returnRequestTime ? moment(data[i].returnRequestTime).format("YY/MM/DD hh:mm:ss") : '';
+                    data[i].returnTime = data[i].returnTime ? moment(data[i].returnTime).format("YY/MM/DD hh:mm:ss") : '';
                 }
                 scope.data = scope.data.concat(data);
                 scope.list = scope.data.slice(start, scope.data.length);
@@ -257,6 +275,9 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
 
 }]);
 
+
+
+
 app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
     var loading = false;
@@ -274,6 +295,10 @@ app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
                 scope.order.orderItems = data;
             }).error(ajaxErrorCb);
     });
+
+    scope.see = function (order) {
+        scope.$emit('see', order);
+    };
 
 }]);
 
