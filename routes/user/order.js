@@ -486,7 +486,7 @@ module.exports = function (router) {
                 user.integral += goods.integral;
                 user.totalIntegral += goods.integral;
 
-                for(let storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
+                for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
                     commissions[storeIndex] += goods["comission" + (storeIndex + 1)];
                 }
 
@@ -494,7 +494,7 @@ module.exports = function (router) {
 
             yield user.save();
 
-            for(let storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
+            for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
                 var store = stores[storeIndex];
                 store.money += commissions[storeIndex] ;
                 store.totalMoney += commissions[storeIndex] ;
