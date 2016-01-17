@@ -20,6 +20,32 @@ module.exports = (router) => {
             list
         });
     });
+    router.get('/adminer-slideshow/add',  function *() {
+        this.checkQuery('img').empty().trim().toLow();
+        this.checkQuery('link').empty().trim().toLow();
+        if (this.errors) {
+            this.body = this.errors;
+            return;
+        }
+        var img=this.query.img;
+        var link=this.query.link;
+        var x=yield Slideshow.create({
+            link:link,
+            address:img
+        });
+        this.body = x.id;
+    });
+    router.get('/adminer-slideshow/del',  function *() {
+        this.checkQuery('id').empty().trim().toLow();
+        if (this.errors) {
+            this.body = this.errors;
+            return;
+        }
+        var delone=yield Slideshow.findById(this.query.id);
+        if(delone!=null)
+        delone.destroy();
+        this.body = 1;
+    });
 
 
 

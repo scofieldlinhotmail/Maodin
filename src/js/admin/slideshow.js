@@ -36,7 +36,7 @@ jQuery(function() {
     uploader =new WebUploader.Uploader({
 
         // 自动上传。
-        auto: true,
+        auto: false,
 
         // swf文件路径
         swf: '/dist/Uploader.swf',
@@ -94,8 +94,10 @@ jQuery(function() {
     });
 
     // 文件上传成功，给item添加成功class, 用样式标记上传成功。
-    uploader.on( 'uploadSuccess', function( file ) {
+    uploader.on( 'uploadSuccess', function( file,path ) {
         $( '#'+file.id ).addClass('upload-state-done');
+        $("#add2").val(path.file_path);
+
     });
 
     // 文件上传失败，现实上传出错。
@@ -107,14 +109,104 @@ jQuery(function() {
         if ( !$error.length ) {
             $error = $('<div class="error"></div>').appendTo( $li );
         }
-
         $error.text('上传失败');
     });
 
     // 完成上传完了，成功或者失败，先删除进度条。
     uploader.on( 'uploadComplete', function( file ) {
         $( '#'+file.id ).find('.progress').remove();
+        var v1=$("#add1").val();
+        var v2=$("#add2").val();
+        if(v2==""){
+            alert(" 请上传图片");
+        }else
+         $.ajax({
+
+                    type: 'get',
+
+                    url: "add" ,
+
+                    data: {img:v2,link:v1} ,
+
+                    success: function(id){
+                        $(".close").click();
+
+                        var s="";
+                        s+='<tr class="odd gradeX" tr-id="'+id+'">'
+                        s+='    <td><img class="img" src="'+v2+'"></td>'
+                        s+='   <td ><span class="link">'+v1+'</span> </td>'
+                        s+='    <td>'
+                        s+='    <div class="btns" >'
+                        s+='    <button data-id="'+id+'" class="btn red btn-sm delbtn ">删除</button>'
+                        s+='    </div>'
+                        s+='    </td>'
+                        s+='    </tr>'
+                        $("tbody").append(s);
+                        $(".delbtn").click(function(){
+                            var id=$(this).attr("data-id");
+                            $.ajax({
+
+                                type: 'get',
+
+                                url: "del" ,
+
+                                data: {id:id} ,
+
+                                success: function(){
+                                    $("tr[tr-id="+id+"]").remove();
+                                }
+                            });
+                        });
+                        clear();
+
+                    }
+                });
+    });
+
+    $("#add1btn").click(function(){
+        var v1=$("#add1").val();
+        if(v1==""){
+            alert(" 请输入链接");
+        }
+        else{
+            if(uploader.getFiles().length>0);
+              uploader.upload();
+        }
+
+    });
+    $("#close").click(function(){
+        clear();
+    });
+    $(".close").click(function(){
+        clear();
+    });
+    function clear(){
+        var v1=$("#add1").val("");
+        var v2=$("#add2").val("");
+        uploader.reset();
+        $list.html( "" );
+    }
+});
+
+$(".delbtn").click(function(){
+    var id=$(this).attr("data-id");
+    $.ajax({
+
+        type: 'get',
+
+        url: "del" ,
+
+        data: {id:id} ,
+
+        success: function(){
+            $("tr[tr-id="+id+"]").remove();
+        }
     });
 });
+
+
+
+
+
 
 

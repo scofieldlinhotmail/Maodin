@@ -45,14 +45,14 @@
     </thead>
     <tbody>
     <% for e in @list : %>
-    <tr class="odd gradeX">
+    <tr class="odd gradeX" tr-id="<%= e.id  %>">
         <td><img class="img" src="<%= e.address %>"></td>
         <td ><span class="link"><%= e.link %></span> </td>
 
         <td>
 
             <div class="btns" >
-                <button data-id="" class="btn red btn-sm refuse ">删除</button>
+                <button data-id="<%= e.id  %>" class="btn red btn-sm delbtn ">删除</button>
             </div>
 
         </td>
@@ -79,23 +79,25 @@
                     <div class="col-md-12">
                         <h4>链接</h4>
                         <p><input id="add1" type="text" class="col-md-12 form-control"></p>
+                        <input id="add2" type="hidden" >
                     </div>
 
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <h4>图片</h4>
-                        <div id="uploader-demo">
+                        <div> <div id="uploader-demo">
                             <!--用来存放item-->
                             <div id="fileList" class="uploader-list"></div>
                             <div id="filePicker">选择图片</div>
-                        </div>
+                        </div></div>
+
                     </div>
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn default">关闭</button>
+                <button type="button" id="close" data-dismiss="modal" class="btn default">关闭</button>
                 <button type="button" id="add1btn" class="btn green">保存</button>
             </div>
         </div>

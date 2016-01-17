@@ -25,8 +25,6 @@ module.exports = (router) => {
     };
 
     router.post('/upload', function *() {
-
-
         var parts = fileParse(this);
         var part;
 
@@ -46,6 +44,7 @@ module.exports = (router) => {
 
         this.body = ret.length === 1 ? ret[0] : ret;
     });
+
 
 
 };
