@@ -12,7 +12,7 @@ var Store = db.models.Store;
 var GoodsType = db.models.GoodsType;
 var ShoppingCart = db.models.ShoppingCart;
 var GoodsCollection = db.models.GoodsCollection;
-
+var User = db.models.User;
 module.exports = (router) => {
 
     router.get('/user-store/apply',  function *() {
@@ -56,6 +56,32 @@ module.exports = (router) => {
         }
 
         this.redirect('/user-wait');
+    });
+    router.get('/user-store/home',  function *() {
+        var id=this.query.id;
+        var s=yield Store.findOne({
+            where:{
+                id:id,
+            },
+            include:[User]
+        });
+        this.body = yield render('phone/storehome.html', {
+            s
+        });
+    });
+    router.get('/user-store/group',  function *() {
+        var id=this.query.id;
+        var list=yield Store.findAll({
+           where:{
+               StoreId:id
+           },
+            include:[User]
+        });
+        debug(list);
+        this.body = yield render('phone/group.html', {
+            list,
+            title:"我的团队"
+        });
     });
 
 
