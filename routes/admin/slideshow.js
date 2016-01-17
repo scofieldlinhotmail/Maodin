@@ -12,11 +12,12 @@ var sequelize = require('sequelize');
 
 
 module.exports = (router) => {
-    var Comment = db.models.Comment;
-    var User= db.models.User;
-    var Goods = db.models.Goods;
+    var Slideshow = db.models.Slideshow;
     router.get('/adminer-slideshow/index',  function *() {
+        var list=yield Slideshow.findAll();
+        debug(list);
         this.body = yield render('admin/slideshow', {
+            list
         });
     });
 
