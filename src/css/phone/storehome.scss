@@ -1,0 +1,24 @@
+@import "base";
+$info_height : 130px;
+$info_bgcolor : #FE4542;
+$font:13px;
+$font-color:white;
+.tx{
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  box-shadow: 0 0 0 1px #FFF inset!important;
+  background: 0 0;
+  color: #FFF;
+  text-shadow: none!important;
+  border-radius: .28571429rem;
+}
+.rightspan{
+  margin-right: 20px;
+}
+.redtext{
+  color:red;
+}
+.option > i{
+  width: 15px;
+}

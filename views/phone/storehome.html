@@ -1,0 +1,106 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-usercenter.css">
+<link rel="stylesheet" href="/dist/phone-storehome.css">
+<% end %>
+
+<div class="am-g">
+    <div class="fa">
+        <div class="am-cf  am-padding">
+        <div class="am-fl">
+            <img src="<%= @s?.User.headimgurl %>" style="width: 48px; height: 48px;">
+        </div>
+
+        <div class="am-fl username" >
+            <span style="color:#2e2e2e;"><%= @s?.username %></span>
+            <br>
+            <span style="color:#8a8a8a;font-size: x-small" >加入时间:<%= @s?.createdAt.toLocaleString() %></span>
+
+        </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<div class="user-panel">
+    <div class="am-cf  am-padding" style="position: relative;">
+
+        <div class="am-fl username" >
+            <span>累计佣金:<%= @s?.totalMoney %> 元</span>
+            <br>
+            <span style="display:block; margin-top: 10px">可提佣金(元)</span>
+            <br>
+            <span style="display:block; font-size: xx-large"><%= @s?.money %></span>
+
+
+        </div>
+        <div class="am-fr username" >
+            <span class="icon" style="font-size: 23px;"><i class="am-icon-angle-right"></i></span>
+
+        </div>
+        <br>
+        <button class="tx am-btn am-btn-default am-btn-sm" >提现</button>
+
+    </div>
+</div>
+
+
+<div class="am-g">
+    <div class="da">
+
+    </div>
+</div>
+
+
+
+<div class="am-g">
+    <div class="fa">
+
+
+
+        <a href="/user-store/group?id=<%= @s.id %>">
+            <div class="am-u-sm-12 option">
+                <i class="am-icon-group"  style="color:lightgreen"></i>
+                &nbsp我的团队<span class="icon"><span class="rightspan"><span class="redtext">0</span>个伙伴</span><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">
+                <i class="am-icon-file-text-o"   style="color:yellow"></i>
+                &nbsp分销订单<span class="icon"><span class="rightspan"><span class="redtext">0</span>个订单元</span><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option">
+                <i class="am-icon-qrcode "   style="color:blue"></i>
+                &nbsp二维码<span class="icon"><span class="rightspan">推广二维码</span><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option nobottom">
+                <i class="am-icon-fax"  style="color:steelblue"></i>
+                &nbsp我的通知<span class="icon"><span class="rightspan"><span class="redtext">4</span>条通知</span><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option nobottom">
+                <i class="am-icon-bar-chart"  style="color:coral"></i>
+                &nbsp英雄榜<span class="icon"><span class="rightspan">实时佣金排行</span><i class="am-icon-angle-right"></i></span></div>
+        </a>
+        <a href="/user/address">
+            <div class="am-u-sm-12 option nobottom">
+                <i class="am-icon-file-picture-o"  style="color:pink"></i>
+                &nbsp推广素材<span class="icon"><span class="rightspan">分享转发素材</span><i class="am-icon-angle-right"></i></span></div>
+        </a>
+    </div>
+</div>
+
+<div class="am-g">
+    <div class="da">
+
+    </div>
+</div>
+<% block 'scripts': %>
+<script src="/dist/phone-storehome.js"></script>
+<% end %>
