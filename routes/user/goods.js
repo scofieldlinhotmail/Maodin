@@ -24,14 +24,12 @@ module.exports = (router) => {
 
     function * goodsListView() {
 
-        if (this.params.id) {
-            
-        }
-        var types = yield GoodsType.structured();
+        var types  = yield GoodsType.structured();
 
         this.body = yield render('phone/goods-list.html', {
             noHeaderTpl: true,
-            types
+            types,
+            storeId: this.params.id ? this.params.id: 'null'
         });
     }
 
@@ -135,18 +133,18 @@ module.exports = (router) => {
             }
         });
 
-        var isSaled = ! store ? false : (yield SalerGoods.count({
+        var isSaled = typeof store === 'undefined' ? false : (yield SalerGoods.count({
             where: {
                 GoodId: goods.id,
                 StoreId: store.id
             }
-        })) == 0;
+        })) != 0;
 
         this.body = yield render('phone/goods-page', {
             title: '商品:' + goods.title,
             goods: goods,
             noFooterTpl: true,
-            isSaler: typeof store === 'undefined',
+            isSaler: typeof store !== 'undefined',
             isSaled,
             type: this.params.type
         });
@@ -163,9 +161,10 @@ module.exports = (router) => {
         });
     });
 
-    router.get('/user/sale/:id', function *() {
+    router.get('/user/sale/:id/:action', function *() {
 
         this.checkParams('id').notEmpty().isInt().toInt();
+        this.checkParams('action').notEmpty().isInt().toInt();
 
         if (this.errors) {
             this.body = this.errors;
@@ -183,20 +182,31 @@ module.exports = (router) => {
             return;
         }
 
-        if ((yield Goods.count({
-                where: {
-                    id: this.params.id,
-                    status: 1
-                }
-            })) == 0) {
-            this.body = '错误操作';
-            return;
-        }
+        var action = this.params.action;
 
-        yield SalerGoods.create({
-            GoodId: this.params.id,
-            StoreId: store.id
-        });
+        if (action == 1) {
+            if ((yield Goods.count({
+                    where: {
+                        id: this.params.id,
+                        status: 1
+                    }
+                })) == 0) {
+                this.body = '错误操作';
+                return;
+            }
+
+            yield SalerGoods.create({
+                GoodId: this.params.id,
+                StoreId: store.id
+            });
+        } else {
+            yield SalerGoods.destroy({
+                where: {
+                    GoodId: this.params.id,
+                    StoreId: store.id
+                }
+            });
+        }
 
         this.body = 'ok';
     });

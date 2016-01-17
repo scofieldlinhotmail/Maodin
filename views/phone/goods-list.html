@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="/dist/phone-goods-list.css">
 <% end %>
 
-<div ng-controller="AppCtrl">
+<div ng-controller="AppCtrl" ng-init="storeId = <%= @storeId  %>">
     <header id="header" data-am-widget="header" class="am-header am-header-default">
         <div class="am-header-left am-header-nav">
             <a href="#left-link" class="" onclick="window.history.back()">

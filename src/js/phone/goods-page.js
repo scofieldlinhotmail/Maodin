@@ -56,7 +56,7 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
     });
 
     scope.sale = function () {
-        $http.get('/user/sale/' + scope.id)
+        $http.get('/user/sale/' + scope.id + '/' + (scope.isSaled ? 0 : 1))
             .success(function (data) {
                 if (data == 'ok') {
                     scope.isSaled = ! scope.isSaled;

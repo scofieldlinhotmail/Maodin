@@ -1,5 +1,6 @@
 var sequelizex = require('../../lib/sequelizex');
 var shortDataTypes = sequelizex.DataTypes;
+var util = require('util');
 
 module.exports = function (sequelize, DataTypes) {
 
@@ -32,8 +33,11 @@ module.exports = function (sequelize, DataTypes) {
                     include: [this]
                 });
             },
-            structured: function *() {
-                return yield this.findAll({
+            structured: function *(options) {
+                if (!options) {
+                    options = {};
+                }
+                var conditions = util._extend(options, {
                     where: {
                         type: 1
                     },
@@ -45,6 +49,7 @@ module.exports = function (sequelize, DataTypes) {
                         }
                     ]
                 });
+                return yield this.findAll(conditions);
             }
         }
     });

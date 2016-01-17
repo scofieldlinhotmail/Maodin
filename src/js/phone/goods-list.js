@@ -85,6 +85,9 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         if (typeof searchKey !== 'undefined') {
             params.searchKey = searchKey;
         }
+        if (scope.storeId) {
+            params.storeId = scope.storeId;
+        }
         $http
             .post('/get-goods', params)
             .success(function (data) {
@@ -102,7 +105,10 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             });
     }
 
-    getGoodsData(null, null, scope.orderMode.time, 1);
+
+    scope.$applyAsync(function () {
+        getGoodsData(null, null, scope.orderMode.time, 1);
+    });
 
 }]);
 

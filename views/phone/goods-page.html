@@ -21,8 +21,8 @@
                 <h2><%= @goods.title %></h2>
             </div>
             <div class="am-text-center goods-price">
-                <% if @goods.isSaler : %>
-                    <span class="am-btn am-btn-default am-radius" ng-click="sale()" ng-disabled="isSaled"  ng-init="isSaled = <%= @goods.isSaled %>">{{isSaled ? '我已分销' : '我要分销'}}</span>
+                <% if @isSaler : %>
+                    <span class="am-btn am-btn-default am-radius" ng-click="sale()"  ng-init="isSaled = <%= @isSaled %>">{{isSaled ? '取消分销' : '我要分销'}}</span>
                 <% else : %>
                     <!--todo: 地址-->
                     <a href="/user/storeapply" class="am-btn am-btn-default am-radius">成为分销商</a>
