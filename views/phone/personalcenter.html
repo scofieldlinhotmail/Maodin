@@ -8,13 +8,13 @@
 <div class="user-panel">
     <div class="am-cf ad am-padding">
         <div class="am-fl">
-            <img src="<%= @user?.headimage %>" style="width: 48px; height: 48px;">
+            <img src="<%= @user?.headimgurl %>" style="width: 48px; height: 48px;">
         </div>
 
         <div class="am-fl username" >
                 <span>用户名: <%= @user?.nickname %></span>
             <br>
-            <span>普通用户 <%= @user?.nickname %></span>
+            <span><%= @rank?.name %></span>
 
         </div>
         <div class="am-fr username" >
@@ -25,19 +25,7 @@
     </div>
 </div>
 
-<div class="am-g">
-    <div class="fa">
-        <a href="/user/order-list">
-            <div class="am-u-sm-12 option notop nobottom">账户余额:
-                <span  style="color:orangered"> <i class="am-icon-rmb" ></i> 0.00</span>
-                <span class="icon">
-                <button class="am-btn am-btn-success am-btn-sm ">提现</button></span></div>
-        </a>
 
-
-
-    </div>
-</div>
 <div class="am-g">
     <div class="da">
 
@@ -50,28 +38,24 @@
             <i class="am-icon-file-text-o"  style="color:lightsteelblue"></i>  &nbsp我的订单<span class="icon" style="color: darkgray">查看全部订单 <i class="am-icon-angle-right"></i></span></div>
     </a>
     <div class="am-u-sm-12 nobottom" style="border-bottom: 1px solid #ddd;">
-        <a class="am-fl am-u-sm-3 nop"  href="/user/order-list">
+        <a class="am-fl am-u-sm-4 nop"  href="/user/order-list#/0">
 
             <div class="am-u-sm-12 rightborder option-sm-f icon-fa">
                 <i class="icon-my am-icon-cny am-icon-lg"></i>
                 待付款
             </div>
         </a>
-        <a  class="am-fl am-u-sm-3 nop"  href="/user/order-list">
+        <a  class="am-fl am-u-sm-4 nop"  href="/user/order-list#/1">
             <div class="am-u-sm-12 rightborder option-sm-f icon-fa">
                 <i class="icon-my am-icon-clock-o am-icon-lg"></i>
                 待发货</div>
         </a>
-        <a  class="am-fl am-u-sm-3 nop"  href="/user/order-list">
-            <div class="am-u-sm-12 rightborder option-sm-f icon-fa">
+        <a  class="am-fl am-u-sm-4 nop"  href="/user/order-list#/2">
+            <div class="am-u-sm-12  option-sm-f icon-fa">
                 <i class="icon-my am-icon-truck am-icon-lg"></i>
                 待收货</div>
         </a>
-        <a class="am-fl am-u-sm-3 nop"   href="/user/order-list">
-            <div class="am-u-sm-12 option-sm-f icon-fa">
-                <i class="icon-my am-icon-exchange am-icon-lg"></i>
-                退换货</div>
-        </a>
+
 
     </div>
 
@@ -87,11 +71,6 @@
 
 <div class="am-g">
     <div class="fa">
-        <a href="/user/order-list">
-            <div class="am-u-sm-12 option notop">
-                <i class="am-icon-newspaper-o" style="color:red"></i>
-                &nbsp我的优惠券<span class="icon"><i class="am-icon-angle-right"></i></span></div>
-        </a>
 
 
         <a href="/user/address">
@@ -104,15 +83,10 @@
                 <i class="am-icon-inbox"     style="color:orange"></i>
                 &nbsp我的收藏<span class="icon"><i class="am-icon-angle-right"></i></span></div>
         </a>
-        <a href="/user/address">
-            <div class="am-u-sm-12 option">
-                <i class="am-icon-history "   style="color:lightgray"></i>
-                &nbsp我的浏览记录<span class="icon"><i class="am-icon-angle-right"></i></span></div>
-        </a>
-        <a href="/user/address">
-            <div class="am-u-sm-12 option nobottom">
-                <i class="am-icon-group"  style="color:lightsteelblue"></i>
-                &nbsp我的分销小队<span class="icon"><i class="am-icon-angle-right"></i></span></div>
+        <a href="/user/order-list">
+            <div class="am-u-sm-12 option notop">
+                <i class="am-icon-dropbox"  style="color:green"></i>
+                &nbsp收货地址管理<span class="icon"><i class="am-icon-angle-right"></i></span></div>
         </a>
     </div>
 </div>
@@ -123,18 +97,10 @@
 </div>
 <div class="am-g">
     <div class="fa">
-        <a href="/user/order-list">
-            <div class="am-u-sm-12 option notop">
-                <i class="am-icon-dropbox"  style="color:green"></i>
-                &nbsp收货地址管理<span class="icon"><i class="am-icon-angle-right"></i></span></div>
-        </a>
 
 
-        <a href="/user/address">
-            <div class="am-u-sm-12 option">
-                <i class="am-icon-fax"  style="color:magenta"></i>
-                &nbsp消息提醒设置<span class="icon"><i class="am-icon-angle-right"></i></span></div>
-        </a>
+
+
     </div>
 </div>
 
