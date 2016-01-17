@@ -9,6 +9,9 @@ var moment = require('moment');
 require('imports?$=jquery!jquery-validation');
 require('eonasdan-bootstrap-datetimepicker');
 
+require('select2/dist/css/select2.css');
+require('imports?$=jquery!select2');
+
 var $ = jQuery;
 
 var app = angular.module('app', []);
@@ -39,6 +42,11 @@ var find = function (arr, funcOrVal, key) {
 $(function () {
     $('.date-picker').find('input').datetimepicker({
         //locale: 'zh'
+    });
+
+    $('.select2').select2({
+        placeholder: "可多选",
+        allowClear: true
     });
 });
 
@@ -90,7 +98,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
         var page = scope.page;
         var start = scope.data.length;
         $http
-            .post('/adminer/get-order', {
+            .post('./get-order', {
                 page: scope.page,
                 status: scope.status,
                 first: page == 1,
@@ -99,7 +107,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
                 recieverName: scope.recieverName,
                 phone: scope.phone,
                 goodsIds: scope.goodsIds,
-                areas: scope.areas
+                type: scope.type
             })
             .success(function (data) {
                 scope.loading = false;
@@ -204,7 +212,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
         }
         console.log(ids);
         $http
-            .post('/adminer/order/status', {
+            .post('./order/status', {
                 ids: ids,
                 status: status
             })
@@ -258,12 +266,17 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
 
 app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
+    var loading = false;
     scope.$watch('order.opened', function (newVal, oldVal) {
         if (typeof newVal === 'undefined' || newVal == oldVal || newVal != true){
             return;
         }
+        if (loading) {
+            return;
+        }
+        loading = true;
         $http
-            .get('/adminer/get-orderitem/' + scope.order.id)
+            .get('./get-orderitem/' + scope.order.id)
             .success(function (data) {
                 scope.order.orderItems = data;
             }).error(ajaxErrorCb);

@@ -37,7 +37,6 @@
     "koa-static": "^1.5.1",
     "koa-validate": "^0.2.11",
     "moment": "^2.11.1",
-    "msexcel-builder": "git+https://github.com/chuanyi/msexcel-builder.git",
     "mysql": "^2.10.0",
     "node-xlsx": "^0.6.0",
     "redis": "^2.3.0",

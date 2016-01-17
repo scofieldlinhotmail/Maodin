@@ -432,7 +432,7 @@ module.exports = function (router) {
             return;
         }
 
-        var status = this.body.status;
+        var status = this.request.body.status;
         var id = this.request.body.id;
         var userId = (yield auth.user(this)).id;
 
@@ -445,7 +445,7 @@ module.exports = function (router) {
 
         if (status == 10) {
             // 签收
-            var order = yield order.findOne({
+            var order = yield Order.findOne({
                 where: {
                     id: id,
                     UserId: userId
@@ -500,6 +500,8 @@ module.exports = function (router) {
                 store.totalMoney += commissions[storeIndex] ;
                 yield store.save();
             }
+
+            this.body = 'ok';
 
         } else if (status == -1) {
             // 取消
