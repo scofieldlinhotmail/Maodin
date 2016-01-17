@@ -94,7 +94,7 @@ module.exports = (router) => {
 
     router.get('/user/goods-page/:type/:id', function *() {
 
-        // todo: 加上评论和分销
+        // todo: 评价
         this.checkParams('id').notEmpty().isInt().toInt();
         this.checkParams('type').notEmpty().isInt().toInt();
 
@@ -151,14 +151,50 @@ module.exports = (router) => {
     });
 
     router.get('/user/goods-collection', function *() {
-        this.body = (yield GoodsCollection.findAll({
-            where: {
-                UserId: (yield auth.user(this)).id
-            },
-            include: [Goods]
-        })).map(function (item) {
-            return item.Good;
+
+        var goodsAttributes = ['id', 'mainImg', 'price', 'oldPrice', 'baseSoldNum', 'soldNum', 'title'];
+        var userId = (yield auth.user(this)).id;
+        var collections = yield [
+            GoodsCollection.findAll({
+                where: {
+                    UserId: userId,
+                    type: 0
+                },
+                include: [{
+                    model: Goods,
+                    attributes: goodsAttributes,
+                    required: true
+                }]
+            }),
+            GoodsCollection.findAll({
+                where: {
+                    UserId: userId,
+                    type: 1
+                },
+                include: [
+                    {
+                        model: SalerGoods,
+                        required: true,
+                        include: [{
+                            model: Goods,
+                            attributes: goodsAttributes,
+                            required: true
+                        }]
+                    }
+                ]
+            })
+        ];
+
+        collections = collections[0].concat(collections[1].map((item) => {
+
+            item.dataValues.Good = item.SalerGood.Good;
+            return item.dataValues;
+        }));
+
+        this.body = yield render('phone/goods-collection', {
+            collections: JSON.stringify(collections)
         });
+
     });
 
     router.get('/user/sale/:id/:action', function *() {

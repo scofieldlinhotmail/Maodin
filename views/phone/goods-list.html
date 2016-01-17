@@ -67,7 +67,7 @@
 
     <div class="goods-container">
         <div class="goods-item" ng-repeat="goods in list">
-            <a ng-href="/user/goods-page/0/{{goods.id}}">
+            <a ng-href="/user/goods-page/{{storeId ?  1 : 0}}/{{goods.id}}">
                 <div class="goods-item-img">
                     <img ng-src="{{goods.mainImg}}" >
                 </div>

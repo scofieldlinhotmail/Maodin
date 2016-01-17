@@ -1,0 +1,47 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-goods-collection.css">
+<% end %>
+
+<div ng-controller="AppCtrl" ng-cloak>
+
+
+    <div class="goods-container">
+        <div class="goods-item" ng-repeat="item in list">
+            <a ng-href="/user/goods-page/{{item.type == 0 ? 0: 1}}/{{item.Good.id}}">
+                <div class="goods-item-img">
+                    <img ng-src="{{item.Good.mainImg}}" >
+                </div>
+                <div class="goods-item-detail">
+                    <strong>{{item.Good.title}}</strong>
+                    <p>
+                        <span class="am-text-warning">{{ item.Good.price | currency: '￥'}}</span>
+                        <del class="am-text-sm">{{ item.Good.oldPrice | currency: '￥'}}</del>
+                    </p>
+                    <span class="am-badge am-badge-warning">{{ (item.Good.price / item.Good.oldPrice * 10) .toFixed(1)}}折</span>
+                    <span class="am-text-sm">销量: {{ item.Good.baseSoldNum + item.Good.soldNum }}</span>
+                </div>
+            </a>
+        </div>
+        <div class="loadmore am-padding am-text-center" ng-show="loadStatus != 2" style="border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;">
+            <span ng-show="loadStatus == 0" ng-click="loadmore()">
+                <i class="am-icon am-icon-hand-o-up"></i>
+                点击加载更多
+            </span>
+            <span ng-show="loadStatus == 1">
+                <i class="am-icon am-icon-spinner am-icon-spin"></i>
+                正在加载
+            </span>
+        </div>
+    </div>
+</div>
+
+<script type="text/plain" id="data">
+    <%- @collections %>
+</script>
+
+<% block 'scripts': %>
+<script src="/dist/phone-goods-collection.js"></script>
+<% end %>

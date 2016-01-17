@@ -323,6 +323,29 @@ function * shoppingCartSeed() {
     }
 }
 
+
+function * collectionSeed() {
+    var users = yield db.models.User.findAll({});
+    var goods = yield db.models.Goods.findAll({});
+    var salerGoods = yield db.models.SalerGoods.findAll({});
+    for(var i = 0; i < users.length; i ++) {
+        for(var j = 0 ; j < goods.length && j < 5; j ++) {
+            s = yield db.models.GoodsCollection.create({
+                UserId: users[i % users.length].id,
+                GoodId: goods[j % goods.length].id,
+                type: 0,
+            });
+        }
+        for(var j = 0 ; j < salerGoods.length && j < 5; j ++) {
+            s = yield db.models.GoodsCollection.create({
+                UserId: users[i % users.length].id,
+                SalerGoodId: salerGoods[j % salerGoods.length].id,
+                type: 1
+            });
+        }
+    }
+}
+
 function * orderSeed() {
 
     var users = yield db.models.User.findAll({});
@@ -399,12 +422,12 @@ function * init() {
     yield orderSeed();
     //yield commentSeed();
     yield rankSeed();
+    yield collectionSeed();
 }
 
 co(function * () {
-    yield init();
-    //yield addressSeed();
-    //yield orderSeed();
+    //yield init();
+    yield collectionSeed();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

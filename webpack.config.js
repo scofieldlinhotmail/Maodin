@@ -40,6 +40,7 @@ var phoneEntries = {
     //'phone-index': ['./src/js/phone/index.js'],
     'phone-index': ['./src/js/phone/index.js'],
     'phone-goods-list': ['./src/js/phone/goods-list.js'],
+    'phone-goods-collection': ['./src/js/phone/goods-collection.js'],
     'phone-shoppingcart': ['./src/js/phone/shoppingCart.js'],
     'phone-order-list': ['./src/js/phone/order-list.js'],
     //'phone-register': ['./src/js/phone/register.js'],
