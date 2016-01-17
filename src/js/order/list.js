@@ -294,7 +294,9 @@ app.controller('OrderCtrl', ['$scope', '$http', function (scope, $http) {
 
     scope.loadItem = function () {
         $http
-            .get('/adminer-order/get-orderitem/' + scope.order.id)
+            .get('/adminer-order/get-orderitem/' + scope.order.id, {
+                cache: true
+            })
             .success(function (data) {
                 scope.order.orderItems = data;
             }).error(ajaxErrorCb);
