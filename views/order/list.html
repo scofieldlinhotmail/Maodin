@@ -146,7 +146,8 @@
                             操作 <i class="fa fa-angle-down"></i>
                         </button>
                         <ul class="dropdown-menu" role="menu">
-                            <li ng-click="action(2, order.id)"><a href="#">发货</a></li>
+                            <li ng-click="action(2, order.id)" ng-show="order.status == 1"><a href="#">发货</a></li>
+                            <li ng-click="action(2, order.id)" ><a href="#">发货</a></li>
                         </ul>
                     </div>
                 </td>
