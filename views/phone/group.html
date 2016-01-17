@@ -1,0 +1,47 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-usercenter.css">
+<link rel="stylesheet" href="/dist/phone-storehome.css">
+<% end %>
+
+
+
+
+
+<div class="am-g">
+
+
+
+        <% for e in @list : %>
+        <div class="am-g">
+            <div class="fa">
+                <div class="am-cf  am-padding">
+                    <div class="am-fl">
+                        <img src="<%= e.User.headimgurl %>" style="width: 48px; height: 48px;">
+                    </div>
+
+                    <div class="am-fl username" >
+                        <span style="color:#2e2e2e;"><%= e.name %></span>
+
+                        <br>
+                        <span style="color:#8a8a8a;font-size: x-small" >店主:<%= e.User.nickname %></span>
+
+                    </div>
+                    <div class="am-fl username" style="float: right" >
+
+                        <span style="color:#8a8a8a;font-size: x-small" >加入时间:<%= e.createdAt.toLocaleString() %></span>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <% end %>
+</div>
+
+
+<% block 'scripts': %>
+<script src="/dist/phone-storehome.js"></script>
+<% end %>
