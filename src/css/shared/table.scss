@@ -32,3 +32,9 @@ table.center-table-v th, table.center-table-v td {
 .op-sm-2-col {
   width: 98px;
 }
+
+.table-sm-img img{
+  $table-sm-img-size: 56px;
+  width: $table-sm-img-size;
+  height: $table-sm-img-size;
+}

@@ -6,11 +6,6 @@ require('../../css/admin/slideshow.scss');
 require('fex-webuploader/dist/webuploader.css');
 
 var WebUploader = require('fex-webuploader');
-require('imports?$=jquery!simple-module');
-
-require('imports?$=jquery!simple-hotkeys');
-require('imports?$=jquery!simple-uploader');
-
 
 var $ = jQuery;
 // 文件上传

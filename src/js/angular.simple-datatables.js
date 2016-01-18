@@ -314,6 +314,10 @@
                 totalPageLabel.html('{{totalPage}}');
                 $compile(totalPageLabel)(scope);
 
+                var pageLabel = element.find('[sdt-page]');
+                pageLabel.html('{{page}}');
+                $compile(pageLabel)(scope);
+
                 var pageInput = element.find('[sdt-page-input]');
                 pageInput.attr('ng-model', 'pageInput');
                 pageInput.attr('max', '{{totalPage}}');

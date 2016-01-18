@@ -380,6 +380,8 @@ function * orderSeed() {
                 }));
                 num += (i + j % 10) + 1;
             }
+            var status = (i + j) % 4;
+            var returnStatus = (i + j) % 2;
             var order = yield db.models.Order.create({
                 recieverName: '收货人' + i,
                 phone: "1884082391" + i % 10,
@@ -390,12 +392,18 @@ function * orderSeed() {
                 price,
                 num: items.length,
                 goodsNum: num,
-                status: (i + j) % 4,
+                status,
                 exressWay: j % 2,
                 message: '留言啊',
                 UserId: users[i % users.length].id,
                 type: type,
-                StoreId: type == 1 ? store.id : null
+                StoreId: type == 1 ? store.id : null,
+                payTime: status != 0 ? Date.now() : null,
+                sendTime: status == 2 ? Date.now() : null,
+                recieveTime: status == 10 && returnStatus == 0 ? Date.now() : null,
+                returnStatus,
+                returnRequestTime: returnStatus == 1 ? Date.now() : null,
+                returnTime: returnStatus == 2 ? Date.now() : null
             });
             for(var k = 0 ; k < items.length; k ++ ){
                 items[k].OrderId = order.id;
@@ -426,8 +434,8 @@ function * init() {
 }
 
 co(function * () {
-    //yield init();
-    yield collectionSeed();
+    yield init();
+    //yield collectionSeed();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

@@ -13,9 +13,8 @@ var adminEnties = {
     'admin-evaluations':['./src/js/admin/evaluations.js'],
     'admin-order-list':['./src/js/order/list.js'],
 
-    //'admin-user-assign':['./src/js/admin/user-assign.js'],
     'admin-goods-list':['./src/js/goods/list.js'],
-    'admin-goods-save': ['./src/js/goods/save.js'],
+    //'admin-goods-save': ['./src/js/goods/save.js'],
     //'admin-goodstype': ['./src/js/admin/goodstype.js'],
     //'admin-orders':['./src/js/admin/orders.js'],
     //'admin-fare':['./src/js/admin/fare.js'],
