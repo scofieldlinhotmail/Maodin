@@ -20,4 +20,49 @@ float: right;
 .help-block{
   color:#dd514c
 }
+.pj{
+  display: block;
+  text-align: left;
+  font-size: 15px;
+  background-color:#f5f5f5;
+  line-height: 50px;
+  padding-right: 20px;
+  padding-left: 20px;
+  cursor: pointer;
+}
+form{
+  background-color:#f5f5f5;
+}
+.hr{
+  height: 10px;
+  background-color: white;
+}
+.pjbtn{
+  width: 100%;
+  box-shadow: 0 0 0 2px #dddddd inset!important;
+  background: 0 0;
+  color:rgba(245, 190, 13, 0.87);
+  text-shadow: none!important;
+  cursor: pointer;
+  display: inline-block;
+  min-height: 1em;
+  outline: 0;
+  border: none;
+  vertical-align: baseline;
+  font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+  margin: 0 .25em 0 0;
+  padding: .78571429em 1.5em;
+
+  border-radius: .28571429rem;
+}
+.btncon{
+  margin-bottom: 10px;
+}
+.act{
+  box-shadow: 0 0 0 2px #15AFEF inset!important;
+  background:white;
+}
+
+
+
 
