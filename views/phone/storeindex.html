@@ -18,7 +18,7 @@
         <li></li>
         <li></li>
         <li>
-            <a href="/cate/">
+            <a href="/user/goods-list/<%= @s.id%>">
                 <i class="iconfont"><label class="shop-goods-count" style="font-style: initial;"><%= @pcount %></label></i>
                 <span>全部商品</span>
             </a>
@@ -96,7 +96,7 @@
 
 <div class="am-g row stitle" >
     <h3>
-        <a href="">
+        <a href="/user/goods-list/<%= @s.id%>">
            热销商品
             <span>更多<i class="am-icon-chevron-right"></i></span>
         </a>
@@ -105,7 +105,7 @@
         <% for e in @pros : %>
         <div class="am-u-sm-6 pitem">
             <div class="goods-inner">
-                <a href="">
+                <a href="/user/goods-page/1/<%= e.id%>">
                     <div class="goods-img">
                         <img style="height: 358px; display: block;" class="" src="<%= e.mainImg %>" >
                     </div>
