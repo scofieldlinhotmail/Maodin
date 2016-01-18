@@ -24,6 +24,18 @@ module.exports = {
         });
         cache.jsetex(token, 60 * 60 * 24, user);
     },
+    logout: function *(ctx) {
+        var user = yield this.user(ctx);
+        ctx.current = ctx.current || {};
+        ctx.current.user = null;
+        var token = utilx.md5(`${user.id}#${Date.now()}`);
+        var lastMonth = new Date();
+        lastMonth.setMonth(lastMonth.getMonth() - 1);
+        ctx.cookies.set(cookieName, token, {
+            expires: lastMonth
+        });
+        cache.del(token);
+    },
     /**
      * 获取当前用户
      * @param ctx

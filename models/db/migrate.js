@@ -45,7 +45,6 @@ function * commentSeed(){
             message:"message"+i,
             UserId:1,
             GoodId:1
-
         })
     }
 }
@@ -428,7 +427,7 @@ function * init() {
     yield addressSeed();
     //yield containerSeed();
     yield orderSeed();
-    //yield commentSeed();
+    yield commentSeed();
     yield rankSeed();
     yield collectionSeed();
 }

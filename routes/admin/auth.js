@@ -40,7 +40,19 @@ module.exports = (router) => {
             if (c != null && c.status == 0) {
                 ///登陆
                 auth.login(this, c);
-                this.redirect('/adminer/index');
+                //this.redirect('/adminer/index');
+                var user = c;
+                if (user.type = 2) {
+                    this.redirect('/adminer-adminer/user-list');
+                } else if (user.type == 1) {
+                    this.redirect('/adminer-shopkeeper/goods')
+                } else if (user.type == 3) {
+                    this.redirect('/adminer-order/order-list/t/1')
+                } else if (user.type == 4) {
+                    this.redirect('/adminer-order/order-list/t/2')
+                } else {
+                    this.redirect('/adminer-order/order-list');
+                }
             } else {
                 this.redirect('/admin-login');
             }
@@ -49,4 +61,9 @@ module.exports = (router) => {
         }
     });
 
+
+    router.get('/admin-logout', function *() {
+        yield auth.logout(this);
+        this.redirect('/admin-login');
+    })
 };

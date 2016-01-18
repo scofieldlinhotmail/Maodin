@@ -8,7 +8,7 @@ var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 // 后台文件
 var adminEnties = {
     //'admin-index': ['./src/js/admin/index.js'],
-    //'admin-login': ['./src/js/admin/login.js'],
+    'admin-login': ['./src/js/admin/login.js'],
 
     'admin-evaluations':['./src/js/admin/evaluations.js'],
     'admin-order-list':['./src/js/order/list.js'],
@@ -19,7 +19,7 @@ var adminEnties = {
     //'admin-orders':['./src/js/admin/orders.js'],
     //'admin-fare':['./src/js/admin/fare.js'],
     //'admin-form' : ['./src/js/admin/admin.js'],
-    //'admin-adminer':['./src/js/admin/adminer.js'],
+    'admin-adminer':['./src/js/admin/adminer.js'],
     //'admin-gooddetail':['./src/js/goods/detail.js'],
     'admin-user-list': ['./src/js/admin/user.js'],
     'admin-goodstype-save': ['./src/js/goodsType/save.js'],
