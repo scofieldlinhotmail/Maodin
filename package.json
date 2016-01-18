@@ -41,6 +41,7 @@
     "node-xlsx": "^0.6.0",
     "redis": "^2.3.0",
     "sequelize": "^3.15.1",
+    "wechat": "^2.0.3",
     "wechat-oauth": "git+https://github.com/node-webot/wechat-oauth.git",
     "weixin-pay": "^1.1.6"
   },
