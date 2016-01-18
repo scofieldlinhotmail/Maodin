@@ -84,21 +84,15 @@ module.exports = (router) => {
         });
         if (util.isNullOrUndefined(dbUser)) {
             dbUser = yield User.create({
-                name: '用户',
                 nickname: user.nickname,
-                headimage: user.headimgurl,
+                headimgurl: user.headimgurl,
                 sex: user.sex,
-                openid: user.openid
+                openid: user.openid,
+                subscribe_time: user.subscribe_time
             });
         }
         auth.login(this, dbUser);
-        if (dbUser.status === 1) {
-            this.redirect('/user/index');
-        } else if (dbUser.status === -2){
-            this.redirect('/user-register');
-        } else {
-            this.redirect('/user-wait');
-        }
+        this.redirect('/user/center');
     });
 
     router.get('/wechat/login', function *() {
@@ -126,13 +120,7 @@ module.exports = (router) => {
                 return;
             }
         }
-        if (user.status === 1) {
-            this.redirect('/user/index');
-        } else if (user.status === -2){
-            this.redirect('/user-register');
-        } else {
-            this.redirect('/user-wait');
-        }
+        this.redirect('/user/center');
     });
 
 };

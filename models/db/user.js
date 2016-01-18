@@ -14,15 +14,10 @@ module.exports = function (sequelize, DataTypes) {
 		totalIntegral: shortDataTypes.Double(),
 		integral: shortDataTypes.Double(),
 		/**
-		 * - 3 deleted
-		 * -2 information needed to be updated
-		 * -1 unassigned
-		 * 0 assigned
-		 * 1 checked
 		 */
         status: {
 			type: DataTypes.INTEGER,
-			defaultValue: -2
+			defaultValue: 0
 		}
 	}, {
         timestamps: false,
