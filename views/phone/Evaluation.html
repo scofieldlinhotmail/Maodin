@@ -5,16 +5,40 @@
 <% end %>
 <input type="hidden" id="orderid" name="id" value="<%= @id %>">
 
-<div ng-controller="AppCtrl">
+<div >
 <% for e in @order.OrderItems : %>
 <form class="am-form" method="get" action="add">
     <fieldset style="margin-bottom: 0">
-        <legend><%= e.goods.title %></legend>
+
         <input type="hidden" class="inputitem"  name="id" value="<%= e.id %>">
+
+        <div class="user-panel">
+            <div class="am-cf ">
+                <div class="am-fl">
+                    <img src="<%= e.goods.mainImg %>" style="width: 48px; height: 48px;margin-right: 10px">
+                </div>
+
+                <div class="am-fl username" >
+                    <span><%= e.goods.title %> </span>
+                    <br>
+                    <span style="color:orangered"><i class="am-icon-rmb"></i><%= e.price %> </span>
+
+                </div>
+
+
+            </div>
+        </div>
+
 
         <div class="am-form-group">
             <label for="doc-ipt-email-1">评分</label>
-            <input class="am-form-field inputitem" type="number" min="0" max="5" name="score" id="doc-ipt-email-1" placeholder="输入评分">
+            <div class="group">
+                <div class="btncon am-u-sm-4"><button type="button" data="5" class=" pjbtn">★★★★★</button></div>
+                <div class="btncon am-u-sm-4"><button type="button" data="3" class=" pjbtn">★★★</button></div>
+                <div class="btncon am-u-sm-4"><button type="button" data="1" class=" pjbtn">★</button></div>
+
+            </div>
+            <input class="am-form-field inputitem" type="hidden" min="0" max="5" name="score" id="doc-ipt-email-1" placeholder="输入评分">
         </div>
 
         <div class="am-form-group">
@@ -23,10 +47,13 @@
         </div>
 
 
-        <input type="hidden" id="save" value="<%= @save %>">
+        <input type="hidden" id="save" name="btn" value="<%= @save %>">
     </fieldset>
 </form>
-
+    <div class="am-g">
+        <div class="hr">
+        </div>
+    </div>
 <% end %>
 
 
