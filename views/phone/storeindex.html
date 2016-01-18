@@ -1,0 +1,133 @@
+<% extend 'phone/base.html' %>
+
+
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-storeindex.css">
+<% end %>
+<header class="header_edit_1">
+    <div class="top_img">
+        <img src="http://qsh.shop.bama555.com/assets/img/wap/head_banner_img.jpg">
+    </div>
+    <ul class="menu-list">
+        <li>
+            <div class="portrait">
+                <img class="outlet-header-img" src="<%= @s.User.headimgurl %>">
+            </div>
+            <div class="shop-name"><span><%= @s.name %></span> </div>
+        </li>
+        <li></li>
+        <li></li>
+        <li>
+            <a href="/cate/">
+                <i class="iconfont"><label class="shop-goods-count" style="font-style: initial;"><%= @pcount %></label></i>
+                <span>全部商品</span>
+            </a>
+        </li>
+        <!--<li>-->
+            <!--<a class="collect">-->
+                <!--<i class="iconfont" style="font-style: initial;">☆</i>-->
+                <!--<span>收藏本店</span>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--<li>-->
+            <!--<a class="code" href="http://qsh.shop.bama555.com/ad_card/shop/?did=1630168">-->
+                <!--<i class="am-icon-qrcode iconfont"></i>-->
+                <!--<span>二维码</span>-->
+            <!--</a>-->
+        <!--</li>-->
+    </ul>
+</header>
+
+<!--<div class="am-g row row1" >-->
+    <!--<form class="am-form">-->
+        <!--<div class="am-u-sm-10 am-form-group" style="margin-bottom: 0">-->
+            <!--<input type="text" name="key" class="am-form-field am-radius" placeholder="商品搜索:请输入商品关键字" />-->
+        <!--</div>-->
+        <!--<div class="am-u-sm-2">-->
+            <!--<button class="am-btn am-btn-success am-radius">搜索</button>-->
+        <!--</div>-->
+    <!--</form>-->
+
+<!--</div>-->
+
+<div class="am-g row  " >
+    <div class="am-slider am-slider-default" data-am-flexslider id="demo-slider-0">
+        <ul class="am-slides">
+            <% for a in @imgs: %>
+               <li> <a href="<%= a.link %>"><img src="<%= a.address %>" /></a></li>
+            <% end %>
+        </ul>
+    </div>
+</div>
+<!--<div class="am-g row  " >-->
+        <!--<ul>-->
+            <!--<li class="nav-item " style="background-color:#FFFFFF">-->
+                <!--<a href="">-->
+                    <!--<div class="nav-title" style="color:#000000">首页</div>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item " style="background-color:#FFFFFF">-->
+                <!--<a href="">-->
+                    <!--<div class="nav-title" style="color:#000000">个人中心</div>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item " style="background-color:#FFFFFF">-->
+                <!--<a href="">-->
+                    <!--<div class="nav-title" style="color:#000000">分类</div>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item " style="background-color:#FFFFFF">-->
+                <!--<a href="">-->
+                    <!--<div class="nav-title" style="color:#000000">购物车</div>-->
+                <!--</a>-->
+            <!--</li>-->
+        <!--</ul>-->
+<!--</div>-->
+
+
+<!--<div class="am-g row stitle" >-->
+    <!--<h3>-->
+        <!--<a href="">-->
+            <!--新品推荐！！！-->
+            <!--<span>更多<i class="am-icon-chevron-right"></i></span>-->
+        <!--</a>-->
+    <!--</h3>-->
+<!--</div>-->
+
+<div class="am-g row stitle" >
+    <h3>
+        <a href="">
+           热销商品
+            <span>更多<i class="am-icon-chevron-right"></i></span>
+        </a>
+    </h3>
+    <div class="am-u-sm-12 toppro">
+        <% for e in @pros : %>
+        <div class="am-u-sm-6 pitem">
+            <div class="goods-inner">
+                <a href="">
+                    <div class="goods-img">
+                        <img style="height: 358px; display: block;" class="" src="<%= e.mainImg %>" >
+                    </div>
+                    <div class="goods-title"> <%= e.title %>
+                    </div>
+                    <div class="goods-info">
+                        <span class="goods-price">￥<%= e.price %></span>
+                        <span class="goods-del"><del>￥<%= e.oldPrice %></del></span>
+                        <!--<span class="label-waring">7.2折</span>-->
+                        <span class="goods-sale">已售:<%= e.capacity %></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <% end %>
+
+    </div>
+</div>
+
+<div class="am-g row last" >
+
+</div>
+<% block 'scripts': %>
+<script src="/dist/phone-storeindex.js"></script>
+<% end %>

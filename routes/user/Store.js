@@ -12,6 +12,10 @@ var Store = db.models.Store;
 var GoodsType = db.models.GoodsType;
 var ShoppingCart = db.models.ShoppingCart;
 var GoodsCollection = db.models.GoodsCollection;
+var GoodsShortcutView = db.models.GoodsShortcutView;
+var Slideshow = db.models.Slideshow;
+var Goods = db.models.Goods;
+
 var User = db.models.User;
 module.exports = (router) => {
 
@@ -81,6 +85,22 @@ module.exports = (router) => {
         this.body = yield render('phone/group.html', {
             list,
             title:"我的团队"
+        });
+    });
+    router.get('/user-store/index',  function *() {
+        var id=this.query.id; //店铺id
+        var s=yield Store.findOne({
+            where:{
+                id:id,
+            },
+            include:[User]
+        });
+        var pros=yield GoodsShortcutView.findAll({ limit: 10,order: 'compoundSoldNum DESC' });
+        var imgs=yield Slideshow.findAll();
+        var ps=yield Goods.findAll();
+        var pcount=ps.length;
+        this.body = yield render('phone/storeindex.html', {
+            s,pros,imgs,noHeaderTpl:true,pcount
         });
     });
 

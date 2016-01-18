@@ -49,6 +49,7 @@ var phoneEntries = {
     'phone-usercenter': ['./src/js/phone/usercenter.js'],
     'phone-storehome': ['./src/js/phone/storehome.js'],
     //'phone-storeapply': ['./src/js/phone/storeapply.js'],
+    'phone-storeindex': ['./src/js/phone/storeindex.js'],
 };
 
 var extraEntries = {
