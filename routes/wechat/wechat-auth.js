@@ -89,7 +89,8 @@ module.exports = (router) => {
                 headimgurl: user.headimgurl,
                 sex: user.sex,
                 openid: user.openid,
-                subscribe_time: user.subscribe_time
+                subscribe_time: user.subscribe_time,
+                unionid: user.unionid
             });
         }
         auth.login(this, dbUser);
