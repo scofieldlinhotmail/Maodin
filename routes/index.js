@@ -32,13 +32,14 @@ router.use(function *(next) {
             return;
         }
     }
-    if (/\/adminer\/*/.test(req.url) && (util.isNullOrUndefined(user) ||  typeof user.type === 'undefined')) {
+
+    if (/\/adminer\/.*/.test(req.url) && util.isNullOrUndefined(user)) {
         this.redirect('/admin-login');
         return;
     }
     if (/\/adminer-(\w*)\/*/.exec(req.url)) {
         var type = /\/adminer-(\w*)\/*/.exec(req.url)[1];
-        if ((util.isNullOrUndefined(user) ||  typeof user.type === 'undefined')) {
+        if (util.isNullOrUndefined(user)) {
             this.redirect('/admin-login');
             return;
         }
@@ -58,6 +59,7 @@ router.use(function *(next) {
             case 'shopkeeper':
             case 'slideshow':
                 if (user.type < 99 && user.type != 1) {
+
                     this.redirect('/admin-login');
                     return;
                 }

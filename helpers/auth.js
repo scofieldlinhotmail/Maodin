@@ -31,7 +31,7 @@ module.exports = {
         var token = utilx.md5(`${user.id}#${Date.now()}`);
         var lastMonth = new Date();
         lastMonth.setMonth(lastMonth.getMonth() - 1);
-        ctx.cookies.set(cookieName, token, {
+        ctx.cookies.set(cookieName, null, {
             expires: lastMonth
         });
         cache.del(token);
@@ -53,6 +53,7 @@ module.exports = {
             user = yield cache.jget(token);
         }
         ctx.current.user = user;
+        console.log(user);
         return user;
     }
 };

@@ -15,7 +15,7 @@ module.exports = (router) => {
     });
 
     router.get('/admin-login', function *() {
-        this.body = yield render('admin/login.html');
+        this.body = yield render('admin/login');
     });
 
     // todo: redirect
@@ -40,9 +40,9 @@ module.exports = (router) => {
             if (c != null && c.status == 0) {
                 ///登陆
                 auth.login(this, c);
-                //this.redirect('/adminer/index');
                 var user = c;
-                if (user.type = 2) {
+                console.log(user.nickname);
+                if (user.type == 2) {
                     this.redirect('/adminer-adminer/user-list');
                 } else if (user.type == 1) {
                     this.redirect('/adminer-shopkeeper/goods')
@@ -64,6 +64,7 @@ module.exports = (router) => {
 
     router.get('/admin-logout', function *() {
         yield auth.logout(this);
-        this.redirect('/admin-login');
+        this.body = 'ok';
+        //this.redirect('/admin-login');
     })
 };
