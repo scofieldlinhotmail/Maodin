@@ -84,6 +84,7 @@ module.exports = (router) => {
             }
         });
         if (util.isNullOrUndefined(dbUser)) {
+            console.log(user);
             dbUser = yield User.create({
                 nickname: user.nickname,
                 headimgurl: user.headimgurl,
