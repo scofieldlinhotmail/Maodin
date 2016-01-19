@@ -81,7 +81,17 @@ module.exports = (router) => {
 
         var user = yield auth.user(this);
 
-        this.redirect('/user-store/index?id=' + user.id);
+        var store = yield Store.findOne({
+            where: {
+                UserId: user.id
+            }
+        });
+
+        if (store) {
+            this.redirect('/user-store/index?id=' + store.id);
+        } else {
+            this.redirect('/user-store/index?id');
+        }
 
     });
 
