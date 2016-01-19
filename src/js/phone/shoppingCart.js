@@ -1,4 +1,4 @@
-require('./base.js').bottomBar(1);
+require('./base.js').bottomBar(3);
 require('../../css/phone/shoppingCart.scss');
 
 require('angular');

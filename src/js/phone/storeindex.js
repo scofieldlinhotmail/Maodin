@@ -1,7 +1,7 @@
 /**
  * Created by lxc on 16-1-18.
  */
-require('./base.js').bottomBar(2);
+require('./base.js').bottomBar(0);
 
 require('../../css/phone/storeindex.scss');
 

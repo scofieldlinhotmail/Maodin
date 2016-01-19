@@ -16,10 +16,8 @@ module.exports = (router) => {
             where:{
                 UserId: user.id
             },
-            include: [Area]
         });
 
-        console.log(data);
         this.body = yield render('phone/address.html',{
             datas:data,
             title: '收货地址'

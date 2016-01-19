@@ -3,6 +3,7 @@ $navbar-height: 48px;
 
 body {
   padding-bottom: $navbar-height;
+  transition: opacify 0.3s ease-in-out;
 }
 #header {
   background-color: $main-color;

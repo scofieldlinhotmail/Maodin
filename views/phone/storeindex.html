@@ -4,6 +4,8 @@
 <% block 'head' : %>
 <link rel="stylesheet" href="/dist/phone-storeindex.css">
 <% end %>
+
+<% if @s: %>
 <header class="header_edit_1">
     <div class="top_img">
         <img src="http://qsh.shop.bama555.com/assets/img/wap/head_banner_img.jpg">
@@ -37,7 +39,7 @@
         <!--</li>-->
     </ul>
 </header>
-
+<% end %>
 <!--<div class="am-g row row1" >-->
     <!--<form class="am-form">-->
         <!--<div class="am-u-sm-10 am-form-group" style="margin-bottom: 0">-->
@@ -96,7 +98,7 @@
 
 <div class="am-g row stitle" >
     <h3>
-        <a href="/user/goods-list/<%= @s.id%>">
+        <a href="/user/goods-list/<%= @s?.id%>">
            热销商品
             <span>更多<i class="am-icon-chevron-right"></i></span>
         </a>

@@ -1,7 +1,10 @@
+<% ctx = require('../../../instances/context.js').get() %>
+<% user =  ctx.current.user %>
+
 <div id="navbar" class="am-navbar ">
     <ul class="am-navbar-nav">
         <li>
-            <a href="/user/index">
+            <a href="/user-store/redirect">
                 <i class="am-icon am-icon-home"></i>
                 <span class="am-navbar-label">首页</span>
             </a>
@@ -13,7 +16,7 @@
             </a>
         </li>
         <li class="">
-            <a href="/user/shoppingcart-view" >
+            <a href="/user-store/home" >
                 <i class="am-icon am-icon-shopping-cart"></i>
                 <span class="am-navbar-label">分销中心</span>
             </a>

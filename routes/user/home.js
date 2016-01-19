@@ -10,19 +10,19 @@ var GoodsType = db.models.GoodsType;
 module.exports = (router) => {
     var User = db.models.User;
     var Rank = db.models.Rank;
-    router.get('/user/index',  function *() {
-        var types = yield GoodsType.findAll({
-            where: {
-                type: 1
-            },
-            attributes: ['title', 'type', 'id'],
-            include: [GoodsType]
-        });
-
-        this.body = yield render('phone/index.html', {
-            types: JSON.stringify(types)
-        });
-    });
+    //router.get('/user/index',  function *() {
+    //    var types = yield GoodsType.findAll({
+    //        where: {
+    //            type: 1
+    //        },
+    //        attributes: ['title', 'type', 'id'],
+    //        include: [GoodsType]
+    //    });
+    //
+    //    this.body = yield render('phone/index.html', {
+    //        types: JSON.stringify(types)
+    //    });
+    //});
 
     router.get('/user/center',  function *() {
         var user=yield auth.user(this);

@@ -1,4 +1,4 @@
-require('./base.js');
+require('./base.js').bottomBar(1);
 require('../../css/phone/goods-list.scss');
 
 

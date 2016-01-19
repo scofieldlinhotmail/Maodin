@@ -2,6 +2,10 @@ require('expose?jQuery!jquery');
 require('amazeui/dist/css/amazeui.css');
 require('amazeui/dist/js/amazeui.js');
 
+jQuery(function () {
+   jQuery('body').css('opacity', 1);
+});
+
 module.exports = {
     bottomBar: function (active) {
         jQuery(function () {
