@@ -35,12 +35,12 @@ app.use(koaValidate());
 // route
 app.use(router);
 
-/* app.on('error', (err, ctx) => { */
-    // //todo: error handle
-    // // todo: for test
-    // console.log(err);
-    // log.error('server error', err, ctx);
-/* }); */
+ app.on('error', (err, ctx) => {
+     //todo: error handle
+     // todo: for test
+     console.log(err);
+     log.error('server error', err, ctx);
+ });
 
 app = app.listen(port);
 module.exports = app;
