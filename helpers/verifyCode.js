@@ -18,7 +18,7 @@ module.exports = {
             sms_free_sign_name: "注册验证",
             sms_param: {
                 code: code,
-                product: '小地主'
+                product: '夷沃'
             },
             rec_num: phone,
             sms_template_code: "SMS_2915139"

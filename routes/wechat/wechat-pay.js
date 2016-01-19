@@ -68,7 +68,7 @@ module.exports = (router) => {
         } else {
             var p = new Promise(function (resolve, reject) {
                 wxpay.createUnifiedOrder({
-                    body: '小地主订单支付' + order.id,
+                    body: '夷沃订单支付' + order.id,
                     out_trade_no: outerTradeId,
                     total_fee: 1, //todo: for test 1分
                     spbill_create_ip: this.request.id,

@@ -21,8 +21,8 @@ module.exports = (router) => {
 
     var User = db.models.User;
 
-    var wechatCookieAccessToken = 'FoodMarketWechatAccessToken',
-        wechatCookieRefreshToken = 'FoodMarketWechatRefreshToken';
+    var wechatCookieAccessToken = 'YiwoWechatAccessToken',
+        wechatCookieRefreshToken = 'YiwoWechatRefreshToken';
 
     var refresh = function *(ctx, client) {
         try{
@@ -47,7 +47,7 @@ module.exports = (router) => {
 
     router.get('/wechat/redirect', function *() {
         var client = WechatAuthClient();
-        var url = client.getAuthorizeURL('http://139.129.18.214/wechat/auth', 'foodmarket', 'snsapi_userinfo');
+        var url = client.getAuthorizeURL('${wechatConfig.domain}/wechat/auth', 'yiwo', 'snsapi_userinfo');
         this.redirect(url);
     });
 
