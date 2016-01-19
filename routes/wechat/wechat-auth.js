@@ -95,6 +95,7 @@ module.exports = (router) => {
             });
         }
         auth.login(this, dbUser);
+        console.log('to center');
         this.redirect('/user/center');
     });
 
