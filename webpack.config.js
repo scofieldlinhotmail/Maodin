@@ -35,7 +35,11 @@ var phoneEntries = {
     'phone-goods-page': ['./src/js/phone/goods-page.js'],
     'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
     'phone-address':['./src/js/phone/user.address.js'],
+<<<<<<< HEAD
     //'phone-addaddress':['./src/js/phone/user.addaddress.js'],
+=======
+    'phone-addaddress':['./src/js/phone/user.addaddress.js'],
+>>>>>>> lxc
     //'phone-index': ['./src/js/phone/index.js'],
     'phone-index': ['./src/js/phone/index.js'],
     'phone-goods-list': ['./src/js/phone/goods-list.js'],

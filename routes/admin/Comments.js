@@ -16,7 +16,7 @@ module.exports = (router) => {
     var User = db.models.User;
 
 
-    router.get('/adminer/comment/:id',  function *() {
+    router.get('/adminer/comment',  function *() {
 
         var key=this.query.key;
         var list= yield Comment.findAll({
