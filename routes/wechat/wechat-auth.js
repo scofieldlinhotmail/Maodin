@@ -55,6 +55,7 @@ module.exports = (router) => {
     router.get('/wechat/auth', function *(next) {
         var client = WechatAuthClient();
         var ctx = this;
+        console.log(ctx.request.query.code);
         var p = new Promise(function (resolve) {
             client.getAccessToken(ctx.request.query.code, function (err, result) {
                 if (err) {
