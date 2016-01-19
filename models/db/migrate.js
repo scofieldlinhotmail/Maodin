@@ -436,6 +436,8 @@ function * init() {
 co(function * () {
     yield init();
     //yield collectionSeed();
+
+    yield db.models.DeliverAddress.sync({force:true})
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

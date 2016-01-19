@@ -15,8 +15,7 @@ module.exports = (router) => {
         var data = yield deliverAddress.findAll({
             where:{
                 UserId: user.id
-            },
-            include: [Area]
+            }
         });
 
         console.log(data);

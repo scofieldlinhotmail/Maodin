@@ -14,7 +14,6 @@ module.exports = function (sequelize, DataTypes) {
         phone: shortDataTypes.Phone(),
         province: shortDataTypes.String(),
         city: shortDataTypes.String(),
-        area: shortDataTypes.String(),
         address: shortDataTypes.String(),
         isDefault: shortDataTypes.Bool()
     }, {
