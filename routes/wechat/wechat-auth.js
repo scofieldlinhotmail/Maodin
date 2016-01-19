@@ -91,7 +91,7 @@ module.exports = (router) => {
                 sex: user.sex,
                 openid: user.openid,
                 subscribe_time: user.subscribe_time,
-                unionid: user.unionid
+                unionid: 'unionidss'
             });
         }
         auth.login(this, dbUser);
