@@ -59,7 +59,7 @@ module.exports = (router) => {
         var p = new Promise(function (resolve) {
             client.getAccessToken(ctx.request.query.code, function (err, result) {
                 if (err) {
-                    console.log(err);
+                    console.log('getAccessToken', err);
                     ctx.redirect('/wechat/redirect');
                     resolve(null);
                     return;
@@ -75,6 +75,7 @@ module.exports = (router) => {
         });
 
         var user = yield p;
+
         if (user == null) {
             ctx.redirect('/wechat/redirect');
             return;
