@@ -47,7 +47,7 @@ module.exports = (router) => {
 
     router.get('/wechat/redirect', function *() {
         var client = WechatAuthClient();
-        var url = client.getAuthorizeURL('${wechatConfig.domain}/wechat/auth', 'yiwo', 'snsapi_userinfo');
+        var url = client.getAuthorizeURL(`${wechatConfig.domain}/wechat/auth`, 'yiwo', 'snsapi_userinfo');
         console.log(url);
         this.redirect(url);
     });
