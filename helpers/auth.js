@@ -27,14 +27,16 @@ module.exports = {
     logout: function *(ctx) {
         var user = yield this.user(ctx);
         ctx.current = ctx.current || {};
-        ctx.current.user = null;
-        var token = utilx.md5(`${user.id}#${Date.now()}`);
+        if (user) {
+            var token = utilx.md5(`${user.id}#${Date.now()}`);
+            cache.del(token);
+        }
         var lastMonth = new Date();
         lastMonth.setMonth(lastMonth.getMonth() - 1);
         ctx.cookies.set(cookieName, null, {
             expires: lastMonth
         });
-        cache.del(token);
+        ctx.current.user = null;
     },
     /**
      * 获取当前用户
@@ -53,7 +55,6 @@ module.exports = {
             user = yield cache.jget(token);
         }
         ctx.current.user = user;
-        console.log(user);
         return user;
     }
 };

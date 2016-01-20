@@ -3,15 +3,16 @@
 <head>
     <% include 'shared/head' %>
     <link rel="stylesheet" href="/dist/admin-commons.js.css">
-
+    <% ctx = require('../../../instances/context.js').get() %>
+    <% currentUser =  ctx.current.user %>
     <% content 'head' %>
 </head>
 <body class="page-header-fixed">
-<% include "shared/admin-header" %>
+<% include "shared/admin-header" , {currentUser: currentUser}%>
 <div class="page-container">
-    <% include "shared/admin-sidebar" %>
+    <% include "shared/admin-sidebar", {currentUser: currentUser} %>
     <div class="page-content">
-        <% content %>
+        <% content%>
     </div>
 </div>
 <div class="footer">

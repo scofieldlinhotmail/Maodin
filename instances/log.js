@@ -12,7 +12,7 @@ if (!fs.existsSync(logConfig.dir())) {
 }
 
 var logger = bunyan.createLogger({
-    name: 'foundationLog',
+    name: 'yiwolog',
     streams: [
         {
             level: 'info',

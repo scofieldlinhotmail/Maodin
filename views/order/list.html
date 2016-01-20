@@ -15,90 +15,129 @@
 <% end %>
 <div ng-controller="AppCtrl">
     <div ng-controller="OrderListCtrl">
+
         <div class="portlet box blue">
             <div class="portlet-title">
-                <div class="caption"><i class="fa fa-reorder"></i>筛选条件</div>
+                <div class="caption"><i class="fa fa-reorder"></i>筛选条件(点击右边箭头展开)</div>
                 <div class="tools">
-                    <a href="javascript:;" class="collapse"></a>
+                    <a href="javascript:;" class="expand"></a>
                 </div>
             </div>
-            <div class="portlet-body form">
+            <div class="portlet-body form" style="display: none">
                 <!-- BEGIN FORM-->
-                <div action="#" class="form-horizontal form-bordered  form-row-sepe">
+                <div action="#" class="form-horizontal">
                     <div class="form-body">
-                        <div class="form-group">
-                            <label class="control-label col-md-3">商品id</label>
-                            <div class="col-md-4">
-                                <select multiple class="form-control select2" ng-model="goodsIds">
-                                    <% for item in @goods : %>
-                                    <option value="<%= item.id %>">(id:<%= item.id %>)<%= item.title %></option>
-                                    <% end %>
-                                </select>
-                                <span class="help-block">可多选</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3">订单状态</label>
-                            <div class="col-md-4">
-                                <select class="form-control" ng-model="status" ng-init="status = '<%= @status %>'">
-                                    <option value="1">待发货</option>
-                                    <option value="2">已发货</option>
-                                    <option value="10">已签收</option>
-                                    <option value="-1">退货中</option>
-                                    <option value="-2">退货完成</option>
-                                    <option value="">全部</option>
-                                </select>
-                                <!--<span class="help-block">可多选</span>-->
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3">类型</label>
-                            <div class="col-md-4">
-                                <select class="form-control" ng-model="type" ng-init="type = '<%- @type %>'">
-                                    <option value="0">普通订单</option>
-                                    <option value="1">分销订单</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label  class="col-md-3 control-label">收货人姓名</label>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control"  ng-model="recieverName">
-                                    <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">商品id</label>
+                                    <div class="col-md-9">
+                                        <select multiple class="form-control select2" ng-model="goodsIds">
+                                            <% for item in @goods : %>
+                                            <option value="<%= item.id %>">(id:<%= item.id %>)<%= item.title %></option>
+                                            <% end %>
+                                        </select>
+                                        <span class="help-block">可多选</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label  class="col-md-3 control-label">收货人手机号</label>
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control"  ng-model="phone">
-                                    <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">类型</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" ng-model="type" ng-init="type = '<%- @type %>'">
+                                            <option value="0">普通订单</option>
+                                            <option value="1">分销订单</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <!--/span-->
                         </div>
+                        <!--/row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">订单状态</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" ng-model="status" ng-init="status = '<%= @status %>'">
+                                            <option value="1">待发货</option>
+                                            <option value="2">已发货</option>
+                                            <option value="10">已签收</option>
+                                            <option value="-1">退货中</option>
+                                            <option value="-2">退货完成</option>
+                                            <option value="">全部</option>
+                                        </select>
+                                        <!--<span class="help-block">可多选</span>-->
+                                    </div>
+                                </div>
 
-                        <div class="form-group">
-                            <label class="control-label col-md-3">支付时间</label>
-                            <div class="col-md-4">
-                                <div class="input-group input-large date-picker input-daterange" data-date-format="mm/dd/yyyy">
-                                    <input type="text" class="form-control" ng-model="startDate">
-                                    <span class="input-group-addon">to</span>
-                                    <input type="text" class="form-control" ng-model="endDate">
+
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">支付时间</label>
+                                    <div class="col-md-9">
+                                        <div class="input-group input-large date-picker input-daterange" data-date-format="mm/dd/yyyy">
+                                            <input type="text" class="form-control" ng-model="startDate">
+                                            <span class="input-group-addon">to</span>
+                                            <input type="text" class="form-control" ng-model="endDate">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <!--/span-->
                         </div>
+                        <!--/row-->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label  class="col-md-3 control-label">收货人手机号</label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"  ng-model="phone">
+                                            <span class="input-group-addon"><i class="fa fa-phone"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
 
+
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label  class="col-md-3 control-label">收货人姓名</label>
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"  ng-model="recieverName">
+                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <!--/row-->
                     </div>
-                    <div class="form-actions text-center ">
-                        <button type="submit" class="btn blue" ng-click="search()" ng-disabled="loading">查询</button>
-                        <button type="button" class="btn default" ng-click="reset()">清空</button>
+                    <div class="form-actions fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="col-md-offset-3 col-md-9">
+                                    <button type="submit" class="btn blue" ng-click="search()" ng-disabled="loading">查询</button>
+                                    <button type="button" class="btn default" ng-click="reset()">清空</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
                     </div>
                 </div>
                 <!-- END FORM-->
             </div>
         </div>
+
         <div style="margin: 8px 0;">
             <div class="btn-groups text-right">
                 <div class="btn btn-default" ng-click="action(2)">发货</div>

@@ -9,15 +9,31 @@
             <div class="sidebar-toggler hidden-phone"></div>
             <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
         </li>
-        <% if user.type >= 99 || user.type == 2 : %>
+        <% if @currentUser.type >= 99 || @currentUser.type == 2 : %>
         <li>
             <a href="/adminer-super/adminer-manage">
                 <i class="fa fa-users"></i>
                 <span class="title">后台人员管理</span>
             </a>
         </li>
+        <li class="">
+            <a href="javascript:;">
+                <i class="fa fa-users"></i>
+                <span class="title">会员管理</span>
+                <span class="arrow "></span>
+            </a>
+            <ul class="sub-menu">
+
+                <li>
+                    <a href="/adminer-adminer/user-list">会员列表</a>
+                </li>
+                <li>
+                    <a href="/adminer-vip/ranks">等级管理</a>
+                </li>
+            </ul>
+        </li>
         <% end %>
-        <% if user.type >= 99 || user.type == 1 : %>
+        <% if @currentUser.type >= 99 || @currentUser.type == 1 : %>
         <li class="">
             <a href="javascript:;">
                 <i class="fa fa-shopping-cart"></i>
@@ -32,38 +48,52 @@
                 <li>
                     <a href="/adminer-shopkeeper/goods/save">添加</a>
                 </li>
+                <li>
+                    <a href="/adminer-shopkeeper/goodstype">类别管理</a>
+                </li>
             </ul>
         </li>
-        <li>
-            <a href="/adminer-shopkeeper/goodstype">
-                <i class="fa fa-tags"></i>
-                <span class="title">类别管理</span>
-            </a>
-        </li>
         <% end %>
-        <% if user.type >= 99 || user.type == 3 : %>
-        <li>
-            <a href="/adminer-order/order-list/t/0">
+        <% if @currentUser.type >= 99 || @currentUser.type == 3 : %>
+        <li class="">
+            <a href="javascript:;">
                 <i class="fa fa-rmb"></i>
-                <span class="title">普通订单管理</span>
+                <span class="title">订单管理</span>
+                <span class="arrow "></span>
             </a>
+            <ul class="sub-menu">
+
+                <li>
+                    <a href="/adminer-order/order-list/t/0">订单列表</a>
+                </li>
+                <li>
+                    <a href="/adminer-order/order-list/s/-1">退款管理</a>
+                </li>
+                <li>
+                    <a href="/adminer-order/order-list">综合查询</a>
+                </li>
+            </ul>
         </li>
-        <!--<li>-->
-            <!--<a href="/adminer/evaluations">-->
-                <!--<i class="fa fa-comments"></i>-->
-                <!--<span class="title">评价列表</span>-->
-            <!--</a>-->
-        <!--</li>-->
         <% end %>
-        <% if user.type >= 99 || user.type == 4 : %>
-        <li>
-            <a href="/adminer-order/order-list/t/1">
+        <% if @currentUser.type >= 99 || @currentUser.type == 4 : %>
+        <li class="">
+            <a href="javascript:;">
                 <i class="fa fa-rmb"></i>
-                <span class="title">分销订单管理</span>
+                <span class="title">分销管理</span>
+                <span class="arrow "></span>
             </a>
+            <ul class="sub-menu">
+
+                <li>
+                    <a href="/adminer-order/order-list/t/1">分销订单</a>
+                </li>
+                <li>
+                    <a href="/adminer-order/order-list/s/-1">退款管理</a>
+                </li>
+            </ul>
         </li>
         <% end %>
-        <% if user.type >= 99 :%>
+        <% if @currentUser.type >= 99 :%>
         <li>
             <a href="/adminer-order/order-list">
                 <i class="fa fa-rmb"></i>
@@ -71,10 +101,14 @@
             </a>
         </li>
         <% end %>
-
-
-
-
+        <% if @currentUser.type >= 99 || @currentUser.type == 2 : %>
+        <li>
+            <a href="/adminer-super/adminer-manage">
+                <i class="fa fa-users"></i>
+                <span class="title">后台人员管理</span>
+            </a>
+        </li>
+        <% end %>
 
     </ul>
     <!-- END SIDEBAR MENU -->

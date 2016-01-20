@@ -1,5 +1,4 @@
-<% ctx = require('../../../instances/context.js').get() %>
-<% user =  ctx.current.user %>
+
 
 <!-- BEGIN HEADER -->
 <div class="header navbar navbar-inverse navbar-fixed-top">
@@ -20,7 +19,7 @@
             <!-- BEGIN USER LOGIN DROPDOWN -->
             <li class="dropdown user">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                    <span class="username"><%= user.nickname %></span>
+                    <span class="username"><%= @currentUser.nickname %></span>
                     <i class="fa fa-angle-down"></i>
                 </a>
                 <ul class="dropdown-menu">

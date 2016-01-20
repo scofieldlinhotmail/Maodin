@@ -14,11 +14,9 @@ var adminEnties = {
     'admin-order-list':['./src/js/order/list.js'],
 
     'admin-goods-list':['./src/js/goods/list.js'],
-    //'admin-goods-save': ['./src/js/goods/save.js'],
+    'admin-goods-save': ['./src/js/goods/save.js'],
     //'admin-goodstype': ['./src/js/admin/goodstype.js'],
     //'admin-orders':['./src/js/admin/orders.js'],
-    //'admin-fare':['./src/js/admin/fare.js'],
-    //'admin-form' : ['./src/js/admin/admin.js'],
     'admin-adminer':['./src/js/admin/adminer.js'],
     //'admin-gooddetail':['./src/js/goods/detail.js'],
     'admin-user-list': ['./src/js/admin/user.js'],
@@ -42,13 +40,12 @@ var phoneEntries = {
     'phone-goods-collection': ['./src/js/phone/goods-collection.js'],
     'phone-shoppingcart': ['./src/js/phone/shoppingCart.js'],
     'phone-order-list': ['./src/js/phone/order-list.js'],
-    //'phone-register': ['./src/js/phone/register.js'],
     'phone-evaluation':['./src/js/phone/evaluation.js'],
     'phone-user': ['./src/js/phone/user.js'],
     'phone-pay': ['./src/js/phone/pay.js'],
     'phone-usercenter': ['./src/js/phone/usercenter.js'],
     'phone-storehome': ['./src/js/phone/storehome.js'],
-    //'phone-storeapply': ['./src/js/phone/storeapply.js'],
+    'phone-storeapply': ['./src/js/phone/storeapply.js'],
     'phone-storeindex': ['./src/js/phone/storeindex.js'],
 };
 

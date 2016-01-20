@@ -9,7 +9,7 @@ require('ajaxform/build/ajaxform-0.1.2.js');
 var $ = jQuery;
 
 require('datatables/media/js/jquery.dataTables.js');
-require('datatables/media/css/jquery.dataTables.css');
+require('datatables/media/css/dataTables.bootstrap.css');
 require('select2');
 
 require('./datetabesmy.js');

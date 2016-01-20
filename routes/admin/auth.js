@@ -64,7 +64,6 @@ module.exports = (router) => {
 
     router.get('/admin-logout', function *() {
         yield auth.logout(this);
-        this.body = 'ok';
-        //this.redirect('/admin-login');
+        this.redirect('/admin-login');
     })
 };
