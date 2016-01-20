@@ -15,7 +15,7 @@ var GoodsCollection = db.models.GoodsCollection;
 var GoodsShortcutView = db.models.GoodsShortcutView;
 var Slideshow = db.models.Slideshow;
 var Goods = db.models.Goods;
-
+var Favorite = db.models.Favorite;
 var User = db.models.User;
 module.exports = (router) => {
 
@@ -111,6 +111,7 @@ module.exports = (router) => {
     });
     router.get('/user-store/index', function *() {
         var id = this.query.id; //店铺id
+        var user= yield auth.user(this);
         if (id) {
             var s = yield Store.findOne({
                 where: {
@@ -120,12 +121,25 @@ module.exports = (router) => {
             });
         }
 
+        //收藏判断
+        var has=0;
+        var favorite=yield Favorite.findOne({
+            where:{
+                UserId:user.id,
+                StoreId:id
+            }
+        });
+        if(favorite!=null){
+            has=1;
+        }
+
+
         var pros = yield GoodsShortcutView.findAll({limit: 10, order: 'compoundSoldNum DESC'});
         var imgs = yield Slideshow.findAll();
         var ps = yield Goods.findAll();
         var pcount = ps.length;
         this.body = yield render('phone/storeindex.html', {
-            s, pros, imgs, noHeaderTpl: true, pcount
+            s, pros, imgs, noHeaderTpl: true, pcount,has
         });
     });
 

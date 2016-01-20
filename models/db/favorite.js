@@ -7,16 +7,14 @@ var util = require('util');
 
 module.exports = function (sequelize, DataTypes) {
 
-    var Evaluation = sequelize.define('Evaluation', {
-        text: shortDataTypes.String(),
-        isShow: shortDataTypes.Bool()
+    var Favorite = sequelize.define('Favorite', {
     }, {
         timestamps: true,
         associate: function (models) {
-            models.Order.hasMany(models.Evaluation);
-            models.Evaluation.belongsTo(models.Order);
-            models.User.hasMany(models.Evaluation);
-            models.Evaluation.belongsTo(models.User);
+            models.User.hasMany(models.Favorite);
+            models.Favorite.belongsTo(models.User);
+            models.Store.hasMany(models.Favorite);
+            models.Favorite.belongsTo(models.Store);
         },
         instanceMethods: {
         },
@@ -24,6 +22,6 @@ module.exports = function (sequelize, DataTypes) {
         }
     });
 
-    return Evaluation;
+    return Favorite;
 };
 
