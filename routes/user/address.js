@@ -15,11 +15,8 @@ module.exports = (router) => {
         var data = yield deliverAddress.findAll({
             where:{
                 UserId: user.id
-<<<<<<< HEAD
-            },
-=======
+
             }
->>>>>>> lxc
         });
 
         this.body = yield render('phone/address.html',{
