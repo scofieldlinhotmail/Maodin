@@ -1,4 +1,4 @@
-require('../../../src/css/admin-base/common.js');
+require('../admin-base/common.js');
 
 /* js */
 require('../admin/index');
@@ -151,6 +151,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
                     data[i].recieveTime = data[i].recieveTime ? moment(data[i].recieveTime).format("YY/MM/DD hh:mm:ss") : '';
                     data[i].returnRequestTime = data[i].returnRequestTime ? moment(data[i].returnRequestTime).format("YY/MM/DD hh:mm:ss") : '';
                     data[i].returnTime = data[i].returnTime ? moment(data[i].returnTime).format("YY/MM/DD hh:mm:ss") : '';
+                    data[i].deletedAt = data[i].deletedAt ? '否' : '是';
                 }
                 scope.data = scope.data.concat(data);
                 scope.list = scope.data.slice(start, scope.data.length);
@@ -240,7 +241,7 @@ app.controller('OrderListCtrl', ['$scope', '$http', function (scope, $http) {
             ids = scope.selectedIds;
         }
         $http
-            .post('./order/status', {
+            .post('/adminer-order/order/status', {
                 ids: ids,
                 status: status
             })

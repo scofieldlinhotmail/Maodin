@@ -13,7 +13,7 @@ var getUserData = function ($http, scope, status) {
             for(var i in data){
                 data[i].joinTime = (new Date(data[i].joinTime)).toLocaleString();
                 data[i].subscribe_time = (new Date(data[i].subscribe_time)).toLocaleString();
-                data[i].headimgurl = '<img src="' +  data[i].headimgurl + '" >';
+                //data[i].headimgurl = '<img src="' +  data[i].headimgurl + '" >';
             }
             scope.data = data;
             scope.$applyAsync();
@@ -36,6 +36,10 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     scope.list = [];
 
 
+    scope.edittingUserId = [];
+
+    scope.sdtSelected = [];
+
     scope.sdtOn = function (event, row) {
         var extraParams = Array.prototype.slice.call(arguments, 2);
         var status = 0;
@@ -43,24 +47,43 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
 
             modal().modal('show');
 
-            scope.edittingUserId = row.id;
+            scope.edittingUserId = [row.id];
         }
+    };
+
+    scope.startIntegralReward = function () {
+
+        if (scope.sdtSelected.length === 0) {
+            return;
+        }
+
+        modal().modal('show');
+        scope.edittingUserId = scope.sdtSelected.map(function (item) {
+            return item.id;
+        });
+    };
+
+    scope.clearSelect = function () {
+        scope.sdtSelected = [];
     };
 
     scope.submitIntegralReward = function () {
 
-        var id = scope.edittingUserId;
+        var ids = scope.edittingUserId;
         var integralReward = scope.integralReward;
         $http.post('./user-integral-reward', {
-            id: id,
+            id: ids,
             integralReward: integralReward
         }).success(function () {
-            var user = scope.find(id);
-            if (!user) {
-                return;
-            }
-            scope.data[user.key].integral += integralReward;
-            scope.data[user.key].totalIntegral += integralReward;
+
+            angular.forEach(ids, function (id) {
+                var user = scope.find(id);
+                if (!user) {
+                    return;
+                }
+                scope.data[user.key].integral += integralReward;
+                scope.data[user.key].totalIntegral += integralReward;
+            });
             modal().modal('hide');
             scope.$applyAsync();
 
@@ -83,11 +106,12 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         }
     };
 
-    window.s = scope;
 
     scope.$applyAsync(function () {
         getUserData($http, scope);
     });
+
+    window.s = scope;
 
 }]);
 

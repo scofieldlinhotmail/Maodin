@@ -9,6 +9,7 @@ module.exports = (router) => {
 
     var DeliverAddress = db.models.DeliverAddress;
     var User = db.models.User;
+    var Rank = db.models.Rank;
 
     router.get('/adminer-adminer/user-list',  function *() {
         this.body = yield render('admin/user-list.html');
@@ -63,23 +64,34 @@ module.exports = (router) => {
         }
 
         var body = this.request.body;
-        var user = yield User.findById(body.id)
 
-        if(util.isNullOrUndefined(user)) {
-            this.body = 'invalid id';
-            return;
-        }
+        var ids = `(${body.id.join(',')})`;
 
-        user.integral += body.integralReward;
-        user.totalIntegral += body.integralReward;
+        this.body = (yield db.query(`update Users set integral = integral + ${body.integralReward}, totalIntegral = totalIntegral + ${body.integralReward} where id in ${ids}`)).affectedRows;
 
-        this.body = yield user.save();
+        //user.integral += body.integralReward;
+        //user.totalIntegral += body.integralReward;
+        //
+        //this.body = yield user.save();
 
     });
 
     router.get('/adminer-adminer/user-data',  function *() {
 
-        this.body = yield User.findAll();
+        var users = yield User.findAll();
+
+        var ranks = yield Rank.findAll();
+
+        users.forEach((user, index, userSrc) => {
+            var userRank = ranks.filter((rank) => {
+                return rank.min >= user.totalIntegral && rank.max >= user.totalIntegral;
+            });
+            if (userRank.length !== 0) {
+                userSrc[index].dataValues.rank = userRank[0].name;
+            }
+        });
+
+        this.body = users;
 
     });
 

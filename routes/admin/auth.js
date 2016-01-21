@@ -11,7 +11,22 @@ var Admins = db.models.Adminer;
 module.exports = (router) => {
 
     router.get('/adminer/index', function *() {
-        this.body = yield render('admin/index.html');
+        var user = yield auth.user(this);
+        var pageSrc;
+        if (user.type == 2) {
+            pageSrc = '/adminer-adminer/user-list';
+        } else if (user.type == 1) {
+            pageSrc = '/adminer-shopkeeper/goods';
+        } else if (user.type == 3) {
+            pageSrc = '/adminer-order/order-list/t/1';
+        } else if (user.type == 4) {
+            pageSrc = '/adminer-order/order-list/t/2';
+        } else {
+            pageSrc = '/adminer-order/order-list';
+        }
+        this.body = yield render('admin/index', {
+            src: pageSrc
+        });
     });
 
     router.get('/admin-login', function *() {
@@ -37,22 +52,11 @@ module.exports = (router) => {
                 }
             });
 
+            var pageSrc;
             if (c != null && c.status == 0) {
                 ///登陆
                 auth.login(this, c);
-                var user = c;
-                console.log(user.nickname);
-                if (user.type == 2) {
-                    this.redirect('/adminer-adminer/user-list');
-                } else if (user.type == 1) {
-                    this.redirect('/adminer-shopkeeper/goods')
-                } else if (user.type == 3) {
-                    this.redirect('/adminer-order/order-list/t/1')
-                } else if (user.type == 4) {
-                    this.redirect('/adminer-order/order-list/t/2')
-                } else {
-                    this.redirect('/adminer-order/order-list');
-                }
+                this.redirect('/adminer/index');
             } else {
                 this.redirect('/admin-login');
             }

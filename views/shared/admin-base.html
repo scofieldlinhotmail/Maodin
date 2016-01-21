@@ -7,24 +7,11 @@
     <% currentUser =  ctx.current.user %>
     <% content 'head' %>
 </head>
-<body class="page-header-fixed">
-<% include "shared/admin-header" , {currentUser: currentUser}%>
-<div class="page-container">
-    <% include "shared/admin-sidebar", {currentUser: currentUser} %>
-    <div class="page-content">
-        <% content%>
-    </div>
+<body>
+<div class="page-content" style="margin: 0; padding: 20px !important;">
+    <% content%>
 </div>
-<div class="footer">
-    <div class="footer-inner">
-        2016 &copy; 夷沃农特
-    </div>
-    <div class="footer-tools">
-			<span class="go-top">
-			<i class="fa fa-angle-up"></i>
-			</span>
-    </div>
-</div>
+
 <script src="/dist/admin-commons.js"></script>
 <% content 'scripts' %>
 </body>

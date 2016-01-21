@@ -1,9 +1,33 @@
-<% extend './shared/admin-base' %>
-
-<div>后台</div>
-
-<% block 'scripts': %>
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <% include 'shared/head' %>
+    <link rel="stylesheet" href="/dist/admin-commons.js.css">
+    <link rel="stylesheet" href="/dist/admin-index.css">
+    <% ctx = require('../../../instances/context.js').get() %>
+    <% currentUser =  ctx.current.user %>
+    <% content 'head' %>
+</head>
+<body class="page-header-fixed">
+<% include "shared/admin-header" , {currentUser: currentUser}%>
+<div class="page-container">
+    <% include "shared/admin-sidebar", {currentUser: currentUser} %>
+    <div class="page-content">
+        <iframe src="<%-  @src %>" name="iframe"></iframe>
+    </div>
+</div>
+<div class="footer">
+    <div class="footer-inner">
+        2016 &copy; 夷沃农特
+    </div>
+    <div class="footer-tools">
+			<span class="go-top">
+			<i class="fa fa-angle-up"></i>
+			</span>
+    </div>
+</div>
+<script src="/dist/admin-commons.js"></script>
 <script src="/dist/admin-index.js"></script>
-<% end %>
 
-
+</body>
+</html>

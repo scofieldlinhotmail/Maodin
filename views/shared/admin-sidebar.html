@@ -10,14 +10,8 @@
             <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
         </li>
         <% if @currentUser.type >= 99 || @currentUser.type == 2 : %>
-        <li>
-            <a href="/adminer-super/adminer-manage">
-                <i class="fa fa-users"></i>
-                <span class="title">后台人员管理</span>
-            </a>
-        </li>
         <li class="">
-            <a href="javascript:;">
+            <a target="iframe" href="javascript:;">
                 <i class="fa fa-users"></i>
                 <span class="title">会员管理</span>
                 <span class="arrow "></span>
@@ -25,17 +19,17 @@
             <ul class="sub-menu">
 
                 <li>
-                    <a href="/adminer-adminer/user-list">会员列表</a>
+                    <a target="iframe" href="/adminer-adminer/user-list">会员列表</a>
                 </li>
                 <li>
-                    <a href="/adminer-vip/ranks">等级管理</a>
+                    <a target="iframe" href="/adminer-vip/ranks">等级管理</a>
                 </li>
             </ul>
         </li>
         <% end %>
         <% if @currentUser.type >= 99 || @currentUser.type == 1 : %>
         <li class="">
-            <a href="javascript:;">
+            <a target="iframe" href="javascript:;">
                 <i class="fa fa-shopping-cart"></i>
                 <span class="title">商品管理</span>
                 <span class="arrow "></span>
@@ -43,20 +37,20 @@
             <ul class="sub-menu">
 
                 <li>
-                    <a href="/adminer-shopkeeper/goods">列表</a>
+                    <a target="iframe" href="/adminer-shopkeeper/goods">列表</a>
                 </li>
                 <li>
-                    <a href="/adminer-shopkeeper/goods/save">添加</a>
+                    <a target="iframe" href="/adminer-shopkeeper/goods/save">添加</a>
                 </li>
                 <li>
-                    <a href="/adminer-shopkeeper/goodstype">类别管理</a>
+                    <a target="iframe" href="/adminer-shopkeeper/goodstype">类别管理</a>
                 </li>
             </ul>
         </li>
         <% end %>
         <% if @currentUser.type >= 99 || @currentUser.type == 3 : %>
         <li class="">
-            <a href="javascript:;">
+            <a target="iframe" href="javascript:;">
                 <i class="fa fa-rmb"></i>
                 <span class="title">订单管理</span>
                 <span class="arrow "></span>
@@ -64,20 +58,23 @@
             <ul class="sub-menu">
 
                 <li>
-                    <a href="/adminer-order/order-list/t/0">订单列表</a>
+                    <a target="iframe" href="/adminer-order/order-list/t/0">订单列表</a>
                 </li>
                 <li>
-                    <a href="/adminer-order/order-list/s/-1">退款管理</a>
+                    <a target="iframe" href="/adminer-order/order-list/s/-1">退款管理</a>
                 </li>
                 <li>
-                    <a href="/adminer-order/order-list">综合查询</a>
+                    <a target="iframe" href="/adminer-order/order-list">综合查询</a>
+                </li>
+                <li>
+                    <a target="iframe" href="/adminer/comment">评论管理</a>
                 </li>
             </ul>
         </li>
         <% end %>
         <% if @currentUser.type >= 99 || @currentUser.type == 4 : %>
         <li class="">
-            <a href="javascript:;">
+            <a target="iframe" href="javascript:;">
                 <i class="fa fa-rmb"></i>
                 <span class="title">分销管理</span>
                 <span class="arrow "></span>
@@ -85,25 +82,25 @@
             <ul class="sub-menu">
 
                 <li>
-                    <a href="/adminer-order/order-list/t/1">分销订单</a>
+                    <a target="iframe" href="/adminer-order/order-list/t/1">分销订单</a>
                 </li>
                 <li>
-                    <a href="/adminer-order/order-list/s/-1">退款管理</a>
+                    <a target="iframe" href="/adminer-store/check">分销会员管理</a>
                 </li>
             </ul>
         </li>
         <% end %>
         <% if @currentUser.type >= 99 :%>
         <li>
-            <a href="/adminer-order/order-list">
+            <a target="iframe" href="/adminer-order/order-list">
                 <i class="fa fa-rmb"></i>
                 <span class="title">所有订单管理</span>
             </a>
         </li>
         <% end %>
-        <% if @currentUser.type >= 99 || @currentUser.type == 2 : %>
+        <% if @currentUser.type > 99: %>
         <li>
-            <a href="/adminer-super/adminer-manage">
+            <a target="iframe" href="/adminer-super/adminer-manage">
                 <i class="fa fa-users"></i>
                 <span class="title">后台人员管理</span>
             </a>

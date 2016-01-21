@@ -164,7 +164,8 @@ module.exports = (router) => {
                 'deletedAt',
                 'oldPrice', 'price',
                 'commission1', 'commission2', 'commission3',
-                'integral', 'buyLimit'
+                'integral', 'buyLimit',
+                'deletedAt'
             ],
             include: [GoodsType]
         });

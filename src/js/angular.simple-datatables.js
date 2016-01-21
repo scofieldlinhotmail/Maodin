@@ -82,7 +82,10 @@
                 '?sdtActionCol',
                 '?sdtRowEdit',
                 '?sdtPerPage',
-                '?sdtOn'
+                '?sdtOn',
+                '?sdtSelected',
+                '?sdtKeepSelected',
+                '?sdtSelectboxHtml'
             ],
             scope: {
                 'ngModel': '=',
@@ -91,9 +94,12 @@
                 sdtActionCol: '=',
                 sdtRowEdit: '=',
                 'sdtRowId': '@',
-                sdtPerPage: '@'
+                sdtPerPage: '@',
+                sdtSelected: '=',
+                sdtKeepSelected: '@',
+                sdtSelectboxHtml: '@'
             },
-            controller: ['$scope', '$element', '$compile', '$parse', function (scope, element, $compile, $parse) {
+            controller: ['$scope', '$element', '$compile', '$parse', '$sce', function (scope, element, $compile, $parse, $sce) {
 
                 // elements
                 var table = element.find('table'),
@@ -110,16 +116,27 @@
                 scope.sortCol = undefined;
                 scope.sortColReverse = false;
                 scope.sdtRowId = scope.sdtRowId || 'id';
+
+                scope.sdtSelected =  scope.sdtSelected || [];
+
+                scope.sdtSelectboxHtml = $sce.trustAsHtml(scope.sdtSelectboxHtml || '<input type="checkbox">');
+
+
                 angular.copy(scope.ngModel, scope.list);
 
                 // scope
                 scope.colNames = [];
-                //scope.colSortType = [];
+                scope.colTypes = [];
                 ths.each(function (index, ele) {
                     ele = angular.element(ele);
                     var colName = ele.data('sdt-col');
+                    var colType = ele.data('sdt-col-type');
+                    if (!colType) {
+                        colType = 'string';
+                    }
                     if (colName) {
                         scope.colNames.push(colName);
+                        scope.colTypes.push(colType);
                         index = scope.colNames.length - 1;
                         ele.attr('ng-click', 'sort(' + index + ', sortCol == ' + index + ')');
                         ele.attr('class', ele.attr('class') + ' {{ sortCol == ' + index + ' ? (sortColReverse ? "sdt-orderby-desc" : "sdt-orderby" ) : ""}} ');
@@ -138,7 +155,6 @@
                     ele.css('cursor', 'pointer');
                 });
                 $compile(ths)(scope);
-
 
                 scope.goto = function (page) {
                     
@@ -228,6 +244,15 @@
                     scope.sort(scope.sortCol, false);
                 };
 
+                scope.select = function (row) {
+                    var index = scope.sdtSelected.indexOf(row);
+                    if (index === -1) {
+                        scope.sdtSelected.push(row);
+                    } else {
+                        scope.sdtSelected.splice(index, -1);
+                    }
+                };
+
                 // watch
                 scope.$watch('[page, perPage, sortCol]', function (newVal, oldVal) {
                     if (oldVal[0] === newVal[0] && oldVal[1] === newVal[1] && oldVal[2] === newVal[2]) {
@@ -235,6 +260,9 @@
                     }
                     if (oldVal[0] !== newVal[0]) {
                         scope.pageInput = scope.page;
+                        if (!scope.sdtKeepSelected) {
+                            scope.sdtSelected = [];
+                        }
                     }
                     scope.goto();
                 });
@@ -248,11 +276,18 @@
                     scope.goto();
                 });
 
+                scope.isRowSelected = function (row) {
+                    return scope.sdtSelected.indexOf(row) != -1;
+                };
+
                 scope.trWrapper = function () {
                     var str = '' +
-                        '<tr ng-repeat="row in currentList track by $index" >' +
-                        '<td ng-repeat="name in colNames" ng-bind-html="row | property: name">' +
+                        '<tr ng-repeat="row in currentList track by $index" class="{{isRowSelected(row) ? \'sdt-row-selected\' : \'\'}}">' +
+                        '<td ng-repeat="name in colNames  track by $index"" >' +
                             //'{{row | property: name}}' +
+                            '<span ng-bind-html="row | property: name" ng-if="[\'string\'].indexOf(colTypes[$index]) != -1"></span>' +
+                            '<img ng-src="{{row | property: name}}" ng-if="colTypes[$index] == \'img\'">' +
+                            '<span ng-bind-html="sdtSelectboxHtml" ng-if="colTypes[$index] == \'selectbox\'" ng-click="select(row)"></span>' +
                         '</td>';
                     if (scope.sdtActionCol) {
                         var actionCol = scope.sdtActionCol;

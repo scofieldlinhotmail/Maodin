@@ -7,7 +7,7 @@ var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 
 // 后台文件
 var adminEnties = {
-    //'admin-index': ['./src/js/admin/index.js'],
+    'admin-index': ['./src/js/admin/index.js'],
     'admin-login': ['./src/js/admin/login.js'],
 
     'admin-evaluations':['./src/js/admin/evaluations.js'],
@@ -15,7 +15,7 @@ var adminEnties = {
 
     'admin-goods-list':['./src/js/goods/list.js'],
     'admin-goods-save': ['./src/js/goods/save.js'],
-    //'admin-goodstype': ['./src/js/admin/goodstype.js'],
+    'admin-goodstype': ['./src/js/admin/goodstype.js'],
     //'admin-orders':['./src/js/admin/orders.js'],
     'admin-adminer':['./src/js/admin/adminer.js'],
     //'admin-gooddetail':['./src/js/goods/detail.js'],
@@ -33,11 +33,7 @@ var phoneEntries = {
     'phone-goods-page': ['./src/js/phone/goods-page.js'],
     'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
     'phone-address':['./src/js/phone/user.address.js'],
-<<<<<<< HEAD
-    //'phone-addaddress':['./src/js/phone/user.addaddress.js'],
-=======
     'phone-addaddress':['./src/js/phone/user.addaddress.js'],
->>>>>>> lxc
     //'phone-index': ['./src/js/phone/index.js'],
     'phone-index': ['./src/js/phone/index.js'],
     'phone-goods-list': ['./src/js/phone/goods-list.js'],
