@@ -1,0 +1,85 @@
+<% extend 'shared/admin-base' %>
+
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-time.css">
+<% end %>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            过期时间设置
+            <small></small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="/adminer/index">首页</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+       <span class="title">未付款系统自动过期时间(系统自动过期未付款订单,关闭交易)</span>
+    </div>
+    <div class="col-md-4">
+
+
+        <div class="input-group input-my">
+            <span class="input-group-addon">过期时间</span>
+            <input min="0" type="number" class="form-control" id="in1" value="<%= @overduetime.value %>" >
+            <span class="input-group-addon">分钟</span>
+        </div>
+    </div>
+</div>
+<div class="alert alert-sm alert-info alert-dismissible ">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    使用说明: 买家下单后，超过过期时间而未付款，订单自动变为过期。过期订单，不能继续交易。输入值必须是大于等于0的整数，0代表未支付订单永不过期。
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <span class="title">系统自动收货确认(系统自动确认订单,完成交易)</span>
+    </div>
+    <div class="col-md-4">
+
+
+        <div class="input-group input-my">
+            <span class="input-group-addon">确认发货后</span>
+            <input min="0" type="number" class="form-control" id="in2" value="<%= @autoaccepttime.value %>" >
+            <span class="input-group-addon">天</span>
+        </div>
+    </div>
+</div>
+<div class="alert alert-sm alert-info alert-dismissible ">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    使用说明：商家确认订单发货后，系统自动开始倒计时，达到指定时间后而用户未确认收货，系统会自动将订单标记为已收货。输入值必须是大于等于0的整数。0代表此功能关闭。
+</div>
+
+<div class="row">
+
+    <div class="col-md-4">
+
+
+        <div class="input-group input-my">
+            <span class="input-group-addon">用户可延长收货时间</span>
+            <input min="0" type="number" class="form-control" id="in3" value="<%= @extendaccepttime.value %>" >
+            <span class="input-group-addon">天</span>
+        </div>
+    </div>
+</div>
+<div class="alert alert-sm alert-info alert-dismissible ">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+    使用说明：该功能仅当自动收货确认功能启动后有效。在系统自动收货时间到期前，用户可以申请延长自动确认时间。输入值必须是大于等于0的整数。0代表不允许。
+</div>
+
+
+<% block 'scripts': %>
+<script src="/dist/admin-time.js"></script>
+<% end %>

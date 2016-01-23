@@ -25,6 +25,7 @@ var adminEnties = {
     'admin-storecheck':['./src/js/admin/storecheck.js'],
     'admin-rank':['./src/js/admin/rank.js'],
     'admin-slideshow':['./src/js/admin/slideshow.js'],
+    'admin-time':['./src/js/admin/time.js'],
 };
 
 // 手机端文件

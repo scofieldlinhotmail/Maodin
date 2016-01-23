@@ -296,6 +296,9 @@ function * containerSeed() {
         basicFare: 10,
         freeLine: 80
     });
+    yield db.models.Container.overduetime(30);
+    yield db.models.Container.autoaccepttime(15);
+    yield db.models.Container.extendaccepttime(3);
 }
 
 function * shoppingCartSeed() {
@@ -425,7 +428,7 @@ function * init() {
     yield shoppingCartSeed();
     //yield msgSeed();
     yield addressSeed();
-    //yield containerSeed();
+    yield containerSeed();
     yield orderSeed();
     yield commentSeed();
     yield rankSeed();
