@@ -144,6 +144,81 @@ module.exports = (router) => {
     });
 
 
+
+    ///店铺管理
+    router.get('/adminer-store/all', function *() {
+
+        var key = this.query.key;
+        var list = yield Store.findAll({
+            where: {
+                status: 1
+            },
+            include:[User]
+        });
+        if (key != null) {
+            list = yield Store.findAll({
+                where: {
+                    username: {$like: '%' + key + '%'},
+                    status: 1
+                },
+                include:[User]
+            })
+        }
+        for(var i=0;i<list.length;i++){
+            var has=yield Store.findAll({
+                where: {
+                    StoreId:list[i].id,
+                }
+            })
+            list[i].children=has.length;
+        }
+        ///下属
+        var kid=this.query.kid;
+        var parent=this.query.parent;
+        if(kid!=null&&kid!=0){
+            list=list.filter(function(i){
+                return i.StoreId==kid;
+            })
+        }else if(parent!=null){
+            var t=yield  Store.findById(parent);
+            list=list.filter(function(i){
+                return i.id==t.StoreId;
+            })
+        }
+
+        //debug(list);
+        var page = this.query.page;
+        ///每页几个
+        var pre = 10;
+        var preurl = "#";
+        var nexturl = "#";
+        if (page == null) {
+            page = 1;
+        } else if (page > 1) {
+            var prepage = Number(page) - 1;
+            preurl = changeURLPar(this.url, "page", prepage);
+        }
+        var l = list.length;
+        var next;
+        if (page * pre < l) {
+            list = list.slice((page - 1) * pre, (page - 1) * pre + pre);
+            next = Number(page) + 1;
+            nexturl = changeURLPar(this.url, "page", next);
+        } else if (page * pre == l) {
+            list = list.slice((page - 1) * pre, (page - 1) * pre + pre);
+            next = 0;
+        } else {
+            list = list.slice((page - 1) * pre);
+            next = 0;
+        }
+
+        var allpage = ((l % pre == 0) ? (l / pre) : (l / pre + 1));
+
+        this.body = yield render('admin/stores.html', {
+            preurl, nexturl, list, page, next, allpage
+        });
+    });
+
     router.get('/adminer-store/check', function *() {
 
         var key = this.query.key;
@@ -208,7 +283,38 @@ module.exports = (router) => {
         this.body = 1;
     });
 
+    router.get('/adminer-store/ChangeOneO', function *() {
+        var id = this.query.id;
+        var s = this.query.s;
+        yield openorclose(id, s);
+        this.body = 1;
+    });
+    router.get('/adminer-store/ChangeManyO', function *() {
+        var ids = JSON.parse(this.query.list);
+        var s = this.query.s;
 
+        for (var i = 0; i < ids.length; i++) {
+            yield openorclose(ids[i], s);
+        }
+        this.body = 1;
+    });
+
+    router.get('/adminer-store/edit', function *() {
+        var id = this.query.id;
+        var t = yield Store.findById(id);
+        debug(this.query);
+        this.checkQuery('phone').notEmpty().match(/^1[3-8]+\d{9}$/);
+        this.checkQuery('username').notEmpty();
+        if (this.errors) {
+            this.body = this.errors;
+            return;
+        }
+        t.username = this.query.username;
+        t.phone = this.query.phone;
+        yield t.save();
+
+        this.body=1;
+    });
     ///拒绝或通过
     function * cstatus(id, s) {
         debug(id);
@@ -220,6 +326,16 @@ module.exports = (router) => {
             } else {
                 one.destroy();
             }
+        }
+    }
+
+    ///显示或隐藏
+    function * openorclose(id, s) {
+        debug(id,s);
+        var one = yield Store.findById(id);
+        if (one != null) {
+            one.openorclose = s;
+            yield one.save();
         }
     }
 

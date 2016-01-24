@@ -71,6 +71,7 @@ function * storeSeed() {
             username: 'username' + i,
             name: '店铺' + i,
             phone: '12345678901',
+            openorclose:1,
             UserId: users[i].id
         });
     }
@@ -438,7 +439,6 @@ function * init() {
 co(function * () {
     yield init();
     //yield collectionSeed();
-    yield db.models.Favorite.sync({force:true})
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

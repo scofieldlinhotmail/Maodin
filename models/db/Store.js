@@ -19,6 +19,12 @@ module.exports = function (sequelize, DataTypes) {
         //1通过
         status:shortDataTypes.Int(),
 
+        //店铺是否显示
+        //0隐藏1显示
+        openorclose:shortDataTypes.Int(),
+
+        sales:shortDataTypes.Double(),//分销总金额
+
         money:shortDataTypes.Double(),//佣金
 
         totalMoney: shortDataTypes.Double()//累计佣金
