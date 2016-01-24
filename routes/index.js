@@ -70,6 +70,7 @@ router.use(function *(next) {
                 }
                 break;
             case 'vip':
+            case 'store':
                 if (user.type < 99 && user.type != 2) {
                     this.redirect('/admin-login');
                     return;

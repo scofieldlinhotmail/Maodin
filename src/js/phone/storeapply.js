@@ -5,16 +5,9 @@ require('./base.js');
 
 require('../../css/phone/register.scss');
 
-require('imports?$=jquery, define=>false, exports=>false, ChineseDistricts=distpicker/dist/distpicker.data.js!distpicker/dist/distpicker.js');
-
 var $ = jQuery;
 
 $(function () {
-    var $dist = $("#distpicker");
-    $dist.distpicker();
-    var $selects = $dist.find('select');
-    $selects.eq(0).val('辽宁省').trigger('change');
-    $selects.eq(1).val('大连市').trigger('change');
 
     var phoneVerified = false;
     var $phone = $('#phone'),
@@ -37,7 +30,6 @@ $(function () {
             var formValidity = this.isFormValid();
             e.preventDefault();
             e.stopPropagation();
-            $('[name=districtCode]').val($('[name=country] option:selected').data('code'));
             $.when(formValidity).then(function() {
                 $.ajax({
                     url: '/verifyCode',
