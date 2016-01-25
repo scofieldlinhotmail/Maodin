@@ -15,9 +15,21 @@ module.exports = (router) => {
     var Order = db.models.Order;
     var OrderItem = db.models.OrderItem;
 
+    /**
+     * 综合查询
+     */
     router.get('/adminer-order/order-list', orderListView);
+    /**
+     * 通过状态和类型来筛选
+     */
     router.get('/adminer-order/order-list/ts/:type/:status', orderListView);
+    /**
+     * 通过类型来筛选
+     */
     router.get('/adminer-order/order-list/t/:type', orderListView);
+    /**
+     * 通过状态来筛选
+     */
     router.get('/adminer-order/order-list/s/:status', orderListView);
 
     function *orderListView() {
@@ -40,6 +52,9 @@ module.exports = (router) => {
         this.body = yield getOrders(body);
     });
 
+    /**
+     * 获取订单详情
+     */
     router.get('/adminer-order/get-orderitem/:id', function *() {
 
         this.body = (yield OrderItem.findAll({
@@ -52,6 +67,9 @@ module.exports = (router) => {
         });
     });
 
+    /**
+     * 订单操作
+     */
     router.post('/adminer-order/order/status', function *() {
 
         this.checkBody('ids').notEmpty();
@@ -99,6 +117,7 @@ module.exports = (router) => {
     });
 
     function * getOrders(body, withItem) {
+
         if (!body.page || body.page < 0) {
             body.page = 1;
         }

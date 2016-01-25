@@ -61,7 +61,7 @@
                     <a target="iframe" href="/adminer-order/order-list/t/0">订单列表</a>
                 </li>
                 <li>
-                    <a target="iframe" href="/adminer-order/order-list/s/-1">退款管理</a>
+                    <a target="iframe" href="/adminer-order/order-list/ts/0/-1">退款管理</a>
                 </li>
                 <li>
                     <a target="iframe" href="/adminer-order/order-list">综合查询</a>
@@ -85,8 +85,12 @@
                     <a target="iframe" href="/adminer-order/order-list/t/1">分销订单</a>
                 </li>
                 <li>
+                    <a target="iframe" href="/adminer-order/order-list/ts/1/-1">退款管理</a>
+                </li>
+                <li>
                     <a target="iframe" href="/adminer-store/check">分销会员管理</a>
                 </li>
+
             </ul>
         </li>
         <% end %>
@@ -99,11 +103,20 @@
         </li>
         <% end %>
         <% if @currentUser.type > 99: %>
-        <li>
-            <a target="iframe" href="/adminer-super/adminer-manage">
-                <i class="fa fa-users"></i>
-                <span class="title">后台人员管理</span>
+        <li class="">
+            <a target="iframe" href="javascript:;">
+                <i class="fa fa-bars"></i>
+                <span class="title">系统设置</span>
+                <span class="arrow "></span>
             </a>
+            <ul class="sub-menu">
+                <li>
+                    <a target="iframe" href="/adminer-super/adminer-manage">员工管理</a>
+                </li>
+                <li>
+                    <a target="iframe" href="/adminer-slideshow/index">轮播图管理</a>
+                </li>
+            </ul>
         </li>
         <% end %>
 

@@ -1063,5 +1063,6 @@ var App = function () {
 
 jQuery(document).ready(function() {
     App.init();
+    $('body').css('opacity', 1);
 });
 

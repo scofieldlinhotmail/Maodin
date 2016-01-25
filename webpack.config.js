@@ -15,11 +15,11 @@ var adminEnties = {
 
     'admin-goods-list':['./src/js/goods/list.js'],
     'admin-goods-save': ['./src/js/goods/save.js'],
-    'admin-goodstype': ['./src/js/admin/goodstype.js'],
     //'admin-orders':['./src/js/admin/orders.js'],
     'admin-adminer':['./src/js/admin/adminer.js'],
     //'admin-gooddetail':['./src/js/goods/detail.js'],
     'admin-user-list': ['./src/js/admin/user.js'],
+    'admin-goodstype': ['./src/js/goodstype/list.js'],
     'admin-goodstype-save': ['./src/js/goodsType/save.js'],
     'admin-comment':['./src/js/admin/Comment.js'],
     'admin-storecheck':['./src/js/admin/storecheck.js'],

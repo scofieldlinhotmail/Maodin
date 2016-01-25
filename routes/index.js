@@ -49,6 +49,12 @@ router.use(function *(next) {
                     return;
                 }
                 break;
+            case 'slideshow':
+                if (user.type < 99) {
+                    this.redirect('/admin-login');
+                    return;
+                }
+                break;
             case 'adminer':
                 if (user.type < 99 && user.type != 2) {
                     this.redirect('/admin-login');
