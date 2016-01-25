@@ -115,7 +115,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     }
 
     function getGoodsData () {
-        console.log('get');
         var searchMode = scope.searchMode;
         var id = dataIndex(searchMode);
         scope.pageData[id] = scope.pageData[id] || 1;

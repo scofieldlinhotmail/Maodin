@@ -355,7 +355,6 @@ function * orderSeed() {
     var goods = yield db.models.Goods.findAll({});
     var stores = yield db.models.Store.findAll({});
     for(var i = 0; i < users.length && i < 10; i ++) {
-        console.log('i:', i);
         for(var j = 0 ; j < 10; j ++) {
             //console.log('j:', j);
             var items = [];

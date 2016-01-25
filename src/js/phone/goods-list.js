@@ -53,7 +53,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
 
     scope.order = function (mode) {
         scope.currentOrderMode = mode;
-        console.log(mode);
         scope.page = 1;
         scope.update();
     };

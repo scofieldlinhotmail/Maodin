@@ -48,7 +48,6 @@ function validate() {
     var city = $('#city option:selected').text();
     var addr = document.querySelector('#addr').value;
     limit(receiver, tel, code, province, city, addr);
-    console.log(result);
     var count = 0;
     if (!result['rev']) {
         removeClass(document.querySelector('.a'), 'hide');
@@ -99,7 +98,6 @@ window.onload = function () {
 
 var yes = $('#yes');
 yes.click(function () {
-    console.log(validate());
     if (validate()) {
         var receiver = $('#receiver').val();
         var tel = $('#tel').val();
@@ -115,7 +113,6 @@ yes.click(function () {
             address: addr
         };
 
-        console.log(data);
         $.ajax({
             url: '/user/address/add',
             type: 'POST',

@@ -26,7 +26,6 @@ router.use(function *(next) {
     var user = yield auth.user(this);
     if (/\/user\/.*/.test(req.url) || /\/user-store\/.*/.test(req.url)) {
         if (!user) {
-            console.log('to login');
             this.redirect('/wechat/login');
             return;
         }
@@ -49,12 +48,6 @@ router.use(function *(next) {
                     return;
                 }
                 break;
-            case 'slideshow':
-                if (user.type < 99) {
-                    this.redirect('/admin-login');
-                    return;
-                }
-                break;
             case 'adminer':
                 if (user.type < 99 && user.type != 2) {
                     this.redirect('/admin-login');
@@ -70,6 +63,7 @@ router.use(function *(next) {
                 }
                 break;
             case 'order':
+            case 'time':
                 if (user.type < 99 && user.type != 3) {
                     this.redirect('/admin-login');
                     return;

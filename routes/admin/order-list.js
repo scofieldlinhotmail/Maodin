@@ -140,7 +140,7 @@ module.exports = (router) => {
             conditions.where.returnStatus =  - body.status;
         } else {
             conditions.where.status = body.status ? (body.status) : {
-                $gt: 0
+                $gte: -2
             };
         }
 

@@ -44,7 +44,6 @@ module.exports = (router) => {
 
     router.post('/user/address/add',function *(){
         var data = this.request.body;
-        console.log(data);
         data.UserId = (yield auth.user(this)).id;
         data.isDefault = false;
         yield deliverAddress.create(data);

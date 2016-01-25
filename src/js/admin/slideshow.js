@@ -27,7 +27,6 @@ jQuery(function() {
         uploader;
 
     // 初始化Web Uploader
-    console.log('init');
     uploader =new WebUploader.Uploader({
 
         // 自动上传。

@@ -57,7 +57,6 @@ $("#btn2").click(function(){
             var tid=$(this).attr("data-id");
             list.push(tid);}
     })
-    console.log(list);
     var val=1;
     manychange(list,val);
 })
@@ -70,7 +69,6 @@ $("#btn3").click(function(){
             var tid=$(this).attr("data-id");
             list.push(tid);}
     })
-    console.log(list);
     var val=-1;
     manychange(list,val);
 })

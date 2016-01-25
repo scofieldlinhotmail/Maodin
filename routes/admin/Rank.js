@@ -99,10 +99,8 @@ module.exports = (router) => {
         for(var i=0;i<list.length;i++)
         {
             if(list[i].min<=min&&list[i].max>=min&&name!=list[i].name){
-                console.log("false"+"--"+"min="+min+"v:"+list[i].name);
                 b=0;
             }else if(list[i].min<=max&&list[i].max>=max&&name!=list[i].name){
-                console.log("false"+"--"+"max="+max+"v:"+list[i].name);
                 b=0;
             }
         }

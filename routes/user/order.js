@@ -453,67 +453,24 @@ module.exports = function (router) {
                     id: id,
                     UserId: userId
                 },
-                include: [OrderItem, Store]
+                include: [OrderItem, Store, User]
             });
 
-            order.status = 10;
-            order.recieveTime = Date.now();
-
-            yield order.save();
-            // 积分和佣金
-
-            var stores = [];
-
-            var commissions = [0, 0, 0];
-
-            if (order.type == 1 && order.Store) {
-                stores.push(order.Store);
-
-                var topStore = yield order.Store.getTopStore();
-
-                if (topStore) {
-                    stores.push(topStore);
-                }
-
-                if (stores.length === 2){
-                    topStore = yield topStore.getTopStore();
-                    if (topStore) {
-                        stores.push(topStore);
-                    }
-                }
-            }
-
-            for(var orderItemIndex  = 0; orderItemIndex < order.OrderItems.length; orderItemIndex ++) {
-                var orderItem = order.OrderItems[orderItemIndex];
-                var goods = JSON.parse(orderItem.goods);
-                user.integral += goods.integral;
-                user.totalIntegral += goods.integral;
-
-                for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
-                    commissions[storeIndex] += goods["commission" + (storeIndex + 1)];
-                }
-
-            }
-
-            yield user.save();
-
-            for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
-                var store = stores[storeIndex];
-                store.money += commissions[storeIndex];
-                store.totalMoney += commissions[storeIndex];
-                yield store.save();
-            }
+            yield order.receive();
             this.body = 'ok';
 
         } else if (status == -1) {
             // 取消
-            this.body = yield Order.destroy({
+            this.body = yield Order.update({
+                status: -1,
+            },{
                 where: {
                     id: id,
                     UserId: userId
                 }
             });
-            // 退款
+            // todo:退款
+
         } else if (status == -2) {
             // 退货
             this.body = yield Order.update({

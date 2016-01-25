@@ -49,7 +49,6 @@ app.controller('MainCtrl', ['$scope', '$http', function (scope, $http) {
         if (typeof newVal === 'undefined') {
             return;
         }
-        console.log('change');
         if (scope.buyLimit != 0 && newVal > scope.buyLimit) {
             scope.num = scope.buyLimit;
         }

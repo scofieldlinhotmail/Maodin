@@ -4,6 +4,8 @@ require('../../css/phone/order-list.scss');
 require('angular');
 require('angular-route');
 
+var orderStatusToString = require('../shared/orderStatusToString.js');
+
 var $ = jQuery;
 
 var ajaxErrorCb = function () {
@@ -13,29 +15,7 @@ var ajaxErrorCb = function () {
 var app = angular.module('app', ['ngRoute']);
 
 app.filter('statusStr', function () {
-    return function (order){
-        if (order.status <= 2){
-            switch (order.status) {
-                case 0:
-                    return '待付款';
-                case 1:
-                    return '待发货';
-                case 2:
-                    return '已发货';
-                case 3:
-                    return '已签收';
-            }
-        } else if (order.returnStatus != 0) {
-            switch (order.returnStatus) {
-                case 1:
-                    return '退货中';
-                case 2:
-                    return '退货完成';
-            }
-        } else if (order.status >= 10) {
-            return '已签收';
-        }
-    };
+    return orderStatusToString;
 });
 
 app.config(['$routeProvider', function ($routeProvider) {
@@ -66,7 +46,6 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     scope.loading = 0;
 
     scope.$watch('status', function (newVal, oldVal) {
-        console.log(scope.status);
         if (typeof newVal === 'undefined'){
             return
         }

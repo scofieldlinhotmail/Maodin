@@ -64,7 +64,6 @@ $form.each(function(){
         },
 
         submitHandler: function (form) {
-            console.log(1);
             var id=$(form).find(".inputitem").eq(0).val();
             var s=$(form).find(".inputitem").eq(1).val();
             var text=$(form).find(".inputitem").eq(2).val();

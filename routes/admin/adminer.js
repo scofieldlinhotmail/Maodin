@@ -58,7 +58,6 @@ module.exports = (router) => {
                     yield th.save();
                 this.body = th.id
             } else {
-                console.log("不修改");
                 this.body = -1
             }
         } else {

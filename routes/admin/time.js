@@ -15,24 +15,14 @@ module.exports = (router) => {
 
     router.get('/adminer-time/index',  function *() {
 
-        var overduetime =  yield Container.findOne({
-            where: {
-                key: 'overduetime'
-            }
-        });
-        var autoaccepttime =  yield Container.findOne({
-            where: {
-                key: 'autoaccepttime'
-            }
-        });
-        var extendaccepttime =  yield Container.findOne({
-            where: {
-                key: 'extendaccepttime'
-            }
-        });
+        var overduetime =  yield Container.overduetime();
+        var autoaccepttime =  yield Container.autoaccepttime();
+        var extendaccepttime =  yield Container.extendaccepttime();
 
         this.body = yield render('admin/time', {
-            overduetime,autoaccepttime,extendaccepttime
+            overduetime,
+            autoaccepttime,
+            extendaccepttime
         });
     });
 
@@ -53,13 +43,7 @@ module.exports = (router) => {
             name="extendaccepttime";
         }else{return ;}
 
-        var con =  yield Container.findOne({
-            where: {
-                key: name
-            }
-        });
-        con.value=this.query.value;
-        yield con.save();
+        yield Container[name](this.query.value);
         this.body = 1;
     });
 
