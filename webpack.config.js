@@ -96,5 +96,5 @@ module.exports = {
         new CommonsChunkPlugin("admin-commons.js", Object.keys(adminEnties)),
         new CommonsChunkPlugin("phone-commons.js", Object.keys(phoneEntries))
     ],
-    devtool: 'source-map'
+    //devtool: 'source-map'
 };
