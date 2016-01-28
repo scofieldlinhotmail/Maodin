@@ -10,6 +10,7 @@ var debug = require('../../instances/debug.js');
 var co = require('co');
 
 var sequelizex = require('../../lib/sequelizex.js');
+var Decimal = require('decimal.js');
 
 
 var Container = db.models.Container;
@@ -249,7 +250,7 @@ module.exports = function (router) {
                     var shopOrder = orderInfo[shopOrderIndex];
                     var orderItems = [];
 
-                    var price = 0;
+                    var price = new Decimal(0);
                     var goodsNum = 0;
 
                     var commission = [0, 0, 0];
@@ -295,7 +296,7 @@ module.exports = function (router) {
                             throw "商品库存不足";
                         }
 
-                        price += buyItem.num * buyGoods.price;
+                        price = price.plus(buyItem.num * buyGoods.price);
                         goodsNum += buyItem.num;
 
                         orderItems.push(OrderItem.build({
@@ -321,6 +322,7 @@ module.exports = function (router) {
                         //}
                     }
 
+                    price = price.toNumber();
                     var order = yield Order.create({
                         recieverName: address.recieverName,
                         phone: address.phone,

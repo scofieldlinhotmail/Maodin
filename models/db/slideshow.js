@@ -12,7 +12,7 @@ module.exports = function (sequelize, DataTypes) {
 
         link: shortDataTypes.String(),
 
-        address: shortDataTypes.String(), //店铺名称
+        address: shortDataTypes.String(),
 
 
     }, {

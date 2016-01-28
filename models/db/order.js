@@ -1,5 +1,6 @@
 var sequelizex = require('../../lib/sequelizex');
 var shortDataTypes = sequelizex.DataTypes;
+var Decimal = require('decimal.js');
 
 module.exports = function (sequelize, DataTypes) {
 
@@ -110,11 +111,11 @@ module.exports = function (sequelize, DataTypes) {
                 for(var orderItemIndex  = 0; orderItemIndex < order.OrderItems.length; orderItemIndex ++) {
                     var orderItem = order.OrderItems[orderItemIndex];
                     var goods = JSON.parse(orderItem.goods);
-                    order.User.integral += goods.integral;
-                    order.User.totalIntegral += goods.integral;
+                    order.User.integral = new Decimal(order.User.integral).plus(goods.integral).toNumber();
+                    order.User.totalIntegral += new Decimal(order.User.totalIntegral).plus(goods.integral).toNumber();
 
                     for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
-                        commissions[storeIndex] += goods["commission" + (storeIndex + 1)];
+                        commissions[storeIndex] += new Decimal(commissions[storeIndex]).plus(goods["commission" + (storeIndex + 1)]).toNumber();
                     }
 
                 }
@@ -123,8 +124,8 @@ module.exports = function (sequelize, DataTypes) {
 
                 for(var storeIndex = 0; storeIndex < stores.length; storeIndex ++) {
                     var store = stores[storeIndex];
-                    store.money += commissions[storeIndex];
-                    store.totalMoney += commissions[storeIndex];
+                    store.money = new Decimal(store.money).plus(commissions[storeIndex]).toNumber();
+                    store.totalMoney = new Decimal(store.totalMoney).plus(commissions[storeIndex]).toNumber();
                     yield store.save();
                 }
             }

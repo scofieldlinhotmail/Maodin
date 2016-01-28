@@ -20,6 +20,14 @@ module.exports = (router) => {
     router.get('/user-store/apply', function *() {
         var upstore = this.query.id;
 
+        if ((yield Store.scope('all').count({
+                where: {
+                    UserId: (yield auth.user(this)).id
+                }
+            })) != 0) {
+            this.redirect('/user-wait');
+        };
+
         this.body = yield render('phone/storeapply.html', {
             upstore
         });
@@ -36,6 +44,14 @@ module.exports = (router) => {
         }
 
         var user = yield auth.user(this);
+
+        if ((yield Store.scope('all').count({
+                where: {
+                    UserId: user.id
+                }
+            })) != 0) {
+            this.redirect('/user-wait');
+        };
 
         if (body.upstore == "") {
             yield Store.create({
@@ -61,7 +77,8 @@ module.exports = (router) => {
         var id = (yield auth.user(this)).id;
         var s = yield Store.findOne({
             where: {
-                id: id
+                id: id,
+                status: 1
             },
             include: [User]
         });
@@ -81,7 +98,8 @@ module.exports = (router) => {
 
         var store = yield Store.findOne({
             where: {
-                UserId: user.id
+                UserId: user.id,
+                status: 1
             }
         });
 
@@ -114,6 +132,7 @@ module.exports = (router) => {
             var s = yield Store.findOne({
                 where: {
                     id: id,
+                    status: 1
                 },
                 include: [User]
             });

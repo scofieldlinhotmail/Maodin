@@ -192,7 +192,8 @@ module.exports = (router) => {
         }));
 
         this.body = yield render('phone/goods-collection', {
-            collections: JSON.stringify(collections)
+            collections: JSON.stringify(collections),
+            title: '商品收藏'
         });
 
     });

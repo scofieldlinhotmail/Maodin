@@ -3,6 +3,7 @@ require('./base.js');
 require('../../css/phone/order-comfirm.scss');
 
 require('angular');
+var Decimal = require('decimal.js');
 
 var $ = jQuery;
 
@@ -59,26 +60,26 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     scope.totalPrice = cal();
 
     function cal() {
-        var fee = 0;
+        var fee = new Decimal(0);
         for(var shopIndex in scope.shoppingCart) {
             if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
                 continue;
             }
             var shop = scope.shoppingCart[shopIndex];
             //shop.expressWay = 0;
-            var totalPrice = 0;
+            var totalPrice = new Decimal(0);
             for(var goodsIndex in shop.data) {
                 if (!shop.data.hasOwnProperty(goodsIndex)) {
                     continue;
                 }
                 var goods = shop.data[goodsIndex];
 
-                totalPrice += goods.Good.price * goods.num ;
+                totalPrice =  totalPrice.plus(goods.Good.price * goods.num);
             }
-            shop.totalPrice = totalPrice;
-            fee += totalPrice;
+            shop.totalPrice = totalPrice.toNumber();
+            fee =  fee.plus(totalPrice);
         }
-        return fee;
+        return fee.toNumber();
     }
 
     scope.address = JSON.parse(angular.element('#addresses').html());

@@ -186,6 +186,7 @@ module.exports = function (sequelize, DataTypes) {
          * 赠送积分
          */
         integral: shortDataTypes.Double(),
+        goodsTypeId: shortDataTypes.Int(),
         /**
          * 分级佣金
          */

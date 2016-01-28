@@ -60,8 +60,8 @@
     <!--</form>-->
 
 <!--</div>-->
-
-<div class="am-g row  " >
+<% if @imgs.length : %>
+<div class="am-g bg-w" >
     <div class="am-slider am-slider-default" data-am-flexslider id="demo-slider-0">
         <ul class="am-slides">
             <% for a in @imgs: %>
@@ -70,6 +70,7 @@
         </ul>
     </div>
 </div>
+<% end %>
 <!--<div class="am-g row  " >-->
         <!--<ul>-->
             <!--<li class="nav-item " style="background-color:#FFFFFF">-->
@@ -105,20 +106,20 @@
     <!--</h3>-->
 <!--</div>-->
 
-<div class="am-g row stitle" >
-    <h3>
+<div class="am-g stitle am-margin-top-sm" >
+    <h3 class="bg-w">
         <a href="/user/goods-list/<%= @s?.id%>">
            热销商品
             <span>更多<i class="am-icon-chevron-right"></i></span>
         </a>
     </h3>
-    <div class="am-u-sm-12 toppro">
+    <div class="toppro">
         <% for e in @pros : %>
-        <div class="am-u-sm-6 pitem">
+        <div class="pitem bg-w am-margin-vertical-sm">
             <div class="goods-inner">
                 <a href="/user/goods-page/1/<%= e.id%>">
                     <div class="goods-img">
-                        <img style="height: 358px; display: block;" class="" src="<%= e.mainImg %>" >
+                        <img class="" src="<%= e.mainImg %>" >
                     </div>
                     <div class="goods-title"> <%= e.title %>
                     </div>
@@ -132,7 +133,6 @@
             </div>
         </div>
         <% end %>
-
     </div>
 </div>
 

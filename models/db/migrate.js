@@ -391,6 +391,15 @@ function * orderSeed() {
     }
 }
 
+function * slideshowSeed() {
+    for(var i = 0; i < 3; i ++ ){
+        yield db.models.Slideshow.create({
+            link: '/user/center',
+            address: '/tmp/' + ((i % 3) + 1) + '.jpg'
+        });
+    }
+}
+
 function * init() {
     yield db.sync({
         force: true
@@ -410,11 +419,13 @@ function * init() {
     yield commentSeed();
     yield rankSeed();
     yield collectionSeed();
-    
+    yield slideshowSeed();
 }
 
 co(function * () {
-    yield init();
+    //yield init();
+    yield db.sync();
+    yield slideshowSeed();
     //yield collectionSeed();
     console.log('finished ...');
 }).catch(function () {

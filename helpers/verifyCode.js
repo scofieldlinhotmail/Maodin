@@ -11,7 +11,6 @@ var alidayu = new AliDayu("23277211", "604f2a9880cec26a7fdb519a61670d48");
 module.exports = {
     send: function *(phone) {
         var code = utilx.randomNum(6);
-        var ret;
         cache.setex(`verifyCode/${phone}`, 60 * 30, code);
         var sms = {
             extend: phone,
@@ -23,6 +22,8 @@ module.exports = {
             rec_num: phone,
             sms_template_code: "SMS_2915139"
         };
+        var ret = yield alidayu.send_sms(sms);
+        console.log(ret);
         return code;
     },
     verify: function *(phone, code){

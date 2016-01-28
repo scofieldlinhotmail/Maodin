@@ -4,6 +4,6 @@ price, oldPrice,
 mainImg, status,
 integral, capacity,
 baseSoldNum + soldNum as compoundSoldNum,
-createdAt
+createdAt, goodsTypeId
 from yiwo.Goods where deletedAt is null;
 
