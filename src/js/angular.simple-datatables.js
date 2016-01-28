@@ -62,13 +62,14 @@
     };
 
     simpleDataTable.filter('property', ['$parse', '$sce', function ($parse, $sce) {
-        return function (ctx, propertyStr) {
+        return function (ctx, propertyStr, type) {
             var val = getProperty($parse, ctx, propertyStr);
             val = typeof val === 'undefined' ? '' : val;
-            if (val instanceof  Date) {
-                val = val.toLocaleString();
+            if(type == 'Date') {
+                return new Date(val);
+            } else {
+                return $sce.trustAsHtml(val.toString());
             }
-            return $sce.trustAsHtml(val.toString());
         };
     }]);
 
@@ -288,6 +289,8 @@
                             '<span ng-bind-html="row | property: name" ng-if="[\'string\'].indexOf(colTypes[$index]) != -1"></span>' +
                             '<img ng-src="{{row | property: name}}" ng-if="colTypes[$index] == \'img\'">' +
                             '<span ng-bind-html="sdtSelectboxHtml" ng-if="colTypes[$index] == \'selectbox\'" ng-click="select(row)"></span>' +
+                            '<span ng-if="colTypes[$index] == \'date\'">{{ (row | property: name :"Date") | date: "yyyy/MM/dd"}}</span>' +
+                            '<span ng-if="colTypes[$index] == \'datetime\'">{{row | property: name:  "Date" | date: "yyyy/MM/dd hh:mm"}}</span>' +
                         '</td>';
                     if (scope.sdtActionCol) {
                         var actionCol = scope.sdtActionCol;

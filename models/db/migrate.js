@@ -66,13 +66,25 @@ function * userSeed(){
 
 function * storeSeed() {
     var users = yield db.models.User.findAll();
-    for(var i = 0; i < 10; i ++ ){
-        yield db.models.Store.create({
+    var ids = [];
+    for(var i = 0; i < users.length / 2 ; i ++ ){
+        var tmp = yield db.models.Store.create({
             username: 'username' + i,
             name: '店铺' + i,
             phone: '12345678901',
-            openorclose:1,
+            status: i % 2,
             UserId: users[i].id
+        });
+        ids.push(tmp.id);
+    }
+    for(i = users.length / 2 ; i < users.length; i ++ ){
+        yield db.models.Store.create({
+            username: 'username' + i,
+            name: '店铺' + i ,
+            phone: '12345678901',
+            status: i % 2,
+            UserId: users[i].id,
+            StoreId: ids[(i - users.length / 2)  % ids.length]
         });
     }
 }
@@ -293,10 +305,6 @@ function * addressSeed() {
 }
 
 function * containerSeed() {
-    yield db.models.Container.fare({
-        basicFare: 10,
-        freeLine: 80
-    });
     yield db.models.Container.overduetime(30);
     yield db.models.Container.autoaccepttime(15);
     yield db.models.Container.extendaccepttime(3);

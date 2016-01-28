@@ -23,7 +23,6 @@
 
                     <label  class="col-md-9 control-label">搜索:</label>
                     <div class="">
-
                         <div class="input-group">
                             <input name="key" type="text" class="form-control">
 					<span class="input-group-btn">
@@ -47,7 +46,14 @@
     <tr>
         <th class="table-checkbox"><input type="checkbox" class="checkboxes group-checkable"/></th>
         <th >用户名</th>
+        <th >真实姓名</th>
+        <th >店铺名</th>
         <th >电话</th>
+        <th >上家店铺id</th>
+        <th >上家店铺名</th>
+        <th >上家店铺真实姓名</th>
+        <th >上家店铺用户id</th>
+        <th >上家店铺用户名</th>
         <th >申请时间</th>
         <th style="width: 150px;">操作</th>
     </tr>
@@ -57,7 +63,14 @@
     <tr class="odd gradeX" data-id="<%= e.id %>">
         <td><input type="checkbox" data-id="<%= e.id %>" name="many" class=" many checkboxes" /></td>
         <td ><%= e.username %></td>
+        <td class="numeric"><%= e.username %></td>
+        <td class="numeric"><%= e.name %></td>
         <td class="numeric"><%= e.phone %></td>
+        <td style=""><%= e.TopStore?.id %></td>
+        <td style=""><%= e.TopStore?.name %></td>
+        <td style=""><%= e.TopStore?.username %></td>
+        <td style=""><%= e.TopStore?.User.id %></td>
+        <td style=""><%= e.TopStore?.User.name %></td>
         <td style=""><%= e.createdAt.toLocaleString() %></td>
         <td>
             <button data-id="<%= e.id %>" class="btn green btn-sm pass ">通过</button>
@@ -83,21 +96,17 @@
 <div  style="text-align: center">
     <div class="dataTables_paginate paging_bootstrap">
         <ul class="pagination" style="visibility: visible;">
-            <% if @page==1 : %>
-            <li class="prev disabled"><a href="#" title="Prev"><i class="fa fa-angle-left"></i></a></li>
-            <% else : %>
-            <li class="prev "><a href="<%=  @preurl %>" title="Prev"><i class="fa fa-angle-left"></i></a></li>
+            <% if @prePage >= 1 : %>
+            <li class="prev "><a href="./check?page=<%=  @prePage %>" title="Prev"><i class="fa fa-angle-left"></i></a></li>
             <% end %>
 
-            <input  value="<%=  @page %>" class="inputcenter form-control" id="focus" style="float: left;width: 60px" type="number" min="1" max="<%=  @allpage %>"/>
-            <input class="inputcenter form-control" value="/<%=  @allpage %>" disabled="disabled"
+            <input  value="<%=  @page %>" class="inputcenter form-control" id="focus" style="float: left;width: 60px" type="number" min="1" max="<%=  @count %>"/>
+            <input class="inputcenter form-control" value="/<%=  @count %>" disabled="disabled"
                    style="width: 40px;float: left;"/>
             <input  value="<%=  @page %>" id="page" disabled="disabled" style="display: none"/>
 
-            <% if @next>0 : %>
-            <li class="next"><a href="<%=  @nexturl  %>" title="Next"><i class="fa fa-angle-right"></i></a></li>
-            <% else : %>
-            <li class="next disabled"><a href="#" title="Next">下一页<i class="fa fa-angle-right"></i></a></li>
+            <% if @nextPage <= @count : %>
+            <li class="next"><a href="./check?page=<%=  @nextPage %>" title="Next"><i class="fa fa-angle-right"></i></a></li>
             <% end %>
         </ul>
     </div>

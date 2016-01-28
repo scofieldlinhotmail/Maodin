@@ -20,8 +20,6 @@ module.exports = function (sequelize, DataTypes) {
         status:shortDataTypes.Int(),
 
         //店铺是否显示
-        //0隐藏1显示
-        openorclose:shortDataTypes.Int(),
 
         sales:shortDataTypes.Double(),//分销总金额
 
@@ -38,8 +36,38 @@ module.exports = function (sequelize, DataTypes) {
             models.Store.belongsTo(models.Store, {as: 'TopStore', foreignKey: 'StoreId', constraints: false});
         },
         instanceMethods: {
+
         },
         classMethods: {
+            upOrDown: function *(id, mode) {
+                yield this.update({
+                    deletedAt: mode ?  null : Date.now()
+                }, {
+                    where: {
+                        id: id
+                    },
+                    paranoid: false
+                });
+            },
+            up: function *(id) {
+                yield this.upOrDown(id, true);
+            },
+            down: function *(id) {
+                yield this.upOrDown(id, false);
+            }
+        },
+        scopes: {
+            deleted: {
+                where: {
+                    deletedAt: {
+                        $ne: null
+                    }
+                },
+                paranoid: false,
+            },
+            all: {
+                paranoid: false,
+            }
         }
     });
 

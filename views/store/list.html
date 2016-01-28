@@ -1,0 +1,96 @@
+<% extend './shared/admin-base' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/admin-store-list.css">
+<% end %>
+
+<div class="row" ng-controller="AppCtrl">
+    <div class="col-md-12">
+        <div class="portlet ">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-users"></i>分销商管理</div>
+                <div class="tools">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn default btn {{tab == 0 ? " active": ""}}" >
+                        <a ng-href="#/inactive">
+                            <input type="radio" name="options" class="toggle">待审核
+                            <span class="badge"><%= @nums[0] %></span>
+                        </a>
+                        </label>
+                        <label class="btn default btn tab-toggle {{tab == 1 ? " active": ""}}" >
+                        <a ng-href="#/active">
+                            <input type="radio" name="options" class="toggle">已审核
+                            <span class="badge "><%= @nums[1] %></span>
+                        </a>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div ng-view></div>
+                <div ng-bind-html="test"></div>
+                <div simple-datatable ng-model="list" sdt-action-col="actionColFactory" sdt-on="sdtOn">
+                    <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                        <div class=" col-md-4 col-md-offset-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" sdt-search-input placeholder="搜索">
+                                <span class="input-group-addon" sdt-search-btn><i class="fa fa-search"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-hover table-bordered center-table">
+                                <thead>
+                                <tr>
+                                    <th class="id-col" data-sdt-col="id">编号</th>
+                                    <th data-sdt-col="User.nickname">用户名</th>
+                                    <th class="id-col" data-sdt-col="User.id">用户id</th>
+                                    <th class="txt-col-xs" data-sdt-col="username">真实姓名</th>
+                                    <th data-sdt-col="name">店铺名</th>
+                                    <th data-sdt-col="phone">电话</th>
+                                    <th class="id-col" data-sdt-col="TopStore.id">上家店铺id</th>
+                                    <th  data-sdt-col="TopStore.name">上家店铺名</th>
+                                    <th class="id-col" data-sdt-col="TopStore.UserId">上家店铺用户id</th>
+                                    <th class="txt-col-xs" data-sdt-col="TopStore.username">上家店铺真实姓名</th>
+                                    <th class="txt-col-xs" data-sdt-col="createdAt" data-sdt-col-type="date">申请时间</th>
+                                    <th style="width: 120px;"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <div class="clearfix">
+                                <span class="pull-left">共<span sdt-total-label></span> 第<span
+                                        sdt-total-page></span>页</span>
+                                <div class="btn-group pull-right" role="group" aria-label="...">
+                                    <button type="button" class="btn btn-sm btn-default" sdt-prev-btn>上一页</button>
+                                    <button type="button" class="btn btn-sm btn-default" sdt-next-btn>下一页</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/x-handlebars-template" id="row-btn">
+    <td>
+        <div class="btn-group dropup btn-group-sm">
+            <button type="button" class="btn btn-primary" sdt-row-click="remove, up" ng-show="row.status == 0">通过</button>
+            <button type="button" class="btn btn-danger" sdt-row-click="remove, down" ng-show="row.status == 0">拒绝</button>
+            <button class="btn btn-default"  ng-show="row.status == 1">编辑</button>
+            <button type="button" class="btn btn-warning" ng-show="row.status == 1 && row.deletedAt">冻结</button>
+            <button type="button" class="btn btn-warning" ng-show="row.status == 1 && !row.deletedAt">解冻</button>
+        </div>
+    </td>
+</script>
+
+<% block 'scripts': %>
+<script src="/dist/admin-store-list.js"></script>
+<% end %>
+
+
+
