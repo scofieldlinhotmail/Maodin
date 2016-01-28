@@ -254,37 +254,6 @@ function * goodsTypeSeed() {
 
 }
 
-function * msgSeed(){
-    var users = yield db.models.User.findAll({});
-    for(var i = 0; i < 160; i ++) {
-        yield db.models.Msg.create({
-            title: '消息测试' + i,
-            link: '#',
-            UserId: users[i % users.length].id
-        })
-    }
-}
-
-function * areaSeed() {
-    var ids = [];
-    for(var i = 0; i < 40; i ++) {
-        ids.push((yield db.models.Area.create({
-            title: '一级区域' + i,
-            type: 1
-        })).id);
-    }
-
-    for(var i = 0; i < ids.length; i ++) {
-        for(var j = 0; j < 40; j ++) {
-            yield db.models.Area.create({
-                title: '二级区域' + j,
-                type: 2,
-                AreaId: ids[i % ids.length],
-                TopAreaId: ids[i % ids.length]
-            });
-        }
-    }
-}
 
 function * addressSeed() {
     var users = yield db.models.User.findAll({});
@@ -333,7 +302,6 @@ function * shoppingCartSeed() {
         }
     }
 }
-
 
 function * collectionSeed() {
     var users = yield db.models.User.findAll({});
@@ -432,6 +400,7 @@ function * init() {
     yield storeSeed();
     yield goodsTypeSeed();
     yield goodsSeed();
+
     yield salerGoodsSeed();
     yield shoppingCartSeed();
     //yield msgSeed();
@@ -441,6 +410,7 @@ function * init() {
     yield commentSeed();
     yield rankSeed();
     yield collectionSeed();
+    
 }
 
 co(function * () {

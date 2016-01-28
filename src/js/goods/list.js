@@ -85,6 +85,7 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
                 if (ret.status) {
                     remover();
                 }
+                scope.$applyAsync();
             })
             .error(function () {
                 alert('操作失败，请刷新重试');

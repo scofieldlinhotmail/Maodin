@@ -8,7 +8,9 @@ var app = angular.module('app', ['simpleDatatable']);
 
 var getUserData = function ($http, scope, status) {
     $http
-        .get('./user-data' )
+        .get('./user-data', {
+            cache: true
+        })
         .success(function (data) {
             for(var i in data){
                 data[i].joinTime = (new Date(data[i].joinTime)).toLocaleString();

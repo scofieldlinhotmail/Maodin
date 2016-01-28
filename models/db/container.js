@@ -24,14 +24,18 @@ module.exports = function (sequelize, DataTypes) {
                     });
                     return util.isNullOrUndefined(data) ? null :  (isJson ? JSON.parse(data.value) : data.value);
                 } else {
-                    data = yield this.data();
+                    data = yield this.findOne({
+                        where: {
+                            key
+                        }
+                    });
                     if (util.isNullOrUndefined(data)) {
                         return yield this.create({
                             key,
-                            value: (isJson ? JSON.stringify(data.value) : data.value)
+                            value: (isJson ? JSON.stringify(value) : value)
                         });
                     } else {
-                        data.value = (isJson ? JSON.stringify(data.value) : data.value);
+                        data.value = (isJson ? JSON.stringify(value) : value);
                         return yield data.save();
                     }
                 }

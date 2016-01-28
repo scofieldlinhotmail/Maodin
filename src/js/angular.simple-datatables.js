@@ -107,6 +107,11 @@
                     ths = table.find('thead th'),
                     tbody = table.find('tbody');
 
+                if (!scope.ngModel ) {
+                    scope.ngModel = [];
+                    console.warn('please set ng-model in simple-datatable')
+                }
+
                 // scope init
                 scope.page = 1;
                 scope.pageInput = scope.page;
@@ -117,6 +122,7 @@
                 scope.sortCol = undefined;
                 scope.sortColReverse = false;
                 scope.sdtRowId = scope.sdtRowId || 'id';
+
 
                 scope.sdtSelected =  scope.sdtSelected || [];
 
