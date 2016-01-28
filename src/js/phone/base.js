@@ -3,7 +3,7 @@ require('amazeui/dist/css/amazeui.css');
 require('amazeui/dist/js/amazeui.js');
 
 jQuery(function () {
-   jQuery('body').css('opacity', 1);
+   jQuery('body > .page').css('opacity', 1);
 });
 
 module.exports = {

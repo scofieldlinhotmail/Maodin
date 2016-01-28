@@ -5,17 +5,21 @@
     <link rel="stylesheet" href="/dist/phone-commons.js.css" >
     <% content 'head' %>
 </head>
-<body style="opacity: 0">
+<body>
 
-<% if !@noHeaderTpl : %>
-<% include "phone/phone-header.html" %>
-<% end %>
+<div class="page">
+    <% if !@noHeaderTpl : %>
+    <% include "phone/phone-header.html" %>
+    <% end %>
 
-<% content %>
+    <% content %>
 
-<% if !@noFooterTpl : %>
-<% include "phone/bottom-navbar.html" %>
-<% end %>
+    <% if !@noFooterTpl : %>
+    <% include "phone/bottom-navbar.html" %>
+    <% end %>
+</div>
+
+
 
 <script src="/dist/phone-commons.js"></script>
 <% content 'scripts' %>

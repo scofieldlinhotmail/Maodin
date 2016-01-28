@@ -25,74 +25,59 @@ function limit(rev, tel, code, province, city, addr) {
     && city !== "—— 市 ——");
 }
 
-function hasClass(elements, cName) {
-    return !!elements.className.match(new RegExp("(\\s|^)" + cName + "(\\s|$)"));
-}
-
-function addClass(elements, cName) {
-    if (!hasClass(elements, cName)) {
-        elements.className += " " + cName;
-    }
-}
-function removeClass(elements, cName) {
-    if (hasClass(elements, cName)) {
-        elements.className = elements.className.replace(new RegExp("(\\s|^)" + cName + "(\\s|$)"), " ");
-    }
-}
-
 function validate() {
-    var receiver = document.querySelector('#receiver').value;
-    var tel = document.querySelector('#tel').value;
-    var code = document.querySelector('#code').value;
-    var province = $("#province  option:selected").text();
-    var city = $('#city option:selected').text();
-    var addr = document.querySelector('#addr').value;
+    var receiver = $('#receiver').val();
+    var tel = $('#tel').val();
+    var code = $('#code').val();
+    var province = $("#province").val();
+    var city = $('#city').val();
+    var addr = $('#addr').val();
     limit(receiver, tel, code, province, city, addr);
     var count = 0;
     if (!result['rev']) {
-        removeClass(document.querySelector('.a'), 'hide');
-        addClass(document.querySelector('.a'), 'show');
+        $('.a').removeClass('hide');
+        $('.a').addClass('show');
         count += 1;
     } else {
-        addClass(document.querySelector('.a'), 'hide');
+        $('.a').addClass('hide');
     }
 
     if (!result['tel']) {
-        removeClass(document.querySelector('.b'), 'hide');
-        addClass(document.querySelector('.b'), 'show');
+        $('.b').removeClass('hide');
+        $('.b').addClass('show');
         count += 1;
     } else {
-        addClass(document.querySelector('.b'), 'hide');
+        $('.b').addClass('hide');
     }
 
     if (!result['code']) {
-        removeClass(document.querySelector('.c'), 'hide');
-        addClass(document.querySelector('.c'), 'show');
+        $('.c').removeClass('hide');
+        $('.c').addClass('show');
         count += 1;
     } else {
-        addClass(document.querySelector('.c'), 'hide');
+        $('.c').addClass('hide');
     }
 
     if (!result['addr']) {
-        removeClass(document.querySelector('.e'), 'hide');
-        addClass(document.querySelector('.e'), 'show');
+        $('.e').removeClass('hide');
+        $('.e').addClass('show');
         count += 1;
     } else {
-        addClass(document.querySelector('.e'), 'hide');
+        $('.e').addClass('hide');
     }
 
     if (count > 0) {
-        removeClass(document.querySelector('#danger'), 'hide');
+        $('#danger').removeClass('hide');
         return false;
     } else {
-        addClass(document.querySelector('#danger'), 'hide');
+        $('#danger').addClass('hide');
         return true;
     }
 }
 
 
 window.onload = function () {
-    document.querySelector('#danger').setAttribute('class', 'hide');
+    $('#danger').setAttribute('class', 'hide');
 };
 
 
@@ -102,15 +87,16 @@ yes.click(function () {
         var receiver = $('#receiver').val();
         var tel = $('#tel').val();
         var code = $('#code').val();
-        var province = $("#province  option:selected").text();
-        var city = $('#city option:selected').text();
+        var province = $("#province").val();
+        var city = $('#city').v();
         var addr = $('#addr').val();
         var data = {
             recieverName: receiver,
             phone: tel,
             province: province,
             city: city,
-            address: addr
+            address: addr,
+            id: $('[name=id]').val()
         };
 
         $.ajax({

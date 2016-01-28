@@ -3,11 +3,11 @@
 <link rel="stylesheet" href="/dist/phone-address.css">
 <% end %>
 <div class="am-g" ng-app="App">
-    <div class="address-list am-padding-sm" ng-controller="Address">
+    <div class="address-list" ng-controller="Address">
 
         <% if @datas?.length : %>
             <% for addr in @datas : %>
-            <div class="addr title" id="<%= addr.id %>">
+            <div class="addr title am-padding-xs" id="<%= addr.id %>">
                 <div class="am-g">
                     <div class="am-u-sm-10">
                         <div class="am-g">
@@ -23,22 +23,31 @@
                             </div>
                         </div>
                         <div class="am-g">
-                            <div class="am-u-sm-8">
+                            <div class="am-u-sm-9">
                                 <div class="am-margin-vertical">
-                                    <span><%- addr.province %><%- addr.city %><%- addr.address %></span>
+                                    <span><%- addr.province %><%- addr.city %><%- addr.area %><%- addr.address %></span>
                                 </div>
                             </div>
-                            <div class="am-u-sm-4 color-red default" default="<%- addr.isDefault %>">
-                                <div class="am-margin-vertical">
-                                    <div class="am-text-right">[默认]</div>
+                            <% if addr.isDefault: %>
+                                <div class="am-u-sm-3 color-red default">
+                                    <div class="am-margin-vertical">
+                                        <div class="am-text-right">[默认]</div>
+                                    </div>
                                 </div>
-                            </div>
+                            <% else: %>
+                                <div class="am-u-sm-3 color-red default am-hide">
+                                    <div class="am-margin-vertical">
+                                        <div class="am-text-right">[默认]</div>
+                                    </div>
+                                </div>
+                            <% end %>
+
                         </div>
                     </div>
                     <div class="am-u-sm-2  edit">
                         <div class="am-text-center">
-                            <!--<div class="am-icon-btn am-icon-btn-sm am-icon-pencil am-margin-xs"></div>-->
-                            <br />
+                            <div class="am-icon-btn am-icon-btn-sm am-success am-icon-pencil am-margin-xs"></div>
+                            <!--<br />-->
                             <div class="am-icon-btn am-icon-btn-sm am-danger am-icon-trash del" id="<%- addr.id %>"></div>
                         </div>
                     </div>
@@ -57,7 +66,7 @@
 <div class="add-address">
     <div class="am-g">
         <div class="am-u-sm-12">
-            <button class="am-btn am-btn-block" type="button" id="add">新增收货地址</button>
+            <a href="/user/addaddress" class="am-btn am-btn-block" type="button" id="add">新增收货地址</a>
         </div>
     </div>
 </div>

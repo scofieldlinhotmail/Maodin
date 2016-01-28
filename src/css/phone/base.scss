@@ -3,6 +3,10 @@ $navbar-height: 48px;
 
 body {
   padding-bottom: $navbar-height;
+}
+
+.page {
+  opacity: 0;
   transition: opacify 0.3s ease-in-out;
 }
 #header {

@@ -9,40 +9,43 @@ var Area = db.models.Area;
 var auth = require('../../helpers/auth');
 
 module.exports = (router) => {
-    router.get('/user/address',function *(){
+    router.get('/user/address', function *() {
         var user = (yield auth.user(this));
 
         var data = yield deliverAddress.findAll({
-            where:{
+            where: {
                 UserId: user.id
-
             }
         });
 
-        this.body = yield render('phone/address.html',{
-            datas:data,
+        this.body = yield render('phone/address.html', {
+            datas: data,
             title: '收货地址'
         });
     });
 
-    router.get('/user/addaddress',function *(){
+    router.get('/user/addaddress', function *() {
 
-        this.body = yield render('phone/addaddress.html',{
-            title: '添加收货地址'
+        var id= this.query.id;
+        var address = yield deliverAddress.findById(id);
+
+        this.body = yield render('phone/addaddress.html', {
+            title: '添加收货地址',
+            data: address
         });
     });
 
-    router.get('/user/address/del/:id',function *(){
+    router.get('/user/address/del/:id', function *() {
         var id = this.params.id;
         yield deliverAddress.destroy({
-            where:{
-                id:id
+            where: {
+                id: id
             }
         });
         this.body = '1';
     });
 
-    router.post('/user/address/add',function *(){
+    router.post('/user/address/add', function *() {
         var data = this.request.body;
         data.UserId = (yield auth.user(this)).id;
         data.isDefault = false;
@@ -50,7 +53,7 @@ module.exports = (router) => {
         this.body = '1';
     });
 
-    router.post('/user/address/changeDefault',function *(){
+    router.post('/user/address/changeDefault', function *() {
         try {
             var data = this.request.body;
             var addrid = data.id;
@@ -58,10 +61,10 @@ module.exports = (router) => {
             var UserID = (yield auth.user(this)).id;
 
             yield deliverAddress.update({
-               isDefault:false
-            },{
-                where:{
-                    UserID:UserID
+                isDefault: false
+            }, {
+                where: {
+                    UserID: UserID
                 }
             });
 
@@ -74,7 +77,7 @@ module.exports = (router) => {
             });
 
             this.body = '1';
-        }catch(err){
+        } catch (err) {
             console.log(err);
             this.body = '0';
         }
