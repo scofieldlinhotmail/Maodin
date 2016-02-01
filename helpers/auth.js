@@ -5,7 +5,7 @@ var cache = require('../instances/cache.js');
 var utilx = require('../lib/util.js');
 var util = require('util');
 
-var cookieName = 'YiwoUser';
+var cookieName = 'MaoDinUser';
 
 module.exports = {
     /**

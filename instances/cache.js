@@ -25,7 +25,7 @@ commands.forEach( function (cmd)  {
     var oldCmd = `_${cmd}`;
     client[oldCmd] = client[cmd];
     client[cmd] = function (key, arg, cb) {
-        arguments[0] = `yiwo/${arguments[0]}`;
+        arguments[0] = `maodin/${arguments[0]}`;
         return client[oldCmd].apply(this, arguments);
     };
 });

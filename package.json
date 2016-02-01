@@ -1,5 +1,5 @@
 {
-  "name": "yiwo",
+  "name": "maodin",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "mocha": "DEBUG=koa* mocha",
     "debugAll": " DEBUG=* supervisor -i src,public,views,webpack.config.js index.js ",
-    "start": " DEBUG=yiwo supervisor -i src,public,views,webpack.config.js index.js ",
-    "nodemon": " DEBUG=yiwo nodemon index.js ",
+    "start": " DEBUG=maodin supervisor -i src,public,views,webpack.config.js index.js ",
+    "nodemon": " DEBUG=maodin nodemon index.js ",
     "win": " supervisor -i src,public,views,webpack.config.js index.js ",
     "watch": "webpack-dev-server --content-base public/",
     "migrate": "node models/db/migrate.js"

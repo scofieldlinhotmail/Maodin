@@ -46,7 +46,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
 
         if (src[0]) {
             scope.shoppingCart = [{
-                shopName: '夷沃农特微商',
+                shopName: '猫町海淘',
                 data: src[0],
                 selected: false,
                 storeId: 0

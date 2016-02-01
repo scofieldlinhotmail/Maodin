@@ -21,8 +21,8 @@ module.exports = (router) => {
 
     var User = db.models.User;
 
-    var wechatCookieAccessToken = 'YiwoWechatAccessToken',
-        wechatCookieRefreshToken = 'YiwoWechatRefreshToken';
+    var wechatCookieAccessToken = 'MaoDinWechatAccessToken',
+        wechatCookieRefreshToken = 'MaoDinWechatRefreshToken';
 
     var refresh = function *(ctx, client) {
         try{
@@ -47,7 +47,7 @@ module.exports = (router) => {
 
     router.get('/wechat/redirect', function *() {
         var client = WechatAuthClient();
-        var url = client.getAuthorizeURL(`${wechatConfig.domain}/wechat/auth`, 'yiwo', 'snsapi_userinfo');
+        var url = client.getAuthorizeURL(`${wechatConfig.domain}/wechat/auth`, 'maodin', 'snsapi_userinfo');
         console.log(url);
         this.redirect(url);
     });

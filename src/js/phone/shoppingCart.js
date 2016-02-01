@@ -41,7 +41,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             }
         }
         scope.shoppingCart = [{
-            shopName: '夷沃农特微商',
+            shopName: '猫町海淘',
             data: src[0],
             selected: false
         }].concat(groupByStoreArr);

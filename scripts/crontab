@@ -1,1 +1,1 @@
-* * * * * node /home/www/programs/yiwo/task/index.js 1>/home/www/programs/yiwo/log/task.log 2>/home/www/programs/yiwo/log/task.log &
+* * * * * node /home/www/bin/MaoDin/task/index.js 1>/home/www/bin/MaoDin/log/task.log 2>/home/www/bin/MaoDin/log/task.log &
