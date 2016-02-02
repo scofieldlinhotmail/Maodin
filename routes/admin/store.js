@@ -9,10 +9,6 @@ var util = require('util');
 
 
 var Store = db.models.Store;
-var GoodsShortcutView = db.models.GoodsShortcutView;
-var Slideshow = db.models.Slideshow;
-var Goods = db.models.Goods;
-var Favorite = db.models.Favorite;
 var User = db.models.User;
 
 module.exports = (router) => {
@@ -62,7 +58,6 @@ module.exports = (router) => {
         });
     });
 
-
     router.post('/adminer-store/check', function *() {
 
         this.checkBody('ids').notEmpty();
@@ -78,7 +73,8 @@ module.exports = (router) => {
 
         if (action == 'pass') {
             this.body = yield Store.update({
-                status: 1
+                status: 1,
+                checkTime: Date.now()
             }, {
                 where:{
                     id: {
@@ -165,16 +161,26 @@ module.exports = (router) => {
 
         var body = this.request.body;
 
-        this.body = yield Store.update({
-            username: body.username,
-            name: body.name,
-            phone: body.phone,
-            StoreId: body.StoreId ? body.StoreId: null,
-        }, {
-            where: {
-                id: body.id
-            }
+        var tasks = [];
 
-        });
+        var store = yield Store.findById(body.id);
+
+        store.username = body.username;
+        store.name = body.name;
+        store.phone = body.phone;
+        var currentTopStoreId = body.StoreId ? body.StoreId: null;
+        if (currentTopStoreId != store.StoreId) {
+            if (!util.isNullOrUndefined(currentTopStoreId)) {
+                tasks.push(db.query(`update Stores set inferiorNum = inferiorNum + 1 where id = ${currentTopStoreId}`));
+            }
+            if (!util.isNullOrUndefined(store.StoreId)) {
+                tasks.push(db.query(`update Stores set inferiorNum = inferiorNum - 1 where id = ${store.StoreId}`));
+            }
+        }
+        store.StoreId = currentTopStoreId;
+
+        tasks.push(store.save());
+
+        this.body = yield tasks;
     })
 };

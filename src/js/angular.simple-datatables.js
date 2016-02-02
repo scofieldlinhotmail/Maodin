@@ -189,6 +189,7 @@
                 };
 
                 scope.click = function (index, event) {
+
                     var row = scope.currentList[index];
                     var params= [event, row].concat(Array.prototype.slice.call(arguments, 2));
                     if (event === 'remove') {

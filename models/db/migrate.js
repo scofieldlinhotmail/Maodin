@@ -66,26 +66,31 @@ function * userSeed(){
 
 function * storeSeed() {
     var users = yield db.models.User.findAll();
-    var ids = [];
+    var stores = [];
     for(var i = 0; i < users.length / 2 ; i ++ ){
         var tmp = yield db.models.Store.create({
             username: 'username' + i,
             name: '店铺' + i,
             phone: '12345678901',
             status: i % 2,
-            UserId: users[i].id
+            UserId: users[i].id,
+            checkTime: ( i % 2 ) == 1 ? Date.now() : null,
         });
-        ids.push(tmp.id);
+        stores.push(tmp);
     }
+    var topStore;
     for(i = users.length / 2 ; i < users.length; i ++ ){
+        topStore = stores[(i - users.length / 2)  % stores.length];
         yield db.models.Store.create({
             username: 'username' + i,
             name: '店铺' + i ,
             phone: '12345678901',
             status: i % 2,
             UserId: users[i].id,
-            StoreId: ids[(i - users.length / 2)  % ids.length]
+            StoreId: topStore.id
         });
+        topStore.inferiorNum ++;
+        yield topStore.save();
     }
 }
 
@@ -423,10 +428,7 @@ function * init() {
 }
 
 co(function * () {
-    //yield init();
-    yield db.sync();
-    yield slideshowSeed();
-    //yield collectionSeed();
+    yield init();
     console.log('finished ...');
 }).catch(function () {
     console.log(arguments);

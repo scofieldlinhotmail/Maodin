@@ -25,7 +25,12 @@ module.exports = function (sequelize, DataTypes) {
 
         money:shortDataTypes.Double(),//佣金
 
-        totalMoney: shortDataTypes.Double()//累计佣金
+        totalMoney: shortDataTypes.Double(), //累计佣金,
+
+        checkTime: shortDataTypes.Date(null),
+
+        inferiorNum: shortDataTypes.Int()
+
     }, {
         timestamps: true,
         paranoid: true,

@@ -69,7 +69,7 @@ module.exports = function (sequelize, DataTypes) {
         /**
          * 扩展属性值
          */
-        extraFields: shortDataTypes.Text()
+        extraFields: shortDataTypes.Text(),
     }, {
         paranoid: true,
         associate: function (models) {
@@ -150,64 +150,6 @@ module.exports = function (sequelize, DataTypes) {
 
     });
 
-    var GoodsShortcutView = sequelize.define('GoodsShortcutView', {
-        title: shortDataTypes.String(100),
-        /**
-         * 主图
-         */
-        mainImg: shortDataTypes.String(),
-        /**
-         * 现价
-         */
-        price: shortDataTypes.Double(),
-        /**
-         * 原价
-         */
-        oldPrice: shortDataTypes.Double(),
-        compoundSoldNum: shortDataTypes.Int(0),
-        /**
-         *
-         */
-        //vipDiscount: shortDataTypes.Double(10),
-        /**
-         * 剩余量
-         */
-        capacity: shortDataTypes.Int(),
-        /**
-         * -1 已删除
-         * 0 下架
-         * 1 已上架
-         */
-        //status: {
-        //    type: DataTypes.INTEGER,
-        //    defaultValue: 0
-        //},
-        /**
-         * 赠送积分
-         */
-        integral: shortDataTypes.Double(),
-        goodsTypeId: shortDataTypes.Int(),
-        /**
-         * 分级佣金
-         */
-        //commission1: shortDataTypes.Double(),
-        //commission2: shortDataTypes.Double(),
-        //commission3: shortDataTypes.Double(),
-        createdAt: shortDataTypes.Date()
-    }, {
-        timestamps: false,
-        associate: function (models) {
-        },
-        instanceMethods: {
-        },
-        classMethods: {
-        },
-        getterMethods: {
-            compoundSoldNum:()  => {
-                return this.baseSoldNum + this.soldNum;
-            }
-        }
-    });
 
     return Goods;
 };

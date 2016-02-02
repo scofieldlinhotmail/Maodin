@@ -70,6 +70,8 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
 
     scope.list = [];
 
+    scope.modalDataHistory = [];
+
     scope.$watch('tab', function (newVal, oldVal){
         if (newVal === oldVal || typeof newVal === 'undefined') {
             return;
@@ -92,7 +94,12 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
             }, {
                 cache: true
             }).success(function (data) {
+                data.deepInferiorNum = 0;
+                angular.forEach(data.Stores, function (store) {
+                    data.deepInferiorNum += store.inferiorNum;
+                });
                 scope.modalData = data;
+                scope.modalDataHistory.push(data);
                 modal().modal('show');
                 scope.$applyAsync();
             }).error(ajaxError);
@@ -200,10 +207,24 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
 
 
     scope.actionColFactory =  angular.element('#row-btn').html();
+    scope.redirectActionColFactory =  angular.element('#redirect-btn').html();
 
     scope.clearSelect = function () {
         scope.sdtSelected = [];
     };
+
+    scope.modalOn = function (event, row) {
+        if (event === 'redirect') {
+            scope.sdtOn('see', row);
+        } else if (event === 'back') {
+            scope.modalDataHistory.pop();
+            scope.modalData = scope.modalDataHistory[scope.modalDataHistory.length - 1];
+        }
+    };
+
+    modal().on('hide.bs.modal', function () {
+        scope.modalDataHistory = [];
+    });
 
 }]);
 

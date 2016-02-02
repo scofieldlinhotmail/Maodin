@@ -64,6 +64,7 @@
                                     <th class="num-col-sm" data-sdt-col="sales">分销总金额</th>
                                     <th class="num-col-sm" data-sdt-col="money">佣金</th>
                                     <th class="num-col-sm" data-sdt-col="totalMoney">累计佣金</th>
+                                    <th class="num-col-sm" data-sdt-col="inferiorNum">下级数量</th>
                                     <th style="width: 150px;"></th>
                                 </tr>
                                 </thead>
@@ -121,8 +122,14 @@
                         <tr>
                             <td class="col-txt">手机号</td>
                             <td>{{modalData.phone}}</td>
+                            <td class="col-txt"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
                             <td class="col-txt">申请时间</td>
                             <td>{{modalData.createdAt | date: 'yyyy/MM/dd hh:mm'}}</td>
+                            <td class="col-txt">审核通过时间</td>
+                            <td>{{modalData.checkTime | date: 'yyyy/MM/dd hh:mm'}}</td>
                         </tr>
                         <tr>
                             <td class="col-txt">分销总金额</td>
@@ -148,11 +155,16 @@
                             <td class="col-txt">上家店铺名</td>
                             <td>{{modalData.TopStore.name}}</td>
                         </tr>
+                        <tr>
+                            <td class="col-txt">下级数量</td>
+                            <td>{{modalData.inferiorNum}}</td>
+                            <td class="col-txt">下下级数量</td>
+                            <td>{{modalData.deepInferiorNum}}</td>
+                        </tr>
                         </tbody>
                     </table>
 
-
-                    <div simple-datatable ng-model="modalData.Stores">
+                    <div simple-datatable ng-model="modalData.Stores" sdt-action-col="redirectActionColFactory" sdt-on="modalOn">
                         <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
                             <div class=" col-md-8  col-md-offset-4">
                                 <div class="input-group">
@@ -177,6 +189,8 @@
                                         <th class="num-col-sm" data-sdt-col="sales">分销总金额</th>
                                         <th class="num-col-sm" data-sdt-col="money">佣金</th>
                                         <th class="num-col-sm" data-sdt-col="totalMoney">累计佣金</th>
+                                        <th class="num-col-sm" data-sdt-col="inferiorNum">下级数量</th>
+                                        <th style="width: 80px;"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -196,6 +210,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn" ng-show="modalDataHistory.length > 1" ng-click="modalOn('back')">返回</button>
                     <button type="button" data-dismiss="modal" class="btn">关闭</button>
                 </div>
             </div>
@@ -264,6 +279,12 @@
             <button type="button" class="btn btn-warning" sdt-row-click="unlock" ng-show="row.status == 1 && row.deletedAt">解冻</button>
             <button type="button" class="btn btn-warning" sdt-row-click="lock" ng-show="row.status == 1 && !row.deletedAt">冻结</button>
         </div>
+    </td>
+</script>
+
+<script type="text/x-handlebars-template" id="redirect-btn">
+    <td>
+        <button type="button" class="btn btn-default radius" sdt-row-click="redirect"><i class="fa fa-eye"></i></button>
     </td>
 </script>
 
