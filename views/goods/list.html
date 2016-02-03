@@ -28,7 +28,21 @@
                 <div ng-bind-html="test"></div>
                 <div simple-datatable ng-model="list" sdt-action-col="actionColFactory" sdt-on="sdtOn">
                     <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
-                        <div class=" col-md-4 col-md-offset-8">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <select ng-model="ltype" ng-options="type as type.title for type in types track by type.id" class="form-control"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select ng-model="stype" ng-options="type as type.title for type in ltype.GoodsTypes track by type.id" class="form-control"></select>
+                                </div>
+                                <div class="col-md-4">
+                                    <span class="btn btn-default" ng-click="typeFilter('query')">查询</span>
+                                    <span class="btn btn-default" ng-click="typeFilter('clear')">清除类型</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-md-4">
                             <div class="input-group">
                                 <input type="text" class="form-control" sdt-search-input placeholder="可输入编号、标题、类型进行搜索">
                                 <span class="input-group-addon" sdt-search-btn><i class="fa fa-search"></i></span>
@@ -82,6 +96,7 @@
     </div>
 </div>
 
+<script type="text/plain" id="types"><%- @types %></script>
 <script type="text/x-handlebars-template" id="row-btn">
     <td>
         <div class="btn-group dropup btn-group-sm">

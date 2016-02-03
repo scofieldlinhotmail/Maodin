@@ -177,7 +177,22 @@ module.exports = (router) => {
     }
 
     router.get('/adminer-shopkeeper/goods',function *(){
+
+        var types = yield GoodsType.findAll({
+            where: {
+                type: 1
+            },
+            include: [
+                {
+                    model: GoodsType,
+                    attributes: ['id', 'title']
+                }
+            ],
+            attributes: ['id', 'title']
+        });
+
         this.body = yield render('goods/list.html',{
+            types: JSON.stringify(types)
         });
     });
 
@@ -203,7 +218,8 @@ module.exports = (router) => {
                 'integral', 'buyLimit',
                 'deletedAt',
                 'taxRate'
-            ]
+            ],
+            include: [GoodsOfTypes]
         });
     });
 

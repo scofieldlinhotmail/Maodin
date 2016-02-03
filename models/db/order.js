@@ -18,6 +18,10 @@ module.exports = function (sequelize, DataTypes) {
         num: shortDataTypes.Int(),
         goodsNum: shortDataTypes.Int(),
         tax: shortDataTypes.Double(),
+
+        identityName: shortDataTypes.String(),
+        identityPhone: shortDataTypes.Phone(),
+        identityNum: shortDataTypes.String(),
         /**
          * 0 => 包邮
          * 1 => 自取

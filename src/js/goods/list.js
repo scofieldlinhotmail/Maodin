@@ -54,6 +54,7 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
             return;
         }
         getGoodsData($http, scope, newVal);
+        scope.typeFilter('clear');
     });
 
     scope.sdtOn = function (event, row) {
@@ -86,6 +87,35 @@ app.controller('AppCtrl', ['$scope', '$http', '$sce', function (scope, $http, $s
             .error(function () {
                 alert('操作失败，请刷新重试');
             });
+    };
+
+    try {
+        scope.types = JSON.parse(angular.element('#types').html().trim());
+    }catch (ex) {
+        console.log(ex);
+    }
+
+    scope.typeFilter = function (event) {
+        if(scope.stype == null) {
+            return;
+        }
+        if (event == 'clear') {
+            scope.list = scope.tab === 0 ? scope.data.inactive : scope.data.active;
+            scope.stype = null;
+            scope.ltype = null;
+        } else {
+            var list = [];
+            var typeId = scope.stype.id;
+
+            angular.forEach(scope.tab === 0 ? scope.data.inactive : scope.data.active, function (goods) {
+                if (goods.GoodsOfTypes.filter(function (rel) {
+                        return rel.GoodsTypeId == typeId;
+                    }).length != 0){
+                    list.push(goods);
+                }
+            });
+            scope.list = list;
+        }
     };
 
     scope.actionColFactory =  angular.element('#row-btn').html();
