@@ -98,8 +98,25 @@ module.exports = (router) => {
                 }
             });
         } else if(status == 3) {
-            // 收到发货
-            this.body = yield Order.update({
+            var orderItems = yield OrderItem.findAll({
+                where: {
+                    OrderId: {
+                        in: body.ids
+                    }
+                }
+            });
+
+            var tasks = [];
+            var orderItem, goods;
+            for(var i = 0; i < orderItems.length; i ++) {
+                goods = orderItems[i].getGood();
+                goods.capacity += orderItem.num;
+                goods.soldNum -= orderItem.num;
+                goods.compoundSoldNum -= orderItem.num;
+                tasks.push(goods.save());
+            }
+
+            tasks.push(Order.update({
                 status: 10,
                 returnTime: Date.now(),
                 returnStatus: 2
@@ -110,7 +127,10 @@ module.exports = (router) => {
                     },
                     returnStatus: 1
                 }
-            });
+            }));
+
+            // 收到退货
+            this.body = yield tasks;
         }
 
 

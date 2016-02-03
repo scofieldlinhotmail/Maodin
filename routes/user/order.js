@@ -308,8 +308,9 @@ module.exports = function (router) {
                             SalerGoodId: store ? buyItem.SalerGoodId : null,
                             GoodId: store ? null :buyGoods.id
                         }));
-                        buyGoods.capacity--;
-                        buyGoods.soldNum++;
+                        buyGoods.capacity -= buyItem.num;
+                        buyGoods.soldNum += buyItem.num;
+                        buyGoods.compoundSoldNum += buyItem.num;
                         yield buyGoods.save({transaction: t});
                         //// 赠送积分
                         //user.integral += buyGoods.integral;

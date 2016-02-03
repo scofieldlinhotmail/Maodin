@@ -10,10 +10,10 @@ var sequelizex = require('../../lib/sequelizex.js');
 
 
 var Goods = db.models.Goods;
-var GoodsView = db.models.GoodsShortcutView;
 var SalerGoods = db.models.SalerGoods;
 var Store = db.models.Store;
 var GoodsType = db.models.GoodsType;
+var GoodsOfTypes = db.models.GoodsOfTypes;
 var ShoppingCart = db.models.ShoppingCart;
 var GoodsCollection = db.models.GoodsCollection;
 
@@ -48,15 +48,13 @@ module.exports = (router) => {
         var body = this.request.body;
 
 
-        var where = {};
+        var where = { };
         if (body.searchKey) {
             where.title = {
                 $like: `%${body.searchKey.trim()}%`
             };
         }
-        if (body.typeId && /^\d*$/.test(body.typeId)) {
-            where.GoodsTypeId = body.typeId;
-        }
+
 
         where.capacity = {
             $gt: 0
@@ -65,8 +63,30 @@ module.exports = (router) => {
         var conditions = {
             where,
             offset: (body.page - 1) * goodsPerPage,
-            limit: goodsPerPage
+            limit: goodsPerPage,
+            attributes: [
+                'id', 'title',
+                'price', 'oldPrice',
+                'mainImg',
+                'status',
+                'integral',
+                'compoundSoldNum',
+                'capacity',
+                'taxRate',
+                'createdAt'
+            ]
         };
+
+        if (body.typeId && /^\d*$/.test(body.typeId)) {
+            conditions.include = [
+                {
+                    model: GoodsOfTypes,
+                    where: {
+                        GoodsTypeId: body.typeId
+                    }
+                }
+            ];
+        }
 
         if (['createdAt DESC', 'compoundSoldNum DESC', 'price DESC', 'price'].indexOf(body.orderMode) < 0) {
             this.body = 'invalid order';
@@ -88,7 +108,7 @@ module.exports = (router) => {
             }
         }
 
-        this.body = (yield GoodsView.findAll(conditions)).map((item) => item.dataValues);
+        this.body = (yield Goods.findAll(conditions)).map((item) => item.dataValues);
 
     }
 
@@ -116,8 +136,18 @@ module.exports = (router) => {
             return;
         }
 
-        goods.GoodsType = yield goods.getGoodsType();
+        //goods.GoodsType = yield goods.getGoodsType();
         goods.imgs = JSON.parse(goods.imgs);
+
+        goods.types = (yield GoodsOfTypes.findAll({
+            where: {
+                GoodId: goods.id
+            },
+            include: [{
+                model: GoodsType,
+                attributes: ['id', 'title']
+            }]
+        })).map((rel) => rel.GoodsType);
 
         var id = this.params.id;
 

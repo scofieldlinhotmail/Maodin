@@ -45,6 +45,11 @@
             <div class="am-u-sm-4">已售<%= @goods.soldNum %> / 剩余<%= @goods.capacity %></div>
 
         </div>
+        <div class="am-padding-horizontal-sm">
+            <% for type in @goods.types : %>
+                <span class="am-badge am-radius am-badge-warning"><%= type.title %></span>
+            <%  end %>
+        </div>
 
         <div class="am-tabs am-margin-vertical" data-am-tabs>
             <ul class="am-tabs-nav am-nav am-nav-tabs">

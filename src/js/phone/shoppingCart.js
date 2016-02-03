@@ -68,7 +68,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
                 }
                 var goods = shop.data[goodsIndex];
                 if (goods.selected) {
-                    fee = fee.plus(goods.Good.price * goods.num) ;
+                    fee = fee.plus(new Decimal(goods.Good.price).mul(goods.num)) ;
                 }
             }
         }

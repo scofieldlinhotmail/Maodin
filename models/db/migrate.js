@@ -135,6 +135,7 @@ function * goodsSeed() {
             capacity: 20 + i,
             content: '内容' + i,
             baseSoldNum: i,
+            compoundSoldNum: i,
             timeToDown: null,
             commission1: i * 5 /10 ,
             commission2: i * 4 / 10,
@@ -193,31 +194,31 @@ function * goodsTypeSeed() {
             type: 1,
             fields: JSON.stringify([
                 {
-                    title: '一级扩展属性1',
+                    title: '一级扩展属性1-'+i,
                     id: diffDate(),
                     type: '0',
                     options: []
                 },
                 {
-                    title: '一级扩展属性2',
+                    title: '一级扩展属性2-'+i,
                     id: diffDate(),
                     type: '1',
                     options: []
                 },
                 {
-                    title: '一级扩展属性3',
+                    title: '一级扩展属性3-'+i,
                     id: diffDate(),
                     type: '2',
                     options: []
                 },
                 {
-                    title: '一级扩展属性4',
+                    title: '一级扩展属性4-'+i,
                     id: diffDate(),
                     type: '3',
                     options: ['1', '2', '3']
                 },
                 {
-                    title: '一级扩展属性5',
+                    title: '一级扩展属性5-'+i,
                     id: diffDate(),
                     type: '4',
                     options: ['1', '2', '3']
@@ -229,36 +230,36 @@ function * goodsTypeSeed() {
     for(var j = 0; j < ids.length; j ++) {
         for(var i = 1; i < 5; i ++) {
             var tmp = yield db.models.GoodsType.create({
-                title: '二级类型' + i,
+                title: '二级类型' + j + i,
                 type: 2,
                 GoodsTypeId: ids[j],
                 fields: JSON.stringify([
                     {
-                        title: '二级扩展属性1',
+                        title: '二级扩展属性1'+ j + i,
                         id: diffDate(),
                         type: '0',
                         options: []
                     },
                     {
-                        title: '二级扩展属性2',
+                        title: '二级扩展属性2'+ j + i,
                         id: diffDate(),
                         type: '1',
                         options: []
                     },
                     {
-                        title: '二级扩展属性3',
+                        title: '二级扩展属性3'+ j + i,
                         id: diffDate(),
                         type: '2',
                         options: []
                     },
                     {
-                        title: '二级扩展属性4',
+                        title: '二级扩展属性4'+ j + i,
                         id: diffDate(),
                         type: '3',
                         options: ['1', '2', '3']
                     },
                     {
-                        title: '二级扩展属性5',
+                        title: '二级扩展属性5'+ j + i,
                         id: diffDate(),
                         type: '4',
                         options: ['1', '2', '3']

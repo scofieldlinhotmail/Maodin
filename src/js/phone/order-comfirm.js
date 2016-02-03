@@ -74,7 +74,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
                 }
                 var goods = shop.data[goodsIndex];
 
-                totalPrice =  totalPrice.plus(goods.Good.price * goods.num);
+                totalPrice =  totalPrice.plus(new Decimal(goods.Good.price).mul(goods.num));
             }
             shop.totalPrice = totalPrice.toNumber();
             fee =  fee.plus(totalPrice);

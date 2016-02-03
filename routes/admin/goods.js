@@ -122,6 +122,7 @@ module.exports = (router) => {
                 goods.commission3 = body.commission3;
                 goods.integral = body.integral;
                 goods.baseSoldNum = body.baseSoldNum;
+                goods.compoundSoldNum = body.baseSoldNum + body.soldNum;
                 goods.taxRate = body.taxRate;
                 goods.extraFields = JSON.stringify(extraFields);
                 goods.timeToDown = body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null;
@@ -151,6 +152,7 @@ module.exports = (router) => {
                 commission3: body.commission3,
                 integral: body.integral,
                 baseSoldNum: body.baseSoldNum,
+                compoundSoldNum: body.baseSoldNum,
                 GoodsTypeId: body.GoodsTypeId,
                 soldNum: 0,
                 content: body.content,

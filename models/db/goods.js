@@ -28,6 +28,7 @@ module.exports = function (sequelize, DataTypes) {
          * 已售数量
          */
         soldNum: shortDataTypes.Int(),
+        compoundSoldNum: shortDataTypes.Int(),
         /**
          * 稅率
          */
