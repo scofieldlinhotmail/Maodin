@@ -117,8 +117,12 @@ function * goodsSeed() {
         }]
     });
     for(var i = 0; i < 40; i ++) {
-        var type = goodsTypes[i % goodsTypes.length];
-        var extraFields = JSON.parse(type.fields).concat(JSON.parse(type.ParentType.fields)).map((field) => {
+        var type1 = goodsTypes[i % goodsTypes.length];
+        var type2 = goodsTypes[(i + 1) % goodsTypes.length];
+        var fields = JSON.parse(type1.fields).concat(JSON.parse(type1.ParentType.fields))
+            .concat(JSON.parse(type2.fields).concat(JSON.parse(type2.ParentType.fields)));
+
+        var extraFields = fields.map((field) => {
             return fillField(field, i);
         });
 
@@ -130,7 +134,6 @@ function * goodsSeed() {
             oldPrice: 10 + i,
             capacity: 20 + i,
             content: '内容' + i,
-            GoodsTypeId: type.id,
             baseSoldNum: i,
             timeToDown: null,
             commission1: i * 5 /10 ,
@@ -139,6 +142,14 @@ function * goodsSeed() {
             status: 1,
             extraFields: JSON.stringify(extraFields),
             buyLimit: i % 5
+        });
+        yield db.models.GoodsOfTypes.create({
+            GoodId: goods.id,
+            GoodsTypeId: type1.id
+        });
+        yield db.models.GoodsOfTypes.create({
+            GoodId: goods.id,
+            GoodsTypeId: type2.id
         });
         if (i % 2) {
             yield goods.destroy();

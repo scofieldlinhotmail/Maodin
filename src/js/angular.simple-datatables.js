@@ -23,7 +23,7 @@
     };
 
     var find = function (collection, filter) {
-        for(var i in collection) {
+        for (var i in collection) {
             var item = collection[i];
             if (filter(item)) {
                 return {
@@ -34,14 +34,16 @@
         }
     };
 
-    var quickSortBy = function($parse, arr, property, compare, reverse) {
-        if (arr.length <= 1) { return arr; }
+    var quickSortBy = function ($parse, arr, property, compare, reverse) {
+        if (arr.length <= 1) {
+            return arr;
+        }
         var pivotIndex = Math.floor(arr.length / 2);
         var pivot = arr.splice(pivotIndex, 1)[0];
         var pivotVal = getProperty($parse, pivot, property);
         var left = [];
         var right = [];
-        for (var i = 0; i < arr.length; i++){
+        for (var i = 0; i < arr.length; i++) {
             var compareResult;
             var item = getProperty($parse, arr[i], property);
             if (typeof compare === 'function') {
@@ -64,8 +66,8 @@
     simpleDataTable.filter('property', ['$parse', '$sce', function ($parse, $sce) {
         return function (ctx, propertyStr, type) {
             var val = getProperty($parse, ctx, propertyStr);
-            val = typeof val === 'undefined' ? '' : val;
-            if(type == 'Date') {
+            val = typeof val === 'undefined' || val === null ? '' : val;
+            if (type == 'Date') {
                 return new Date(val);
             } else {
                 return $sce.trustAsHtml(val.toString());
@@ -73,7 +75,7 @@
         };
     }]);
 
-    simpleDataTable.directive('simpleDatatable', function (){
+    simpleDataTable.directive('simpleDatatable', function () {
         return {
             restrict: "A",
             require: [
@@ -107,7 +109,7 @@
                     ths = table.find('thead th'),
                     tbody = table.find('tbody');
 
-                if (!scope.ngModel ) {
+                if (!scope.ngModel) {
                     scope.ngModel = [];
                     console.warn('please set ng-model in simple-datatable')
                 }
@@ -124,7 +126,7 @@
                 scope.sdtRowId = scope.sdtRowId || 'id';
 
 
-                scope.sdtSelected =  scope.sdtSelected || [];
+                scope.sdtSelected = scope.sdtSelected || [];
 
                 scope.sdtSelectboxHtml = $sce.trustAsHtml(scope.sdtSelectboxHtml || '<input type="checkbox">');
 
@@ -132,19 +134,22 @@
                 angular.copy(scope.ngModel, scope.list);
 
                 // scope
-                scope.colNames = [];
-                scope.colTypes = [];
+                scope.colAttrs = [];
                 ths.each(function (index, ele) {
                     ele = angular.element(ele);
-                    var colName = ele.data('sdt-col');
-                    var colType = ele.data('sdt-col-type');
-                    if (!colType) {
-                        colType = 'string';
+                    var attrs = {};
+                    attrs.name = ele.data('sdt-col');
+                    attrs.type = ele.data('sdt-col-type');
+                    if (!attrs.type) {
+                        attrs.type = 'string';
                     }
-                    if (colName) {
-                        scope.colNames.push(colName);
-                        scope.colTypes.push(colType);
-                        index = scope.colNames.length - 1;
+                    if (attrs.type === 'bool') {
+                        attrs.true = ele.data('sdt-bool-true');
+                        attrs.false = ele.data('sdt-bool-false');
+                    }
+                    if (attrs.name) {
+                        scope.colAttrs.push(attrs);
+                        index = scope.colAttrs.length - 1;
                         ele.attr('ng-click', 'sort(' + index + ', sortCol == ' + index + ')');
                         ele.attr('class', ele.attr('class') + ' {{ sortCol == ' + index + ' ? (sortColReverse ? "sdt-orderby-desc" : "sdt-orderby" ) : ""}} ');
                         //var sortType = ele.attr('sdt-sort-type');
@@ -164,7 +169,7 @@
                 $compile(ths)(scope);
 
                 scope.goto = function (page) {
-                    
+
                     if (page) {
                         if (page < 1) {
                             page = 1;
@@ -179,10 +184,10 @@
                 };
 
                 scope.setPerPage = function (perPage) {
-                    
+
                     if (perPage === 'all') {
                         scope.perPage = scope.list.length;
-                    } else{
+                    } else {
                         scope.perPage = perPage;
                     }
                     scope.$applyAsync();
@@ -191,7 +196,7 @@
                 scope.click = function (index, event) {
 
                     var row = scope.currentList[index];
-                    var params= [event, row].concat(Array.prototype.slice.call(arguments, 2));
+                    var params = [event, row].concat(Array.prototype.slice.call(arguments, 2));
                     if (event === 'remove') {
                         var item = find(scope.ngModel, function (item) {
                             return item[scope.sdtRowId] == row.id;
@@ -218,12 +223,12 @@
                     if (typeof  index === 'undefined') {
                         return;
                     }
-                    
+
                     if (scope.sortCol === index && scope.sortColReverse === reverse) {
-                        reverse = ! reverse;
+                        reverse = !reverse;
                     }
                     scope.sortColReverse = reverse;
-                    var col = scope.colNames[index];
+                    var col = scope.colAttrs[index].name;
                     scope.list = quickSortBy($parse, scope.list, col, undefined, reverse/*, scope.colSortType[index]*/);
                     scope.sortCol = index;
                 };
@@ -231,13 +236,14 @@
                 var lastSearch;
                 scope.search = function () {
                     var searchText = scope.searchInput;
-                    
-                    var list  = [];
-                    for(var i in scope.ngModel) {
+
+                    var list = [];
+                    for (var i = 0; i < scope.ngModel.length; i++) {
                         var item = scope.ngModel[i];
-                        for(var col in scope.colNames) {
+                        for(var colIndex = 0; colIndex < scope.colAttrs.length; colIndex ++ ) {
+                            var col = scope.colAttrs[colIndex];
                             try {
-                                if (getProperty($parse, item, scope.colNames[col]).toString().indexOf(searchText) !== -1) {
+                                if (getProperty($parse, item, col.name).toString().indexOf(searchText) !== -1) {
                                     list.push(item);
                                     break;
                                 }
@@ -280,7 +286,7 @@
                         return;
                     }
                     scope.totalPage = Math.ceil(scope.list.length / scope.perPage);
-                    
+
                     scope.goto();
                 });
 
@@ -291,21 +297,22 @@
                 scope.trWrapper = function () {
                     var str = '' +
                         '<tr ng-repeat="row in currentList track by $index" class="{{isRowSelected(row) ? \'sdt-row-selected\' : \'\'}}">' +
-                        '<td ng-repeat="name in colNames  track by $index"" >' +
+                            '<td ng-repeat="rowAttr in colAttrs track by $index"" >' +
                             //'{{row | property: name}}' +
-                            '<span ng-bind-html="row | property: name" ng-if="[\'string\'].indexOf(colTypes[$index]) != -1"></span>' +
-                            '<img ng-src="{{row | property: name}}" ng-if="colTypes[$index] == \'img\'">' +
-                            '<span ng-bind-html="sdtSelectboxHtml" ng-if="colTypes[$index] == \'selectbox\'" ng-click="select(row)"></span>' +
-                            '<span ng-if="colTypes[$index] == \'date\'">{{ (row | property: name :"Date") | date: "yyyy/MM/dd"}}</span>' +
-                            '<span ng-if="colTypes[$index] == \'datetime\'">{{row | property: name:  "Date" | date: "yyyy/MM/dd hh:mm"}}</span>' +
-                        '</td>';
+                                '<span ng-bind-html="row | property: rowAttr.name" ng-if="[\'string\'].indexOf(rowAttr.type) != -1"></span>' +
+                                '<img ng-src="{{row | property: rowAttr.name}}" ng-if="rowAttr.type == \'img\'">' +
+                                '<span ng-bind-html="sdtSelectboxHtml" ng-if="rowAttr.type == \'selectbox\'" ng-click="select(row)"></span>' +
+                                '<span ng-if="rowAttr.type == \'date\'">{{ (row | property: rowAttr.name : "Date") | date: "yyyy/MM/dd"}}</span>' +
+                                '<span ng-if="rowAttr.type == \'datetime\'">{{row | property: rowAttr.name:  "Date" | date: "yyyy/MM/dd hh:mm"}}</span>' +
+                                '<span ng-if="rowAttr.type == \'bool\'">{{ (row | property: rowAttr.name) ? rowAttr.true : rowAttr.false}}</span>' +
+                            '</td>';
                     if (scope.sdtActionCol) {
                         var actionCol = scope.sdtActionCol;
                         actionCol = actionCol.replace('sdt-row-remove', "ng-click='click($index, \"remove\")'");
                         actionCol = actionCol.replace(/sdt-row-click="(.*?)"/g, function (searchValue, replaceValue) {
                             return "ng-click='click($index, " + replaceValue.split(',').map(function (item) {
-                                return "\"" + item.trim() + "\"";
-                            }).join(',') + ")'";
+                                    return "\"" + item.trim() + "\"";
+                                }).join(',') + ")'";
                         });
                         str += actionCol;
                     }
@@ -334,7 +341,7 @@
                     scope.sdtPerpageBoxInit(scope.setPerPage);
                 }
 
-            // env bind
+                // env bind
                 // draw tr
                 scope.trWrapper();
 

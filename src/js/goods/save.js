@@ -10,15 +10,16 @@ require('simditor/styles/simditor.css');
 /* webuplader */
 
 var WebUploader = require('fex-webuploader');
-require('imports?$=jquery!simple-module');
-//require('imports?$=jquery!simple-hotkeys');
-require('imports?$=jquery!simple-hotkeys');
-require('imports?$=jquery!simple-uploader');
-var Simditor = require('imports?$=jquery!simditor/lib/simditor.js');
+require('simple-module');
+//require('simple-hotkeys');
+require('simple-hotkeys');
+require('simple-uploader');
+var Simditor = require('simditor/lib/simditor.js');
 require('angular');
-require('imports?$=jquery!jquery-validation');
-require('imports?$=jquery!eonasdan-bootstrap-datetimepicker');
-
+require('jquery-validation');
+require('eonasdan-bootstrap-datetimepicker');
+require('select2/dist/js/select2.js');
+require('select2/dist/css/select2.css');
 
 var $ = jQuery;
 $(function () {
@@ -79,7 +80,7 @@ $(function () {
                 } else {
                     scope.data = [];
                 }
-            } catch (e){
+            } catch (e) {
                 scope.data = [imgDom.data('main')];
             }
 
@@ -91,41 +92,50 @@ $(function () {
         scope.init();
 
         uploader.on('fileQueued', function (file) {
-            uploader.makeThumb( file, function( error, ret ) {
-                if ( error ) {
+            uploader.makeThumb(file, function (error, ret) {
+                if (error) {
                     alert('预览失败，请刷新重试');
                 } else {
                     scope.imgs.push(ret);
                     scope.data.push(file);
                     scope.$apply();
                 }
-            }, 640, 260);
+            }, 512, 512);
         });
 
         uploader.on('uploadSuccess', function (file, ret) {
-            for(var i in scope.data) {
-                var ele = scope.data[i];
-                //debugger
+            var ele;
+            for (var i = 0; i < scope.data.length; i ++) {
+                ele = scope.data[i];
                 if (ele.id && ele.id == file.id) {
-                    scope.data[i] =  ret.file_path;
+                    scope.data[i] = ret.file_path;
                     break;
                 }
             }
         });
 
         uploader.on('uploadFinished', function () {
-            for(var i in scope.data) {
-                var ele = scope.data[i];
+            var ele;
+            for (var i = 0 ; i < scope.data.length; i ++) {
+                ele = scope.data[i];
                 var filePath = ele;
                 if (i == scope.mainImg) {
                     scope.mainImgUrl = filePath;
-                } else{
+                } else {
                     scope.imgsUrl.push(filePath);
                 }
             }
-            //scope.mainImgUrl = scope.imgsUrl[scope.mainImg];
+
             scope.$apply();
             $form[0].submit();
+        });
+
+        uploader.on('error', function (err) {
+            if (err == 'Q_EXCEED_NUM_LIMIT') {
+                alert('文件数量超出限制');
+            } else if (err == 'Q_EXCEED_SIZE_LIMIT') {
+                alert('图片大小超出限制');
+            }
         });
 
 
@@ -163,6 +173,10 @@ $(function () {
                     required: true,
                     number: true
                 },
+                taxRate: {
+                    required: true,
+                    number: true
+                },
                 commission1: {
                     required: true,
                     number: true
@@ -175,7 +189,7 @@ $(function () {
                     required: true,
                     number: true
                 },
-                GoodsTypeId : {
+                GoodsTypeId: {
                     required: true
                 }
             },
@@ -193,6 +207,10 @@ $(function () {
                     number: '请填写数字'
                 },
                 integral: {
+                    required: '请填写内容',
+                    number: '请填写数字'
+                },
+                taxRate: {
                     required: '请填写内容',
                     number: '请填写数字'
                 },
@@ -216,7 +234,7 @@ $(function () {
                     required: '请填写剩余量',
                     number: '请填写整数'
                 },
-                GoodsTypeId : {
+                GoodsTypeId: {
                     required: '请选择类型'
                 }
             },
@@ -249,36 +267,71 @@ $(function () {
         });
     }]);
 
-    app.controller('FormCtl', ['$scope', function (scope){
+    app.controller('FormCtl', ['$scope', function (scope) {
 
         var typeDom = angular.element('#types');
 
-        scope.types = JSON.parse(typeDom.html());
 
-        var typeId = typeDom.data('id');
+        scope.typeArr = JSON.parse(typeDom.html());
 
         (function () {
-            for(var i in scope.types) {
-                var ltype = scope.types[i];
-                //console.log(ltype);
-                scope.types[i].fields = JSON.parse(scope.types[i].fields);
-                for(var j in ltype.GoodsTypes) {
+            for (var i = 0; i < scope.typeArr.length; i++) {
+                var ltype = scope.typeArr[i];
+                scope.typeArr[i].fields = JSON.parse(scope.typeArr[i].fields);
+                for (var j = 0; j < ltype.GoodsTypes.length; j++) {
                     var stype = ltype.GoodsTypes[j];
                     stype.fields = JSON.parse(stype.fields);
-                    if (stype.id == typeId) {
-                        scope.ltype = ltype;
-                        scope.stype = stype;
-                        scope.$applyAsync();
-                    }
                 }
             }
         }());
+
+        scope.typeDict = (function () {
+            var types = {};
+            angular.forEach(scope.typeArr, function (ltype) {
+                types[ltype.id] = ltype;
+                angular.forEach(ltype.GoodsTypes, function (stype) {
+                    types[stype.id] = stype;
+                });
+            });
+            return types;
+        })();
+
+        var typeIds = typeDom.data('id');
+
+        try {
+            var $select = $('[name="typeIds"]');
+            $select.select2();
+            $select.val(typeIds).trigger('change');
+            scope.typeIds = typeIds;
+            scope.$applyAsync();
+        }catch (ex) {
+        }
+
+        scope.$watchCollection('typeIds', function (newVal, oldVal) {
+            if (typeof newVal === 'undefined') {
+                return;
+            }
+            var types = [];
+            var ids = [];
+            angular.forEach(scope.typeIds, function (typeId) {
+                ids.push(typeId);
+                var stype = scope.typeDict[typeId];
+                if (ids.indexOf(stype.GoodsTypeId) == -1) {
+                    ids.push(stype.GoodsTypeId);
+                    var ltype = scope.typeDict[stype.GoodsTypeId];
+                    types.push(ltype);
+                }
+                types.push(stype);
+            });
+            scope.types = types;
+        });
+
 
         var extraFieldsStr = angular.element("#extraFields").html().trim();
         var extraFields = {};
         if (extraFieldsStr.length != 0) {
             extraFieldsStr = JSON.parse(extraFieldsStr);
-            for(var key in extraFieldsStr) {
+            for (var key in extraFieldsStr) {
                 if (extraFieldsStr.hasOwnProperty(key)) {
                     var field = extraFieldsStr[key];
                     extraFields[field.id] = field.value;
@@ -288,14 +341,13 @@ $(function () {
         }
         window.s = scope;
 
-
     }]);
 
     angular.bootstrap(document.documentElement, ['app']);
 
-    $('[type=datetime]').datetimepicker({
+    $('[type=datetime]').datetimepicker({});
 
-    });
+
 });
 
 

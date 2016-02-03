@@ -296,12 +296,13 @@ module.exports = function (router) {
                             throw "商品库存不足";
                         }
 
-                        price = price.plus(buyItem.num * buyGoods.price);
+                        var itemPrice = new Decimal(buyItem.num).mul(buyGoods.price);
+                        price = price.plus(itemPrice);
                         goodsNum += buyItem.num;
 
                         orderItems.push(OrderItem.build({
                             goods: JSON.stringify(buyGoods),
-                            price: buyItem.num * buyGoods.price,
+                            price: itemPrice,
                             num: buyItem.num,
                             type: store ? 1 : 0,
                             SalerGoodId: store ? buyItem.SalerGoodId : null,
@@ -337,7 +338,8 @@ module.exports = function (router) {
                         UserId: userId,
                         expressWay: shopOrder.expressWay,
                         type: store ? 1 : 0,
-                        StoreId: store ? store.id : null
+                        StoreId: store ? store.id : null,
+
                     }, {transaction: t});
 
                     for (var i in orderItems) {

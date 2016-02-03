@@ -10,6 +10,7 @@ module.exports = (router) => {
 
     var Goods = db.models.Goods;
     var GoodsType = db.models.GoodsType;
+    var GoodsOfTypes = db.models.GoodsOfTypes;
     var OrderItem = db.models.OrderItem;
     var ShoppingCart = db.models.ShoppingCart;
     var GoodsCollection = db.models.GoodsCollection;
@@ -32,10 +33,12 @@ module.exports = (router) => {
         if (this.params.id ){
             data = yield Goods.scope('all').findById(this.params.id);
             data.timeToDown = moment(data.timeToDown).format('MM/DD/YYYY hh:mm A');
+            data.typeIds = JSON.stringify((yield data.getGoodsOfTypes()).map((rel) => rel.GoodsTypeId));
         }
 
         this.body = yield render('goods/save.html', {
-            types: JSON.stringify(types),
+            types,
+            typesStr: JSON.stringify(types),
             data: data
         });
     }
@@ -47,18 +50,27 @@ module.exports = (router) => {
         this.checkBody('price').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('oldPrice').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('capacity').notEmpty().isInt().gt(0).toInt();
-        this.checkBody('GoodsTypeId').notEmpty().isInt().toInt();
+        this.checkBody('typeIds').notEmpty();
         this.checkBody('baseSoldNum').notEmpty().isInt().toInt();
         this.checkBody('commission1').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('commission2').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('commission3').notEmpty().isFloat().gt(0).toFloat();
         this.checkBody('integral').notEmpty().isFloat().gt(0).toFloat();
+        this.checkBody('taxRate').notEmpty().isFloat().gt(0).toFloat();
 
         var body = this.request.body;
 
-        var type = yield GoodsType.findOne({
+        if (!(body.typeIds instanceof Array)) {
+            body.typeIds = [body.typeIds];
+        }
+
+        console.log(body.typeIds);
+
+        var type = yield GoodsType.findAll({
             where: {
-                id: body.GoodsTypeId
+                id: {
+                    $in: body.typeIds
+                }
             },
             include: [{
                 model: GoodsType,
@@ -66,7 +78,12 @@ module.exports = (router) => {
             }]
         });
 
-        var fields = JSON.parse(type.fields).concat(JSON.parse(type.ParentType.fields));
+        var fields = [];
+
+        type.forEach(function (stype) {
+            fields = fields.concat(JSON.parse(stype.fields).concat(JSON.parse(stype.ParentType.fields)))
+        });
+
         var extraFields = [];
 
         if (this.errors) {
@@ -87,8 +104,10 @@ module.exports = (router) => {
 
 
         var isCreate = true;
+        var createTypeTask = [];
+        var goods;
         if (body.id) {
-            var goods = yield Goods.scope('all').findById(body.id);
+            goods = yield Goods.scope('all').findById(body.id);
             if (goods != null) {
                 goods.title = body.title;
                 goods.mainImg = body.mainImg;
@@ -103,18 +122,24 @@ module.exports = (router) => {
                 goods.commission3 = body.commission3;
                 goods.integral = body.integral;
                 goods.baseSoldNum = body.baseSoldNum;
+                goods.taxRate = body.taxRate;
                 goods.extraFields = JSON.stringify(extraFields);
                 goods.timeToDown = body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null;
                 goods.buyLimit = body.buyLimit ? body.buyLimit : 0;
 
                 yield goods.save();
-                debug(body.hasTimeToDown, goods.timeToDown);
+                createTypeTask.push(GoodsOfTypes.destory({
+                    where: {
+                        GoodId: goods.id
+                    }
+                }));
+
                 isCreate = false;
             }
         }
 
         if (isCreate) {
-            yield Goods.create({
+            goods = yield Goods.create({
                 title: body.title,
                 mainImg: body.mainImg,
                 imgs: body.imgs,
@@ -129,13 +154,22 @@ module.exports = (router) => {
                 GoodsTypeId: body.GoodsTypeId,
                 soldNum: 0,
                 content: body.content,
+                taxRate: body.taxRate,
                 extraFields: JSON.stringify(extraFields),
                 timeToDown: body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null,
                 buyLimit: body.buyLimit ? body.buyLimit : 0,
                 // todo: ok?
                 deletedAt: Date.now()
             });
+
         }
+        for(var i = 0; i < body.typeIds; i ++) {
+            createTypeTask.push(GoodsOfTypes.create({
+                GoodId: goods.id,
+                GoodsTypeId: body.typeIds[i]
+            }));
+        }
+        yield createTypeTask;
 
         this.redirect('/adminer-shopkeeper/goods');
     }
@@ -165,9 +199,9 @@ module.exports = (router) => {
                 'oldPrice', 'price',
                 'commission1', 'commission2', 'commission3',
                 'integral', 'buyLimit',
-                'deletedAt'
-            ],
-            include: [GoodsType]
+                'deletedAt',
+                'taxRate'
+            ]
         });
     });
 

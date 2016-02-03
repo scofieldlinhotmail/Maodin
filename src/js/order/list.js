@@ -4,13 +4,13 @@ require('../admin-base/common.js');
 require('../admin/index');
 /* webuplader */
 
-require('exports?window.angular!imports?$=jquery!angular');
+require('exports?window.angular!angular');
 var moment = require('moment');
-require('imports?$=jquery!jquery-validation');
+require('jquery-validation');
 require('eonasdan-bootstrap-datetimepicker');
 
 require('select2/dist/css/select2.css');
-require('imports?$=jquery!select2');
+require('select2');
 
 var orderStatusToString = require('../shared/orderStatusToString.js');
 

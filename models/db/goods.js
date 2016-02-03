@@ -29,6 +29,10 @@ module.exports = function (sequelize, DataTypes) {
          */
         soldNum: shortDataTypes.Int(),
         /**
+         * 稅率
+         */
+        taxRate: shortDataTypes.Double(),
+        /**
          * 每人限购
          */
         buyLimit: shortDataTypes.Int(),
@@ -70,6 +74,7 @@ module.exports = function (sequelize, DataTypes) {
          * 扩展属性值
          */
         extraFields: shortDataTypes.Text(),
+
     }, {
         paranoid: true,
         associate: function (models) {

@@ -49,6 +49,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="control-label col-md-3">稅率<span class="required">*</span></label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" name="taxRate" min="0" value="<%= @data?.taxRate %>" >
+                                    <div class="input-group-btn">
+                                        <a class="btn default">%</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="control-label col-md-3">分级佣金（一级）<span class="required">*</span></label>
                             <div class="col-md-3">
                                 <input type="number" class="form-control" name="commission1" min="0" value="<%= @data?.commission1 %>" >
@@ -102,11 +113,14 @@
                         <div class="form-group"  >
                             <label class="control-label col-md-3">类别<span class="required">*</span></label>
                             <div class="col-md-3">
-                                <select ng-model="ltype" class="form-control" ng-options="option.title for option in types track by option.id" >
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <select ng-model="stype"  class="form-control" ng-options="option.title for option in ltype.GoodsTypes track by option.id" name="GoodsTypeId">
+                                <select  ng-model="typeIds" name="typeIds" class="form-control" multiple required>
+                                    <% for ltype in @types: %>
+                                        <optgroup label="<%= ltype.title %>">
+                                            <% for stype in ltype.GoodsTypes: %>
+                                                <option value="<%= stype.id %>"> <%= stype.title  %></option>
+                                            <% end %>
+                                        </optgroup>
+                                    <% end %>
                                 </select>
                             </div>
                         </div>
@@ -154,18 +168,25 @@
                             </div>
                         </div>
 
-                        <div class="form-group" ng-repeat="field in (ltype.fields.concat(stype.fields))">
-                            <label class="control-label col-md-3">{{field.title}}</label>
-                            <div class="col-md-3">
-                                <input ng-if="field.type == 0" name="{{field.id}}" type="text" class="form-control" value="{{extraFields[field.id]}}" />
-                                <input ng-if="field.type == 1" name="{{field.id}}" type="number" class="form-control" value="{{extraFields[field.id]}}" />
-                                <input ng-if="field.type == 2" name="{{field.id}}" type="date" class="form-control" value="{{extraFields[field.id] | date:'yyyy-MM-dd'}}" />
-                                <select ng-if="field.type == 3" name="{{field.id}}"  class="form-control" ng-model="extraFields[field.id]">
-                                    <option ng-repeat="option in field.options" value="{{option}}">{{option}}</option>
-                                </select>
-                                <select ng-if="field.type == 4" multiple name="{{field.id}}"  class="form-control" ng-model="extraFields[field.id]">
-                                    <option ng-repeat="option in field.options" value="{{option}}">{{option}}</option>
-                                </select>
+                        <div ng-repeat="type in types">
+                            <div class="row">
+                                <div class="col-md-3 col-md-offset-3">
+                                    <p class="text-center"><strong>【{{type.type == 1 ? "一级类型" : "二级类型"}}】{{type.title}}的扩展属性</strong></p>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-repeat="field in type.fields">
+                                <label class="control-label col-md-3">{{field.title}}</label>
+                                <div class="col-md-3">
+                                    <input ng-if="field.type == 0" name="{{field.id}}" type="text" class="form-control" value="{{extraFields[field.id]}}" />
+                                    <input ng-if="field.type == 1" name="{{field.id}}" type="number" class="form-control" value="{{extraFields[field.id]}}" />
+                                    <input ng-if="field.type == 2" name="{{field.id}}" type="date" class="form-control" value="{{extraFields[field.id] | date:'yyyy-MM-dd'}}" />
+                                    <select ng-if="field.type == 3" name="{{field.id}}"  class="form-control" ng-model="extraFields[field.id]">
+                                        <option ng-repeat="option in field.options" value="{{option}}">{{option}}</option>
+                                    </select>
+                                    <select ng-if="field.type == 4" multiple name="{{field.id}}"  class="form-control" ng-model="extraFields[field.id]">
+                                        <option ng-repeat="option in field.options" value="{{option}}">{{option}}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -189,8 +210,8 @@
         <!-- END VALIDATION STATES-->
     </div>
 </div>
-<script id="types" type="text/plain" data-id="<%- @data?.GoodsTypeId %>">
-    <%- @types %>
+<script id="types" type="text/plain" data-id="<%- @data?.typeIds %>">
+    <%- @typesStr %>
 </script>
 
 <script id="imgs" type="text/plain" data-main="<%- @data?.mainImg %>">

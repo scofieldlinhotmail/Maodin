@@ -4,6 +4,7 @@ price, oldPrice,
 mainImg, status,
 integral, capacity,
 baseSoldNum + soldNum as compoundSoldNum,
-createdAt, goodsTypeId
+createdAt, goodsTypeId,
+taxRate
 from maodin.Goods where deletedAt is null;
 

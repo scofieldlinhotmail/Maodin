@@ -6,15 +6,11 @@ require('../angular.simple-datatables.js');
 
 var app = angular.module('app', ['simpleDatatable', 'ngRoute']);
 
-
 var getGoodsData = function ($http, scope, status) {
     if (status === 0 ? !scope.data.uncheck : !scope.data.checked) {
         $http
             .get('./goods/' + status)
             .success(function (data) {
-                for(var i in data) {
-                    data[i].mainImg = '<img src="' + data[i].mainImg + '" >';
-                }
                 if (status === 0) {
                     scope.data.inactive = data;
                     scope.list = scope.data.inactive;
@@ -104,7 +100,6 @@ app.controller('ActiveCtrl', ['$scope', function (scope) {
 app.controller('InactiveCtrl', ['$scope', function (scope) {
     scope.$parent.tab = 0;
 }]);
-
 
 angular.bootstrap(document.documentElement, ['app']);
 
