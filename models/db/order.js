@@ -17,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
         price: shortDataTypes.Double(),
         num: shortDataTypes.Int(),
         goodsNum: shortDataTypes.Int(),
+        tax: shortDataTypes.Double(),
         /**
          * 0 => 包邮
          * 1 => 自取

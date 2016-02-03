@@ -245,6 +245,8 @@ module.exports = function (router) {
 
             return co(function *() {
 
+                var i;
+
                 // 每个店铺的订单
                 for(var shopOrderIndex = 0; shopOrderIndex < orderInfo.length; shopOrderIndex ++) {
                     var shopOrder = orderInfo[shopOrderIndex];
@@ -253,7 +255,7 @@ module.exports = function (router) {
                     var price = new Decimal(0);
                     var goodsNum = 0;
 
-                    var commission = [0, 0, 0];
+                    var goodsTmp = [];
 
                     var store = storeData.filter((item) => {
                         return item.id === shopOrder.storeId
@@ -300,6 +302,8 @@ module.exports = function (router) {
                         price = price.plus(itemPrice);
                         goodsNum += buyItem.num;
 
+                        goodsTmp.push(buyGoods);
+
                         orderItems.push(OrderItem.build({
                             goods: JSON.stringify(buyGoods),
                             price: itemPrice,
@@ -325,6 +329,17 @@ module.exports = function (router) {
                     }
 
                     price = price.toNumber();
+
+                    // 计算税
+                    if (price >= 50 ){
+                        var orderItem;
+                        for(i = 0; i < orderItems.length; i ++) {
+                            orderItem = orderItems[i];
+                            orderItem.tax = orderItem.price * goodsTmp[i].taxRate;
+                            orderItem.price = orderItem.price + orderItem.tax;
+                        }
+                    }
+
                     var order = yield Order.create({
                         recieverName: address.recieverName,
                         phone: address.phone,
@@ -343,10 +358,10 @@ module.exports = function (router) {
 
                     }, {transaction: t});
 
-                    for (var i in orderItems) {
-                        var orderItem = orderItems[i];
-                        orderItem.OrderId = order.id;
-                        yield orderItem.save({transaction: t});
+                    for(i = 0; i < orderItems.length; i ++) {
+                        var orderItemTmp = orderItems[i];
+                        orderItemTmp.OrderId = order.id;
+                        yield orderItemTmp.save({transaction: t});
                     }
 
                     //yield user.save({transaction: t});
