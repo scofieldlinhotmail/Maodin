@@ -1,0 +1,44 @@
+<% extend 'phone/base.html' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/phone-identity-save.css">
+<% end %>
+
+<div class="am-padding">
+    <form class="am-form am-form-horizontal" method="post">
+
+        <input type="hidden" name="id" value="<%= @data?.id %>">
+        <div class="am-form-group am-margin-vertical">
+            <label class="am-u-sm-3 am-form-label am-text-sm">姓名</label>
+
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="填写姓名" required name="name" value="<%= @data?.name %>">
+                <div class="am-alert am-alert-secondary am-hide">填写姓名</div>
+            </div>
+        </div>
+
+        <div class="am-form-group am-margin-vertical">
+            <label class="am-u-sm-3 am-form-label am-text-sm">身份证号</label>
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="身份证号" required name="identityNum"  value="<%= @data?.identityNum %>" pattern="^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$">
+                <div class="am-alert am-alert-secondary am-hide">身份证号</div>
+            </div>
+        </div>
+
+        <div class="am-form-group am-margin-vertical">
+            <label class="am-u-sm-3 am-form-label am-text-sm">手机号</label>
+
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="手机号" required name="phone"  value="<%= @data?.phone %>" pattern="^\d{11}$">
+                <div class="am-alert am-alert-secondary am-hide">手机号</div>
+            </div>
+        </div>
+
+        <div class="am-form-group am-text-center">
+            <button type="submit" class="am-btn am-btn-warning">保存</button>
+        </div>
+    </form>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-identity-save.js"></script>
+<% end %>

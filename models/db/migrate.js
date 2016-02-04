@@ -432,7 +432,7 @@ function * init() {
     //yield msgSeed();
     yield addressSeed();
     yield containerSeed();
-    yield orderSeed();
+    //yield orderSeed();
     yield commentSeed();
     yield rankSeed();
     yield collectionSeed();

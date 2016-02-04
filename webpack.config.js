@@ -37,6 +37,8 @@ var phoneEntries = {
     'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
     'phone-address':['./src/js/phone/user.address.js'],
     'phone-addaddress':['./src/js/phone/user.addaddress.js'],
+    'phone-identity-save':['./src/js/phone/identity-save.js'],
+    'phone-identity-list':['./src/js/phone/identity-list.js'],
     //'phone-index': ['./src/js/phone/index.js'],
     'phone-index': ['./src/js/phone/index.js'],
     'phone-goods-list': ['./src/js/phone/goods-list.js'],

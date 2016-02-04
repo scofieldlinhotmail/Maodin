@@ -36,7 +36,7 @@ body{
 
 .bian-address{
     clear:both;
-    font-size: 16px;
+    font-size:12px;
 }
 
 .bian-state{
@@ -59,10 +59,8 @@ body{
 
 .add-address{
     position: fixed;
-    bottom: $navbar-height;
-    padding-bottom: 10px;
+    bottom: 10px + $navbar-height;
     color:white;
-    background-color: #fff;
     width:100%;
 }
 

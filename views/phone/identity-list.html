@@ -1,0 +1,79 @@
+<% extend 'phone/base.html' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/phone-identity-list.css">
+<% end %>
+<div class="" ng-app="App">
+
+    <div class="address-list" ng-controller="Address">
+
+        <% if @datas?.length : %>
+            <% for addr in @datas : %>
+            <div class="addr title am-padding-xs" data-id="<%= addr.id %>">
+                <div class="am-g">
+                    <div class="am-u-sm-10">
+                        <div class="am-g">
+                            <div class="am-u-sm-4">
+                                <div class="bian-head bian-name">
+                                    <span><%- addr.name %></span>
+                                </div>
+                            </div>
+                            <div class="am-u-sm-8 am-text-right">
+                                <div class="bian-head bian-tel">
+                                    <span><%- addr.phone %></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="am-g">
+                            <div class="am-u-sm-9">
+                                <div class="am-margin-vertical">
+                                    <span><%- addr.identityNum %></span>
+                                </div>
+                            </div>
+                            <% if addr.isDefault: %>
+                                <div class="am-u-sm-3 color-red default">
+                                    <div class="am-margin-vertical">
+                                        <div class="am-text-right">[默认]</div>
+                                    </div>
+                                </div>
+                            <% else: %>
+                                <div class="am-u-sm-3 color-red default am-hide">
+                                    <div class="am-margin-vertical">
+                                        <div class="am-text-right">[默认]</div>
+                                    </div>
+                                </div>
+                            <% end %>
+
+                        </div>
+                    </div>
+                    <div class="am-u-sm-2  edit">
+                        <div class="am-text-center">
+                            <a href="/user/identity/save?id=<%= addr.id %>" class="am-icon-btn am-icon-btn-sm am-success am-icon-pencil am-margin-xs"></a>
+                            <!--<br />-->
+                            <div class="am-icon-btn am-icon-btn-sm am-danger am-icon-trash del" data-id="<%- addr.id %>"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <% end %>
+        <% else : %>
+        <p>List is empty</p>
+        <% end %>
+
+    </div>
+
+    <div class="am-margin-sm am-alert am-alert-info">双击设置默认备案信息</div>
+
+</div>
+
+<div class="add-address">
+    <div class="am-g">
+        <div class="am-u-sm-12">
+            <a href="/user/identity/save" class="am-btn am-btn-block" id="add">新增收货地址</a>
+        </div>
+    </div>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-identity-list.js"></script>
+<% end %>
