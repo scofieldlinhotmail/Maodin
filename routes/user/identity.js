@@ -9,6 +9,7 @@ var Area = db.models.Area;
 var auth = require('../../helpers/auth');
 
 module.exports = (router) => {
+
     router.get('/user/identity', function *() {
         var user = (yield auth.user(this));
 
@@ -99,6 +100,9 @@ module.exports = (router) => {
                 isDefault: false
             }, {
                 where: {
+                    id: {
+                        $not: addrid
+                    },
                     UserId: UserID
                 }
             }),

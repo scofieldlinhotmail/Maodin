@@ -8,10 +8,38 @@
 
     <div class="am-tabs" data-am-tabs>
         <ul class="am-tabs-nav am-nav am-nav-tabs">
-            <li class="{{status == 0? 'am-active': ''}}"><a ng-click="status=0">待付款</a></li>
-            <li class="{{status == 1? 'am-active': ''}}"><a ng-click="status=1">待发货</a></li>
-            <li class="{{status == 2? 'am-active': ''}}"><a ng-click="status=2">待收货</a></li>
-            <li class="{{status == 3? 'am-active': ''}}"><a ng-click="status=3">全部</a></li>
+            <li class="{{status == 0? 'am-active': ''}}">
+                <a ng-click="status=0">
+                    待付款
+                    <% if @nums[0] != 0: %>
+                    <span class="am-badge am-badge-sm am-badge-danger am-round"><%= @nums[0] %></span>
+                    <% end %>
+                </a>
+            </li>
+            <li class="{{status == 1? 'am-active': ''}}">
+                <a ng-click="status=1">
+                    待发货
+                    <% if @nums[1] != 0: %>
+                    <span class="am-badge am-badge-sm am-badge-danger am-round"><%= @nums[1] %></span>
+                    <% end %>
+                </a>
+            </li>
+            <li class="{{status == 2? 'am-active': ''}}">
+                <a ng-click="status=2">
+                    待收货
+                    <% if @nums[2] != 0: %>
+                    <span class="am-badge am-badge-sm am-badge-danger am-round"><%= @nums[2] %></span>
+                    <% end %>
+                </a>
+            </li>
+            <li class="{{status == 3? 'am-active': ''}}">
+                <a ng-click="status=3">
+                    全部
+                    <% if @nums[3] != 0: %>
+                    <span class="am-badge am-badge-sm am-badge-danger am-round"><%= @nums[3] %></span>
+                    <% end %>
+                </a>
+            </li>
         </ul>
 
         <div class="am-tabs-bd">
@@ -42,15 +70,22 @@
 
                 </div>
                 <div class="am-padding-sm am-text-sm">
-                    <blockquote class="am-text-sm" style="margin: 0;">留言: {{order.message}}</blockquote>
-                    <p class="am-paading-horizontal-sm" ng-show="">评价</p>
+                    <p class="am-margin-vertical-xs">
+                        <span>共{{order.num}}件</span>
+                        <span>配送方式:{{order.expressWay == 0 ? '包邮' : '自取'}}</span>
+                    </p>
+                    <p  class="am-margin-vertical-xs">
+                        <span>下单时间：{{order.createdAt | date: 'yyyy/MM/dd hh:mm' }}</span>
+                    </p>
+                    <blockquote class="am-text-sm" style="margin: 0;" ng-if="order.message.length != 0">留言: {{order.message}}</blockquote>
+                    <!--todo: 评价-->
                 </div>
 
             </div>
             <div class="am-panel-footer am-cf">
                 <span class="am-fl">
-                    <span>共{{order.num}}件</span>
-                    <span>配送方式:{{order.expressWay == 0 ? '包邮' : '自取'}}</span>
+                    <span class="am-text-danger">{{order.price | currency: '￥'}}</span>
+
                 </span>
 
                 <div class="am-btn-group-sm am-fr">

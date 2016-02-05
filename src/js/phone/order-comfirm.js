@@ -9,7 +9,7 @@ var $ = jQuery;
 
 var app = angular.module('app', []);
 
-app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
+app.controller('AppCtrl', ['$scope', function (scope) {
 
     scope.msg = '';
 
@@ -19,11 +19,12 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     (function () {
         var fromSaler = src[1];
         var groupByStoreObj = {};
-        for(var i = 0; i < fromSaler.length; i ++) {
-            var item = fromSaler[i];
+        var i, item;
+        for(i = 0; i < fromSaler.length; i ++) {
+            item = fromSaler[i];
             item.Good = item.SalerGood.Good;
-            item.GoodId = item.SalerGood.id;
-            item.selected = false;
+            //item.GoodId = item.SalerGood.id;
+            //item.selected = false;
             var key = item.SalerGood.StoreId;
             if (!groupByStoreObj[key]) {
                 groupByStoreObj[key] = [];
@@ -32,9 +33,9 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
         }
         var groupByStoreArr = [];
 
-        for(var i in groupByStoreObj) {
+        for(i in groupByStoreObj) {
             if (groupByStoreObj.hasOwnProperty(i)) {
-                var item = groupByStoreObj[i];
+                item = groupByStoreObj[i];
                 groupByStoreArr.push({
                     shopName: item[0].SalerGood.Store.name,
                     storeId: item[0].SalerGood.StoreId,
@@ -83,17 +84,32 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
     }
 
     scope.address = JSON.parse(angular.element('#addresses').html());
+    scope.identityInfoes = JSON.parse(angular.element('#identityInfoes').html());
+
+
+
     scope.addressIndex = 0;
+    scope.identityIndex = 0;
     (function () {
-        for(var i in scope.address) {
+        var i;
+        for(i = 0 ; i < scope.address.length; i ++) {
             if (scope.address[i].isDefault) {
                 var defaultAddress = scope.address.splice(i,  1);
                 scope.address = defaultAddress.concat(scope.address);
-                scope.$applyAsync();
                 break;
             }
         }
+        for(i = 0 ; i < scope.identityInfoes.length; i ++) {
+            if (scope.identityInfoes[i].isDefault) {
+                var defaultIdentity = scope.identityInfoes.splice(i,  1);
+                scope.identityInfoes = defaultIdentity.concat(scope.identityInfoes);
+                break;
+            }
+        }
+        scope.$applyAsync();
     }());
+
+
 
     var submit = false;
     scope.buy = function () {
@@ -111,7 +127,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             }
             var shop = scope.shoppingCart[shopIndex];
             var order = {
-                msg: shop.msg,
+                msg: shop.msg.trim(),
                 expressWay: shop.expressWay,
                 suborders: [],
                 storeId: shop.storeId
@@ -124,7 +140,7 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
                 order.suborders.push({
                     id: goods.id,
                     num: goods.num,
-                    GoodsId: goods.GoodId,
+                    GoodsId: goods.Good.id,
                     type: goods.type,
                     SalerGoodId: goods.type == 1 ? goods.SalerGoodId : null
                 });
@@ -136,19 +152,20 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
             return;
         }
 
+
         var form = angular.element('#order-form');
         form.find('[name=order]').val(JSON.stringify(orders));
         form.find('[name=address]').val(scope.address[scope.addressIndex].id);
         form.find('[name=msg]').val(scope.msg);
         form.find('[name=type]').val(scope.type);
+        form.find('[name=identity]').val(scope.identityInfoes[scope.identityIndex].id);
         form.submit();
     };
 
-    //window.s = scope;
-
-    scope.changeAddress = function () {
-        scope.$broadcast('address-modal');
+    scope.modal = function (modalName) {
+        scope.$broadcast(modalName);
     };
+
 }]);
 
 
@@ -176,6 +193,27 @@ app.controller('AddressCtrl', ['$scope', '$http', function (scope, $http) {
 
     scope.setAddr = function (index) {
         scope.$parent.addressIndex = index;
+        modal().modal('close');
+    }
+}]);
+
+app.controller('IdentityCtrl', ['$scope', '$http', function (scope, $http) {
+    var _modal = undefined;
+    var modal = function () {
+        if (!_modal) {
+            _modal = angular.element('#identity-modal').modal({
+
+            });
+        }
+        return _modal;
+    };
+
+    scope.$on('identity-modal', function () {
+        modal().modal('open');
+    });
+
+    scope.setIndex = function (index) {
+        scope.$parent.identityIndex = index;
         modal().modal('close');
     }
 }]);

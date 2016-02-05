@@ -12,12 +12,12 @@
                 <div class="am-g">
                     <div class="am-u-sm-10">
                         <div class="am-g">
-                            <div class="am-u-sm-4">
+                            <div class="am-u-sm-6">
                                 <div class="bian-head bian-name">
                                     <span><%- addr.name %></span>
                                 </div>
                             </div>
-                            <div class="am-u-sm-8 am-text-right">
+                            <div class="am-u-sm-6 am-text-right">
                                 <div class="bian-head bian-tel">
                                     <span><%- addr.phone %></span>
                                 </div>
@@ -57,7 +57,7 @@
             </div>
             <% end %>
         <% else : %>
-        <p>List is empty</p>
+        <div class="am-alert am-alert-warning am-margin-sm">暂无备案信息</div>
         <% end %>
 
     </div>
@@ -69,7 +69,7 @@
 <div class="add-address">
     <div class="am-g">
         <div class="am-u-sm-12">
-            <a href="/user/identity/save" class="am-btn am-btn-block" id="add">新增收货地址</a>
+            <a href="/user/identity/save" class="am-btn am-btn-block" id="add">新增备案信息</a>
         </div>
     </div>
 </div>

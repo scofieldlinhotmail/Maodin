@@ -83,15 +83,9 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
 
         var selectedIds = [];
 
-        for(var shopIndex in scope.shoppingCart) {
-            if (!scope.shoppingCart.hasOwnProperty(shopIndex)) {
-                continue;
-            }
+        for(var shopIndex  = 0; shopIndex < scope.shoppingCart.length; shopIndex ++) {
             var shop = scope.shoppingCart[shopIndex];
-            for(var goodsIndex in shop.data) {
-                if (!shop.data.hasOwnProperty(goodsIndex)) {
-                    continue;
-                }
+            for(var goodsIndex = 0; goodsIndex < shop.data.length; goodsIndex ++) {
                 var goods = shop.data[goodsIndex];
                 if (goods.selected) {
                     selectedIds.push(goods.id);

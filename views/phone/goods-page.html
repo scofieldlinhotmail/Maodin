@@ -87,7 +87,7 @@
     <div class="am-g am-text-center" id="goods-bar">
         <div class="am-u-sm-4">
             <i class="am-u-sm-6 am-icon am-icon-star border-right" ng-class="{'am-text-warning': isCollected}" ng-init="isCollected = <%= @goods.isCollected %>" ng-click="toggleCollect()"></i>
-            <a href="/user/shopping-cart-view" class="am-u-sm-6 am-icon am-icon-shopping-cart"></a>
+            <a href="/user/shoppingcart-view" class="am-u-sm-6 am-icon am-icon-shopping-cart"></a>
         </div>
         <div class="am-u-sm-8">
             <span class="am-btn am-btn-warning am-u-sm-6" ng-disabled="isInShoppingCart" ng-init="isInShoppingCart = <%= @goods.num %> > 0" ng-click="toShoppingCart()">{{!isInShoppingCart ? '加入购物车': '已加入购物车'}}</span>

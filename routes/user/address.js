@@ -4,82 +4,128 @@
 
 var render = require('../../instances/render');
 var db = require('../../models/db/index');
-var deliverAddress = db.models.DeliverAddress;
+var DeliverAddress = db.models.DeliverAddress;
 var Area = db.models.Area;
 var auth = require('../../helpers/auth');
 
 module.exports = (router) => {
+
     router.get('/user/address', function *() {
         var user = (yield auth.user(this));
 
-        var data = yield deliverAddress.findAll({
+        var data = yield DeliverAddress.findAll({
             where: {
                 UserId: user.id
             }
         });
 
-        this.body = yield render('phone/address.html', {
+        this.body = yield render('phone/address-list', {
             datas: data,
-            title: '收货地址'
+            title: '收获地址'
         });
     });
 
-    router.get('/user/addaddress', function *() {
+    router.get('/user/address/save', function *() {
 
-        var id= this.query.id;
-        var address = yield deliverAddress.findById(id);
+        var id = this.query.id;
 
-        this.body = yield render('phone/addaddress.html', {
-            title: '添加收货地址',
-            data: address
+        this.body = yield render('phone/address-save', {
+            title: '收货地址',
+            data: yield DeliverAddress.findById(id)
         });
     });
+
+
+    router.post('/user/address/save', function *() {
+
+        this.checkBody('name').notEmpty();
+        this.checkBody('phone').notEmpty().isLength(11, 11);
+        this.checkBody('province').notEmpty();
+        this.checkBody('city').notEmpty();
+        this.checkBody('country').notEmpty();
+        this.checkBody('address').notEmpty();
+
+        if (this.errors) {
+            this.body = this.errors;
+            return;
+        }
+
+        var body = this.request.body;
+        if (body.id) {
+            yield DeliverAddress.update({
+                recieverName: body.name,
+                phone: body.phone,
+                province: body.province,
+                city: body.city,
+                area: body.country,
+                address: body.address,
+            }, {
+                where: {
+                    id: body.id,
+                    UserId: (yield auth.user(this)).id
+                }
+            });
+        } else {
+            yield Identity.create({
+                recieverName: body.name,
+                phone: body.phone,
+                province: body.province,
+                city: body.city,
+                area: body.country,
+                address: body.address,
+                isDefault: false,
+                UserId: (yield auth.user(this)).id
+            });
+        }
+
+
+        this.redirect('/user/address');
+    });
+
 
     router.get('/user/address/del/:id', function *() {
-        var id = this.params.id;
-        yield deliverAddress.destroy({
+
+        this.body = yield DeliverAddress.destroy({
             where: {
-                id: id
+                id: this.params.id
             }
         });
-        this.body = '1';
-    });
-
-    router.post('/user/address/add', function *() {
-        var data = this.request.body;
-        data.UserId = (yield auth.user(this)).id;
-        data.isDefault = false;
-        yield deliverAddress.create(data);
-        this.body = '1';
     });
 
     router.post('/user/address/changeDefault', function *() {
-        try {
-            var data = this.request.body;
-            var addrid = data.id;
 
-            var UserID = (yield auth.user(this)).id;
 
-            yield deliverAddress.update({
+        this.checkBody('id').notEmpty();
+        if (this.errors) {
+            this.body = this.errors;
+            return;
+        }
+
+        var data = this.request.body;
+        var addrid = data.id;
+
+        var UserID = (yield auth.user(this)).id;
+
+        this.body = yield [
+            DeliverAddress.update({
                 isDefault: false
             }, {
                 where: {
-                    UserID: UserID
+                    id: {
+                        $not: addrid
+                    },
+                    UserId: UserID
                 }
-            });
+            }),
 
-            yield deliverAddress.update({
+            DeliverAddress.update({
                 isDefault: true
             }, {
                 where: {
-                    id: addrid
+                    id: addrid,
+                    UserId: UserID
                 }
-            });
-
-            this.body = '1';
-        } catch (err) {
-            console.log(err);
-            this.body = '0';
-        }
+            })
+        ];
     });
 };

@@ -26,7 +26,8 @@ module.exports = (router) => {
                 }
             })) != 0) {
             this.redirect('/user-wait');
-        };
+        }
+        ;
 
         this.body = yield render('phone/storeapply.html', {
             upstore
@@ -51,7 +52,8 @@ module.exports = (router) => {
                 }
             })) != 0) {
             this.redirect('/user-wait');
-        };
+        }
+        ;
 
         if (body.upstore == "") {
             yield Store.create({
@@ -126,8 +128,11 @@ module.exports = (router) => {
         });
     });
     router.get('/user-store/index', function *() {
+
         var id = this.query.id; //店铺id
+
         var user = yield auth.user(this);
+
         if (id) {
             var s = yield Store.findOne({
                 where: {
@@ -150,8 +155,12 @@ module.exports = (router) => {
             has = 1;
         }
 
+        var pros = yield Goods.findAll(
+            {
+                limit: 10, order: 'compoundSoldNum DESC'
+            }
+        );
 
-        var pros = yield GoodsShortcutView.findAll({limit: 10, order: 'compoundSoldNum DESC'});
         var imgs = yield Slideshow.findAll();
         var ps = yield Goods.findAll();
         var pcount = ps.length;

@@ -1,7 +1,6 @@
 /**
  * Created by nobody on 2015/12/9.
  */
-var Sequelize = require('sequelize');
 var util = require('util');
 var auth = require('../../helpers/auth.js');
 var db = require('../../models/db/index');
@@ -13,11 +12,11 @@ var sequelizex = require('../../lib/sequelizex.js');
 var Decimal = require('decimal.js');
 
 
-var Container = db.models.Container;
 var Goods = db.models.Goods;
 var SalerGoods = db.models.SalerGoods;
 var ShoppingCart = db.models.ShoppingCart;
 var DeliverAddress = db.models.DeliverAddress;
+var Identity = db.models.Identity;
 var Order = db.models.Order;
 var Store = db.models.Store;
 var User = db.models.User;
@@ -28,7 +27,7 @@ module.exports = function (router) {
     /**
      * type: 0 => from shoppingCart 1 => buy directly
      */
-    router.post('/user/order-comfirm', function *() {
+    router.post('/user/order-comfirm', function * () {
 
         this.checkBody('type').notEmpty().isInt().toInt();
 
@@ -111,6 +110,7 @@ module.exports = function (router) {
                     },
                     attributes: goodsAttributes
                 });
+                order = [[order], []];
             } else {
                 order.SalerGood = yield SalerGoods.findOne({
                     where: {
@@ -128,8 +128,9 @@ module.exports = function (router) {
                         }
                     ]
                 });
+                order = [null, [order]];
             }
-            order = [null, [order]];
+
         }
 
 
@@ -139,10 +140,17 @@ module.exports = function (router) {
             }
         });
 
+        var identityInfoes = yield Identity.findAll({
+            where: {
+                UserId: (yield auth.user(this)).id
+            }
+        });
+
         this.body = yield render('phone/order-comfirm', {
             title: '订单确认',
             order: JSON.stringify(order),
             addresses: JSON.stringify(addresses),
+            identityInfoes: JSON.stringify(identityInfoes),
             type: body.type
         });
     });
@@ -151,6 +159,7 @@ module.exports = function (router) {
 
         this.checkBody('order').notEmpty();
         this.checkBody('address').notEmpty();
+        this.checkBody('identity').notEmpty();
         this.checkBody('type').notEmpty().isInt().ge(0).le(1).toInt();
         if (this.errors) {
             this.body = this.errors;
@@ -159,13 +168,21 @@ module.exports = function (router) {
         var body = this.request.body;
         var orderInfo = JSON.parse(body.order);
         var addressId = body.address;
+        var identityId = body.identity;
         var userId = (yield auth.user(this)).id;
         var type = body.type;
 
         var address = yield DeliverAddress.findOne({
             where: {
                 id: addressId,
-                UserId: (yield auth.user(this)).id
+                UserId: userId
+            }
+        });
+
+        var identity = yield Identity.findOne({
+            where: {
+                id: identityId,
+                UserId: userId
             }
         });
 
@@ -182,6 +199,11 @@ module.exports = function (router) {
             return;
         }
 
+        if (!identity) {
+            this.body = 'invalid 备案信息';
+            return;
+        }
+
         var shoppingCart;
         if (type == 0) {
             var ids = [];
@@ -193,7 +215,7 @@ module.exports = function (router) {
 
             shoppingCart = yield ShoppingCart.findAll({
                 where: {
-                    UserId: (yield auth.user(this)).id,
+                    UserId: userId,
                     id: {
                         $in: ids
                     }
@@ -212,7 +234,6 @@ module.exports = function (router) {
             storeIds.push(shopOrder.storeId);
             shopOrder.suborders.forEach((item) => {
                 goodsIds.push(item.GoodsId);
-
             });
         });
 
@@ -306,15 +327,16 @@ module.exports = function (router) {
 
                         orderItems.push(OrderItem.build({
                             goods: JSON.stringify(buyGoods),
-                            price: itemPrice,
+                            price: itemPrice.toNumber(),
                             num: buyItem.num,
                             type: store ? 1 : 0,
                             SalerGoodId: store ? buyItem.SalerGoodId : null,
                             GoodId: store ? null :buyGoods.id
                         }));
+
                         buyGoods.capacity -= buyItem.num;
                         buyGoods.soldNum += buyItem.num;
-                        buyGoods.compoundSoldNum += buyItem.num;
+                        buyGoods.compoundSoldNum = buyGoods.soldNum + buyGoods.baseSoldNum;
                         yield buyGoods.save({transaction: t});
                         //// 赠送积分
                         //user.integral += buyGoods.integral;
@@ -335,10 +357,11 @@ module.exports = function (router) {
                         var orderItem;
                         for(i = 0; i < orderItems.length; i ++) {
                             orderItem = orderItems[i];
-                            orderItem.tax = orderItem.price * goodsTmp[i].taxRate;
-                            orderItem.price = orderItem.price + orderItem.tax;
+                            orderItem.tax = new Decimal(orderItem.price).mul(goodsTmp[i].taxRate).toNumber();
+                            orderItem.price = new Decimal(orderItem.price).plus(orderItem.tax).toNumber();
                         }
                     }
+
 
                     var order = yield Order.create({
                         recieverName: address.recieverName,
@@ -347,6 +370,9 @@ module.exports = function (router) {
                         city: address.city,
                         area: address.area,
                         address: address.address,
+                        identityName: identity.name,
+                        identityPhone: identity.phone,
+                        identityNum: identity.identityNum,
                         price,
                         num: orderItems.length,
                         status: 0,
@@ -355,8 +381,8 @@ module.exports = function (router) {
                         expressWay: shopOrder.expressWay,
                         type: store ? 1 : 0,
                         StoreId: store ? store.id : null,
-
                     }, {transaction: t});
+
 
                     for(i = 0; i < orderItems.length; i ++) {
                         var orderItemTmp = orderItems[i];
@@ -442,8 +468,35 @@ module.exports = function (router) {
     });
 
     router.get('/user/order-list', function *() {
+        var userId = (yield auth.user(this)).id;
         this.body = yield render('phone/order-list', {
             title: '订单',
+            nums: yield [
+                Order.count({
+                    where: {
+                        UserId: userId,
+                        status: 0
+                    }
+                }),
+                Order.count({
+                    where: {
+                        UserId: userId,
+                        status: 1
+                    }
+                }),
+                Order.count({
+                    where: {
+                        UserId: userId,
+                        status: 2,
+                        returnStatus: 0
+                    }
+                }),
+                Order.count({
+                    where: {
+                        UserId: userId
+                    }
+                })
+            ]
         });
     });
 

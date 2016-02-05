@@ -1,0 +1,56 @@
+<% extend 'phone/base.html' %>
+<% block 'head': %>
+<link rel="stylesheet" href="/dist/phone-identity-save.css">
+<style>
+    html body {
+        background-color: #efefef;
+    }
+</style>
+<% end %>
+
+<div class="am-padding">
+    <form class="am-form am-form-horizontal" method="post">
+
+        <input type="hidden" name="id" value="<%= @data?.id %>">
+
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">姓名</label>
+
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="填写姓名" required name="name" value="<%= @data?.recieverName %>">
+                <div class="am-alert am-alert-secondary am-hide">填写姓名</div>
+            </div>
+        </div>
+        <div class="am-form-group">
+            <label class="am-u-sm-3 am-form-label am-text-sm">您的地址</label>
+
+            <div class="am-u-sm-9">
+
+                <div class="am-g" id="distpicker">
+                    <select class="am-margin-vertical-xs" name="province" data-province="<%= @data?.province %>" required></select>
+                    <select class="am-margin-vertical-xs" name="city"  data-city="<%= @data?.city %>" required></select>
+                    <select class="am-margin-vertical-xs" name="country" data-country="<%= @data?.country %>" required></select>
+                </div>
+                <input name="address" type="text" placeholder="请输入具体地址" required value="<%= @data?.address %>">
+                <div class="am-alert am-alert-secondary am-hide" >请输入具体地址</div>
+            </div>
+
+        </div>
+
+        <div class="am-form-group am-margin-vertical">
+            <label class="am-u-sm-3 am-form-label am-text-sm">手机号</label>
+
+            <div class="am-u-sm-9">
+                <input type="text" placeholder="手机号" required name="phone"  value="<%= @data?.phone %>" pattern="^\d{11}$">
+                <div class="am-alert am-alert-secondary am-hide">手机号</div>
+            </div>
+        </div>
+
+        <div class="am-form-group am-text-center">
+            <button type="submit" class="am-btn am-btn-warning">提交登入</button>
+        </div>
+</div>
+
+<% block 'scripts': %>
+<script src="/dist/phone-identity-save.js"></script>
+<% end %>

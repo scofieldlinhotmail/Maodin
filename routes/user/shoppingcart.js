@@ -31,31 +31,31 @@ module.exports = (router) => {
         var shoppingCart = yield ShoppingCart.findOneWithType(id, user.id, type);
 
         if (shoppingCart) {
-            if (num >= 0 ) {
+            if (num >= 0) {
                 shoppingCart.num = this.params.num;
                 yield shoppingCart.save();
             } else {
                 yield shoppingCart.destroy();
             }
-        } else if (num >= 0){
+        } else if (num >= 0) {
             yield ShoppingCart.createWithType(id, user.id, type, num);
         }
         this.body = 'ok';
     });
 
-    router.get('/user/shoppingcart', function *() {
-        this.body = sequelizex.Func.val(yield ShoppingCart.findAll({
-            where: {
-                UserId: (yield auth.user(this)).id
-            },
-            attributes: ['id', 'num', 'GoodId']
-        }));
-    });
+    //router.get('/user/shoppingcart', function *() {
+    //    this.body = yield ShoppingCart.findAll({
+    //        where: {
+    //            UserId: (yield auth.user(this)).id
+    //        },
+    //        attributes: ['id', 'num', 'GoodId']
+    //    });
+    //});
 
     router.get('/user/shoppingcart-view', function *() {
 
         var goodsAttributes = {
-            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'timeToDown', 'createdAt', 'updatedAt']
+            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'createdAt', 'updatedAt']
         };
 
         var shoppingCart = yield [

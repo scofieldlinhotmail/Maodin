@@ -13,7 +13,7 @@ $(function(){
         var $this = $(this);
         var id = $this.data('id');
         if (confirm('您确认要删除吗？')) {
-            var url = '/user/identity/del/' + id;
+            var url = '/user/address/del/' + id;
             $.ajax({
                 url: url,
                 type: 'GET',
@@ -28,7 +28,7 @@ $(function(){
         $('.default').addClass('am-hide');
         var id = ele.data('id');
         $.ajax({
-            url:'/user/identity/changeDefault',
+            url:'/user/address/changeDefault',
             type:'POST',
             data:{
                 id:id

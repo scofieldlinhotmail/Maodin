@@ -34,9 +34,10 @@ var adminEnties = {
 var phoneEntries = {
     //'goodsType': ['./src/js/goodsType/goodsType.js'],
     'phone-goods-page': ['./src/js/phone/goods-page.js'],
+    'phone-alert': ['./src/js/phone/alert.js'],
     'phone-order-comfirm': ['./src/js/phone/order-comfirm.js'],
-    'phone-address':['./src/js/phone/user.address.js'],
-    'phone-addaddress':['./src/js/phone/user.addaddress.js'],
+    'phone-address-list':['./src/js/phone/address-list.js'],
+    'phone-address-save':['./src/js/phone/address-save.js'],
     'phone-identity-save':['./src/js/phone/identity-save.js'],
     'phone-identity-list':['./src/js/phone/identity-list.js'],
     //'phone-index': ['./src/js/phone/index.js'],

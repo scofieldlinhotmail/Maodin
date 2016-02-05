@@ -290,6 +290,21 @@ function * addressSeed() {
     }
 }
 
+function * identitySeed() {
+    var users = yield db.models.User.findAll({});
+    var defaults = {};
+    for(var i = 0; i < 160; i ++) {
+        yield db.models.Identity.create({
+            name: '备案人' + i,
+            phone: "1884082390" + i % 10,
+            identityNum: "12345678901234567" + i % 10,
+            isDefault: defaults[users[i % users.length].id] ? false : true,
+            UserId: users[i % users.length].id
+        });
+        defaults[users[i % users.length].id] = true;
+    }
+}
+
 function * containerSeed() {
     yield db.models.Container.overduetime(30);
     yield db.models.Container.autoaccepttime(15);
@@ -384,6 +399,9 @@ function * orderSeed() {
                 city: '大连市',
                 area: '开发区',
                 address: '大连理工大学软件学院',
+                identityName: '备案人',
+                identityPhone: "1884082391" + i % 10,
+                identityNum: "12345678901234567" + i % 10,
                 price,
                 num: items.length,
                 goodsNum: num,

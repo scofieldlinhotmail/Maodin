@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <% include 'shared/head' %>
-    <link rel="stylesheet" href="/dist/phone-commons.js.css" >
-</head>
-<body>
+<% extend 'phone/base.html' %>
 
-<div class="am-alert am-text-lg am-alert-success" data-am-alert>
+<% block 'head' : %>
+<link rel="stylesheet" href="/dist/phone-alert.css">
+<% end %>
+
+<div class="am-alert am-text-lg am-alert-success am-margin" data-am-alert>
     <p><%- @content %></p>
 </div>
 
-<script src="/dist/phone-commons.js"></script>
-</body>
-</html>
+<% block 'scripts': %>
+<script src="/dist/phone-alert.js"></script>
+<% end %>

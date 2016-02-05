@@ -7,13 +7,24 @@
 <div ng-controller="AppCtrl" ng-cloak ng-init="type = <%= @type %>">
     <div class="order-address">
         <i class="am-icon am-icon-map-marker left"></i>
-        <i class="am-icon am-icon-angle-right right" ng-click="changeAddress()"></i>
+        <i class="am-icon am-icon-angle-right right" ng-click="modal('address-modal')"></i>
         <div class="am-cf">
             <p class="am-cf">
                 <span>收货人: {{address[addressIndex].recieverName}}</span>
                 <span class="am-fr">{{address[addressIndex].phone}}</span>
             </p>
             <p class="am-text-xs">收货地址:<span class="am-badge am-margin-horizontal-sm am-radius">{{address[addressIndex].Area.title}}</span>{{address[addressIndex].province + address[addressIndex].city + address[addressIndex].area + address[addressIndex].address}}</p>
+        </div>
+    </div>
+    <div class="order-address">
+        <i class="am-icon am-icon-print left"></i>
+        <i class="am-icon am-icon-angle-right right" ng-click="modal('identity-modal')"></i>
+        <div class="am-cf">
+            <p class="am-cf">
+                <span>{{identityInfoes[identityIndex].name}}</span>
+                <span class="am-fr">{{identityInfoes[identityIndex].phone}}</span>
+            </p>
+            <p class="am-text-xs">身份证号:<span class="am-badge am-margin-horizontal-sm am-radius">{{identityInfoes[identityIndex].identityNum}}</span></p>
         </div>
     </div>
 
@@ -92,11 +103,35 @@
         </div>
     </div>
 
+    <div class="lg-modal am-modal am-modal-no-btn" tabindex="-1" id="identity-modal" ng-controller="IdentityCtrl">
+        <div class="am-modal-dialog">
+            <div class="am-modal-hd">选择备案信息
+                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+            </div>
+            <div class="am-modal-bd">
+                <ul class="address-list am-list">
+                    <li class="address-item" ng-repeat="identity in identityInfoes" ng-click="setIndex($index)">
+                        <p class="am-cf">
+                            <span class="am-fl">{{identity.name}}</span>
+                            <span class="am-fr">{{identity.phone}}</span>
+                        </p>
+                        <p class="am-text-xs am-text-left">
+                            <span class="am-text-warning" ng-show="identity.isDefault">[默认]</span>
+                            {{identity.identityNum}}
+                        </p>
+                        <i class="am-icon am-icon-check-circle-o am-text-warning" ng-show="$index == identityIndex"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <form id="order-form" class="am-hide" action="/user/buy" method="post">
         <input type="hidden" name="address">
         <input type="hidden" name="order">
         <input type="hidden" name="msg">
         <input type="hidden" name="type">
+        <input type="hidden" name="identity">
     </form>
 </div>
 
@@ -105,6 +140,9 @@
 </script>
 <script type="text/plain" id="addresses">
     <%- @addresses %>
+</script>
+<script type="text/plain" id="identityInfoes">
+    <%- @identityInfoes %>
 </script>
 <script type="text/plain" id="fare">
     <%- @fare %>

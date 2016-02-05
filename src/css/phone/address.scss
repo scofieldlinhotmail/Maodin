@@ -3,6 +3,7 @@ body{
     //background-color:#efefef;
     font-size:12px;
     padding-bottom: $navbar-height + 50px;
+
 }
 
 .title{
@@ -64,6 +65,9 @@ body{
     color:white;
     background-color: #fff;
     width:100%;
+    a {
+        color : #fff;
+    }
 }
 
 #add{

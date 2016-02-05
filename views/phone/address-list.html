@@ -1,22 +1,23 @@
 <% extend 'phone/base.html' %>
 <% block 'head': %>
-<link rel="stylesheet" href="/dist/phone-address.css">
+<link rel="stylesheet" href="/dist/phone-address-list.css">
 <% end %>
-<div class="am-g" ng-app="App">
+<div class="" ng-app="App">
+
     <div class="address-list" ng-controller="Address">
 
         <% if @datas?.length : %>
             <% for addr in @datas : %>
-            <div class="addr title am-padding-xs" id="<%= addr.id %>">
+            <div class="addr title am-padding-xs" data-id="<%= addr.id %>">
                 <div class="am-g">
                     <div class="am-u-sm-10">
                         <div class="am-g">
-                            <div class="am-u-sm-4">
+                            <div class="am-u-sm-6">
                                 <div class="bian-head bian-name">
                                     <span><%- addr.recieverName %></span>
                                 </div>
                             </div>
-                            <div class="am-u-sm-8 am-text-right">
+                            <div class="am-u-sm-6 am-text-right">
                                 <div class="bian-head bian-tel">
                                     <span><%- addr.phone %></span>
                                 </div>
@@ -46,9 +47,9 @@
                     </div>
                     <div class="am-u-sm-2  edit">
                         <div class="am-text-center">
-                            <div class="am-icon-btn am-icon-btn-sm am-success am-icon-pencil am-margin-xs"></div>
+                            <a href="/user/address/save?id=<%= addr.id %>" class="am-icon-btn am-icon-btn-sm am-success am-icon-pencil am-margin-xs"></a>
                             <!--<br />-->
-                            <div class="am-icon-btn am-icon-btn-sm am-danger am-icon-trash del" id="<%- addr.id %>"></div>
+                            <div class="am-icon-btn am-icon-btn-sm am-danger am-icon-trash del" data-id="<%- addr.id %>"></div>
                         </div>
                     </div>
                 </div>
@@ -61,16 +62,18 @@
 
     </div>
 
+    <div class="am-margin-sm am-alert am-alert-info">双击设置默认备案信息</div>
+
 </div>
 
 <div class="add-address">
     <div class="am-g">
         <div class="am-u-sm-12">
-            <a href="/user/addaddress" class="am-btn am-btn-block" type="button" id="add">新增收货地址</a>
+            <a href="/user/address/save" class="am-btn am-btn-block" id="add">新增收货地址</a>
         </div>
     </div>
 </div>
 
 <% block 'scripts': %>
-<script src="/dist/phone-address.js"></script>
+<script src="/dist/phone-address-list.js"></script>
 <% end %>
