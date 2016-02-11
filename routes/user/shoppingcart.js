@@ -55,7 +55,13 @@ module.exports = (router) => {
     router.get('/user/shoppingcart-view', function *() {
 
         var goodsAttributes = {
-            exclude: ['content', 'extraFields', 'commission1', 'commission2', 'commission3', 'createdAt', 'updatedAt']
+            exclude: [
+                'content',
+                'extraFields',
+                'commission1', 'commission2', 'commission3',
+                'createdAt', 'updatedAt',
+                'timeToDown'
+            ]
         };
 
         var shoppingCart = yield [

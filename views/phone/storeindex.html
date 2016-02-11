@@ -17,35 +17,30 @@
             </div>
             <div class="shop-name"><span><%= @s.name %></span> </div>
         </li>
-        <li></li>
-        <% if @has==0 : %>
-        <li>
-           <a class="collect" href="/user-favorite/del?storeid=@s.id">
-                <i class="iconfont" style="font-style: initial;">☆</i>
+
+        <li data-id="<%= @s.id%>">
+           <a class="collect am-hide" data-status="<%= @has %>" data-show="0" data-action="add">
+                <i class="iconfont am-icon am-icon-star"></i>
                 <span>收藏本店</span>
            </a>
+           <a class="collect am-hide" data-status="<%= @has %>" data-show="1" data-action="del">
+               <i class="iconfont am-icon am-icon-star" style="font-style: initial;color:rgba(245, 190, 13, 0.87);"></i>
+               <span>已收藏</span>
+           </a>
         </li>
-        <% else : %>
-        <li>
-            <a class="collect" href="/user-favorite/del?storeid=@s.id">
-                <i class="iconfont" style="font-style: initial;color:rgba(245, 190, 13, 0.87);">★</i>
-                <span>已收藏</span>
-            </a>
-        </li>
-        <% end %>
         <li>
             <a href="/user/goods-list/<%= @s.id%>">
-                <i class="iconfont"><label class="shop-goods-count" style="font-style: initial;"><%= @pcount %></label></i>
+                <i class="iconfont"><label class="shop-goods-count" style="font-style: initial;"><%= @salerGoodsNum %></label></i>
                 <span>全部商品</span>
             </a>
         </li>
 
-        <!--<li>-->
-            <!--<a class="code" href="http://qsh.shop.bama555.com/ad_card/shop/?did=1630168">-->
-                <!--<i class="am-icon-qrcode iconfont"></i>-->
-                <!--<span>二维码</span>-->
-            <!--</a>-->
-        <!--</li>-->
+        <li>
+            <a class="code" data-am-modal="{target: '#doc-modal-1'}">
+                <i class="am-icon-qrcode iconfont"></i>
+                <span>二维码</span>
+            </a>
+        </li>
     </ul>
 </header>
 <% end %>
@@ -102,8 +97,15 @@
     </div>
 </div>
 
-<div class="am-g row last" >
-
+<div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
+  <div class="am-modal-dialog">
+    <div class="am-modal-hd">二维码
+      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+    </div>
+    <div class="am-modal-bd">
+      <div class="qr-code am-text-center"></div>
+    </div>
+  </div>
 </div>
 <% block 'scripts': %>
 <script src="/dist/phone-storeindex.js"></script>

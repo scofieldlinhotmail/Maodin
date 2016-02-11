@@ -3,8 +3,10 @@
 
 .am-header-title{
   margin: 0 48px !important;
-  .am-input-group input{
-    margin: 8px 0;
+  .am-input-group{
+      input, button {
+          margin: 8px 0;
+      }
   }
 }
 

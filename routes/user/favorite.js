@@ -16,78 +16,53 @@ var User = db.models.User;
 var Favorite = db.models.Favorite;
 module.exports = (router) => {
 
-    router.get('/user-favorite/add', function *() {
-        var user= yield auth.user(this);
-        var storeid=this.query.storeid;
-        var store=yield Store.findById(storeid);
-        if(store!=null){
-            var has=yield Favorite.findOne({
-                where:{
-                    UserId:user.id,
-                    StoreId:storeid
-                }
-            });
-            if(has==null){
-                yield Favorite.create({
-                    UserId:user.id,
-                    StoreId:storeid
+    router.get('/user-favorite/toggle', function*() {
+        var user = yield auth.user(this);
+        var storeid = this.query.storeid;
+        var action = this.query.action;
+        if (action == 'add') {
+            var store = yield Store.findById(storeid);
+            if (store) {
+                var isExisted = yield Favorite.count({
+                    where: {
+                        UserId: user.id,
+                        StoreId: storeid
+                    }
                 });
+                if (!isExisted) {
+                    yield Favorite.create({
+                        UserId: user.id,
+                        StoreId: storeid
+                    })
+                }
             }
-        }
-        this.body =1;
-    });
-    router.get('/user-favorite/del', function *() {
-        var user= yield auth.user(this);
-        var storeid=this.query.storeid;
-        var store=yield Store.findById(storeid);
-        if(store!=null){
-            var has=yield Favorite.findOne({
-                where:{
-                    UserId:user.id,
-                    StoreId:storeid
+        } else {
+            yield Favorite.destroy({
+                where: {
+                    UserId: user.id,
+                    StoreId: storeid
                 }
             });
-            if(has!=null){
-               yield has.destroy();
-            }
         }
-        this.body =1;
+
+        this.body = 'ok';
     });
 
-
-    router.get('/user-favorite/list',  function *() {
-        var user=yield auth.user(this);
+    router.get('/user-favorite/list', function*() {
+        var user = yield auth.user(this);
         //var user=yield User.findOne();
 
-        var list=yield Favorite.findAll({
-            where:{
-                UserId:user.id,
+        var list = yield Favorite.findAll({
+            where: {
+                UserId: user.id,
             },
-            include:{
-                model:Store,
-                include:User
+            include: {
+                model: Store,
+                include: User
             }
         });
         this.body = yield render('phone/favorite.html', {
-           list,title:"我的收藏"
+            list, title: "我的收藏"
         });
     });
 };
-function changeURLPar(destiny, par, par_value) {
-    var pattern = par + '=([^&]*)';
-    var replaceText = par + '=' + par_value;
-    if (destiny.match(pattern)) {
-        var tmp = '/\\' + par + '=[^&]*/';
-        tmp = destiny.replace(eval(tmp), replaceText);
-        return (tmp);
-    }
-    else {
-        if (destiny.match('[\?]')) {
-            return destiny + '&' + replaceText;
-        }
-        else {
-            return destiny + '?' + replaceText;
-        }
-    }
-    return destiny + '\n' + par + '\n' + par_value;
-}

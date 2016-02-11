@@ -129,6 +129,8 @@ app.controller('ShopCtrl', ['$scope', '$http', function (scope, $http) {
             scope.$parent.shoppingCart.splice(scope.shopIndex, 1)[0];
         }
     });
+
+    window.s = scope;
 }]);
 
 app.controller('GoodsCtrl', ['$scope', '$http', function (scope, $http) {

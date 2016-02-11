@@ -14,10 +14,12 @@ var Slideshow = db.models.Slideshow;
 var Goods = db.models.Goods;
 var Favorite = db.models.Favorite;
 var User = db.models.User;
+var SalerGoods = db.models.SalerGoods;
+var Order = db.models.Order;
 
 module.exports = (router) => {
 
-    router.get('/user-store/apply', function *() {
+    router.get('/user-store/apply', function*() {
         var upstore = this.query.id;
 
         if ((yield Store.scope('all').count({
@@ -26,8 +28,7 @@ module.exports = (router) => {
                 }
             })) != 0) {
             this.redirect('/user-wait');
-        }
-        ;
+        };
 
         this.body = yield render('phone/storeapply.html', {
             upstore
@@ -35,7 +36,7 @@ module.exports = (router) => {
 
     });
 
-    router.post('/user-store/apply', function *() {
+    router.post('/user-store/apply', function*() {
         var body = this.request.body;
         this.checkBody('phone').notEmpty().match(/^1[3-8]+\d{9}$/);
         this.checkBody('username').notEmpty();
@@ -52,8 +53,7 @@ module.exports = (router) => {
                 }
             })) != 0) {
             this.redirect('/user-wait');
-        }
-        ;
+        };
 
         if (body.upstore == "") {
             yield Store.create({
@@ -75,7 +75,7 @@ module.exports = (router) => {
         this.redirect('/user-wait');
     });
 
-    router.get('/user-store/home', function *() {
+    router.get('/user-store/home', function*() {
         var id = (yield auth.user(this)).id;
         var s = yield Store.findOne({
             where: {
@@ -85,8 +85,15 @@ module.exports = (router) => {
             include: [User]
         });
         if (s) {
+            var orderNum = yield Order.count({
+                where: {
+                    StoreId: s.id
+                }
+            });
+
             this.body = yield render('phone/storehome.html', {
-                s
+                s,
+                orderNum
             });
         } else {
             this.redirect('/user-store/apply');
@@ -94,7 +101,7 @@ module.exports = (router) => {
 
     });
 
-    router.get('/user-store/redirect', function *() {
+    router.get('/user-store/redirect', function*() {
 
         var user = yield auth.user(this);
 
@@ -113,21 +120,23 @@ module.exports = (router) => {
 
     });
 
-    router.get('/user-store/group', function *() {
+    router.get('/user-store/group', function*() {
         var id = this.query.id;
         var list = yield Store.findAll({
             where: {
-                StoreId: id
+                StoreId: id,
+                status: 1
             },
             include: [User]
         });
-        debug(list);
+
         this.body = yield render('phone/group.html', {
             list,
             title: "我的团队"
         });
     });
-    router.get('/user-store/index', function *() {
+
+    router.get('/user-store/index', function*() {
 
         var id = this.query.id; //店铺id
 
@@ -155,17 +164,26 @@ module.exports = (router) => {
             has = 1;
         }
 
-        var pros = yield Goods.findAll(
-            {
-                limit: 10, order: 'compoundSoldNum DESC'
-            }
-        );
+        var pros = yield Goods.findAll({
+            limit: 10,
+            order: 'compoundSoldNum DESC'
+        });
 
         var imgs = yield Slideshow.findAll();
         var ps = yield Goods.findAll();
         var pcount = ps.length;
         this.body = yield render('phone/storeindex.html', {
-            s, pros, imgs, noHeaderTpl: true, pcount, has
+            s, pros, imgs, noHeaderTpl: true, pcount, has,
+
+                salerGoodsNum: s ? yield SalerGoods.count({
+                    where: {
+                        StoreId: s.id
+                    },
+                    include: [{
+                        model: Goods,
+                        required: true
+                    }]
+                }) : 0,
         });
     });
 
