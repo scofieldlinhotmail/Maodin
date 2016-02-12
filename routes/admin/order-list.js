@@ -6,7 +6,16 @@ var render = require('../../instances/render.js');
 var debug = require('../../instances/debug.js');
 var utilx = require('../../lib/util.js');
 var fs = require('fs');
+var Promise = require('bluebird');
 
+var wechatConfig = require('./../../instances/config.js').wechat;
+var WXPay = require('weixin-pay');
+var wxpay = WXPay({
+    appid: wechatConfig.appId,
+    mch_id: wechatConfig.mchId,
+    partner_key: wechatConfig.partnerKey, //微信商户平台API密钥
+    //pfx: fs.readFileSync(wechatConfig.pfx), //微信商户平台证书
+});
 
 module.exports = (router) => {
 
@@ -32,7 +41,7 @@ module.exports = (router) => {
      */
     router.get('/adminer-order/order-list/s/:status', orderListView);
 
-    function *orderListView() {
+    function* orderListView() {
 
         var goods = yield Goods.findAll({
             attributes: ['id', 'title']
@@ -40,13 +49,15 @@ module.exports = (router) => {
 
         this.body = yield render('order/list', {
             goods,
-            type: typeof this.params.type !== 'undefined' ? this.params.type : 'null',
-            status: typeof this.params.status  !== 'undefined' ? this.params.status : 'null',
+            type: typeof this.params.type !== 'undefined' ?
+                this.params.type : 'null',
+                status: typeof this.params.status !==
+                'undefined' ? this.params.status : 'null',
         });
 
     }
 
-    router.post('/adminer-order/get-order', function *() {
+    router.post('/adminer-order/get-order', function*() {
 
         var body = this.request.body;
         this.body = yield getOrders(body);
@@ -55,13 +66,13 @@ module.exports = (router) => {
     /**
      * 获取订单详情
      */
-    router.get('/adminer-order/get-orderitem/:id', function *() {
+    router.get('/adminer-order/get-orderitem/:id', function*() {
 
         this.body = (yield OrderItem.findAll({
             where: {
                 OrderId: this.params.id
             }
-        })).map(function (item) {
+        })).map(function(item) {
             item.goods = JSON.parse(item.goods);
             return item;
         });
@@ -70,7 +81,7 @@ module.exports = (router) => {
     /**
      * 订单操作
      */
-    router.post('/adminer-order/order/status', function *() {
+    router.post('/adminer-order/order/status', function*() {
 
         this.checkBody('ids').notEmpty();
         this.checkBody('status').notEmpty();
@@ -91,52 +102,83 @@ module.exports = (router) => {
                 sendTime: Date.now()
             }, {
                 where: {
-                    id: {
-                        in: body.ids
+                    id: { in : body.ids
                     },
                     status: 1
                 }
             });
-        } else if(status == 3) {
-            var orderItems = yield OrderItem.findAll({
-                where: {
-                    OrderId: {
-                        in: body.ids
-                    }
+        } else if (status == 3) {
+
+            this.body = yield db.transaction(function(t) {
+
+                var orders = yield Order.findAll({
+                    where: {
+                        id: { in : body.ids
+                        },
+                        returnStatus: 1
+                    },
+                    include: [OrderItem]
+                });
+
+                for (var i = 0; i < orders.length; i++) {
+                    let order = orders[i];
+                    order.status = 10;
+                    order.returnTime = Date.now();
+                    order.returnStatus = 2;
+
+                    yield order.save({
+                        transaction: t
+                    });
+                    let outerTradeId = utilx.intToFixString(
+                        order.id, 32);
+                    // 退款
+                    let params = {
+                        appid: wechatConfig.appId,
+                        mch_id: wechatConfig.mchId,
+                        op_user_id: wechatConfig.mchId,
+                        out_refund_no: outerTradeId,
+                        out_trade_no: outerTradeId,
+                        total_fee: order.price * 100, //原支付金额
+                        refund_fee: order.price * 100, //退款金额
+                    };
+
+                    let refundPromise = new Promise((
+                        resolve) => {
+                        wx.refund(params, function(
+                            err, result) {
+                            if (err) {
+                                debug(
+                                    'refund err' +
+                                    err
+                                );
+                                throw err;
+                            }
+                            resolve(result);
+                        })
+                    });
+
+                    let refundResult = yield refundPromise()
+                        .catch((err) => {
+                            throw err;
+                        });
+
+                    debug('refund result' + refundResult);
+
+                    let goods = orderItems[i].getGood();
+                    goods.capacity += orderItem.num;
+                    goods.soldNum -= orderItem.num;
+                    goods.compoundSoldNum -= orderItem.num;
+                    yield goods.save({
+                        transaction: t
+                    });
                 }
             });
-
-            var tasks = [];
-            var orderItem, goods;
-            for(var i = 0; i < orderItems.length; i ++) {
-                goods = orderItems[i].getGood();
-                goods.capacity += orderItem.num;
-                goods.soldNum -= orderItem.num;
-                goods.compoundSoldNum -= orderItem.num;
-                tasks.push(goods.save());
-            }
-
-            tasks.push(Order.update({
-                status: 10,
-                returnTime: Date.now(),
-                returnStatus: 2
-            }, {
-                where: {
-                    id: {
-                        in: body.ids
-                    },
-                    returnStatus: 1
-                }
-            }));
-
-            // 收到退货
-            this.body = yield tasks;
         }
 
 
     });
 
-    function * getOrders(body, withItem) {
+    function* getOrders(body, withItem) {
 
         if (!body.page || body.page < 0) {
             body.page = 1;
@@ -145,19 +187,16 @@ module.exports = (router) => {
 
 
         var conditions = {
-            where: {
-            },
-            include: [
-                {
+            where: {},
+            include: [{
                     model: User
-                }
-            ]
-            //offset: (body.page - 1) * body.limit,
-            //limit: body.limit
+                }]
+                //offset: (body.page - 1) * body.limit,
+                //limit: body.limit
         };
 
         if (body.status < 0) {
-            conditions.where.returnStatus =  - body.status;
+            conditions.where.returnStatus = -body.status;
         } else {
             conditions.where.status = body.status ? (body.status) : {
                 $gte: -2
@@ -169,12 +208,10 @@ module.exports = (router) => {
         }
 
         if (body.goodsIds && body.goodsIds.length !== 0) {
-            conditions.where.id = {
-                in: (yield OrderItem.findAll({
+            conditions.where.id = { in : (yield OrderItem.findAll({
                     attributes: ['OrderId'],
                     where: {
-                        GoodId: {
-                            in: body.goodsIds
+                        GoodId: { in : body.goodsIds
                         }
                     }
                 })).map((item) => item.OrderId)
@@ -192,7 +229,10 @@ module.exports = (router) => {
 
         if (body.startDate && body.startDate.length !== 0) {
             conditions.where.payTime = {
-                between: [new Date(Date.parse(body.startDate)), body.endDate ? new Date(Date.parse(body.endDate)) : new Date(Date.now())]
+                between: [new Date(Date.parse(body.startDate)),
+                    body.endDate ? new Date(Date.parse(body.endDate)) :
+                    new Date(Date.now())
+                ]
             }
         }
 
@@ -200,14 +240,16 @@ module.exports = (router) => {
             conditions.where.recieverName = body.recieverName;
         }
 
-        if (body.limit === 'none' && !body.startDate && body.startDate.length !== 0) {
+        if (body.limit === 'none' && !body.startDate && body.startDate.length !==
+            0) {
             var today = new Date(Date.now());
             today.setHours(0);
             today.setMinutes(0);
             today.setSeconds(0);
             today.setMilliseconds(0);
             conditions.where.payTime = {
-                between: [today, body.endDate ? new Date(Date.parse(body.endDate)) : new Date(Date.now())]
+                between: [today, body.endDate ? new Date(Date.parse(
+                    body.endDate)) : new Date(Date.now())]
             }
         }
 

@@ -13,11 +13,11 @@ var User = db.models.User;
 
 module.exports = (router) => {
 
-    router.get('/adminer-store/list', function *() {
+    router.get('/adminer-store/list', function*() {
 
         var nums = yield [
             Store.scope('all').count({
-                where:{
+                where: {
                     status: 0
                 }
             }),
@@ -29,7 +29,7 @@ module.exports = (router) => {
         ];
 
         var stores = yield Store.scope('all').findAll({
-            where:{
+            where: {
                 status: 1
             },
             attributes: ['id', 'name']
@@ -42,14 +42,13 @@ module.exports = (router) => {
 
     });
 
-    router.get('/adminer-store/list/:status', function *() {
+    router.get('/adminer-store/list/:status', function*() {
         this.body = yield Store.scope('all').findAll({
             where: {
                 status: this.params.status
             },
-            include: [
-                {
-                    model:  Store.scope('all'),
+            include: [{
+                    model: Store.scope('all'),
                     as: 'TopStore',
                     required: false
                 },
@@ -58,7 +57,7 @@ module.exports = (router) => {
         });
     });
 
-    router.post('/adminer-store/check', function *() {
+    router.post('/adminer-store/check', function*() {
 
         this.checkBody('ids').notEmpty();
         this.checkBody('action').notEmpty();
@@ -72,17 +71,26 @@ module.exports = (router) => {
         var action = this.request.body.action;
 
         if (action == 'pass') {
-            this.body = yield Store.update({
-                status: 1,
-                checkTime: Date.now()
-            }, {
-                where:{
+
+            this.body = yield(yield Store.findAll({
+                where: {
                     id: {
                         $in: ids
-                    },
-                    status: 0
-                }
-            });
+                    }
+                },
+                include: [{
+                    model: Store,
+                    as: "TopStore",
+                    required: true
+                }]
+            }).map((store) => {
+                store.status = 1;
+                store.checkTime = Date.now()
+                store.TopStore.inferiorNum += 1;
+                return store.save();
+            }));
+
+
         } else {
             this.body = yield Store.scope('all').destroy({
                 where: {
@@ -95,7 +103,7 @@ module.exports = (router) => {
         }
     });
 
-    router.post('/adminer-store/action', function *() {
+    router.post('/adminer-store/action', function*() {
 
         this.checkBody('ids').notEmpty();
         this.checkBody('action').notEmpty();
@@ -111,7 +119,7 @@ module.exports = (router) => {
         this.body = yield Store.scope('all').update({
             deletedAt: action == 'lock' ? new Date() : null
         }, {
-            where:{
+            where: {
                 id: {
                     $in: ids
                 }
@@ -119,7 +127,7 @@ module.exports = (router) => {
         });
     });
 
-    router.post('/adminer-store/detail', function *() {
+    router.post('/adminer-store/detail', function*() {
 
         this.checkBody('id').notEmpty();
 
@@ -134,8 +142,7 @@ module.exports = (router) => {
             where: {
                 id: id
             },
-            include: [
-                {
+            include: [{
                     model: Store,
                     as: 'TopStore',
                     required: false,
@@ -148,7 +155,7 @@ module.exports = (router) => {
         this.body = store;
     });
 
-    router.post('/adminer-store/save', function *() {
+    router.post('/adminer-store/save', function*() {
         this.checkBody('id').notEmpty();
         this.checkBody('username').notEmpty();
         this.checkBody('name').notEmpty();
@@ -168,13 +175,17 @@ module.exports = (router) => {
         store.username = body.username;
         store.name = body.name;
         store.phone = body.phone;
-        var currentTopStoreId = body.StoreId ? body.StoreId: null;
+        var currentTopStoreId = body.StoreId ? body.StoreId : null;
         if (currentTopStoreId != store.StoreId) {
             if (!util.isNullOrUndefined(currentTopStoreId)) {
-                tasks.push(db.query(`update Stores set inferiorNum = inferiorNum + 1 where id = ${currentTopStoreId}`));
+                tasks.push(db.query(
+                    `update Stores set inferiorNum = inferiorNum + 1 where id = ${currentTopStoreId}`
+                ));
             }
             if (!util.isNullOrUndefined(store.StoreId)) {
-                tasks.push(db.query(`update Stores set inferiorNum = inferiorNum - 1 where id = ${store.StoreId}`));
+                tasks.push(db.query(
+                    `update Stores set inferiorNum = inferiorNum - 1 where id = ${store.StoreId}`
+                ));
             }
         }
         store.StoreId = currentTopStoreId;

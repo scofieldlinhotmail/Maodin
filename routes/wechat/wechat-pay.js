@@ -30,75 +30,107 @@ module.exports = (router) => {
     var User = db.models.User;
     var Order = db.models.Order;
 
-    router.get('/user/pay/:id', function *() {
+    router.get('/user/pay/:id', function*() {
 
-        this.checkParams('id').notEmpty().isInt().toInt();
-        if (this.errors) {
-            this.body = this.errors;
+        var ctx = this;
+        var id = this.params.id;
+
+        if (util.isNullOrUndefined(id)) {
+            this.redirect(encodeURI('/user-msg?msg=错误操作'));
             return;
         }
 
         var order = yield Order.findOne({
             where: {
-                id: this.params.id,
+                id: id,
                 // unpaid
                 status: 0
             }
         });
 
         if (util.isNullOrUndefined(order)) {
-            this.body = '错误操作';
+            this.redirect(encodeURI('/user-msg?msg=错误操作'));
             return;
         }
         var user = yield auth.user(this);
+        user = yield User.findById(user.id);
+
         var outerTradeId = utilx.intToFixString(order.id, 32);
 
         var payInfo;
+        var createOrder = false;
         if (!util.isNullOrUndefined(order.prepayId)) {
-            var queryPromise = new Promise(function (resolve, reject) {
-                wxpay.queryOrder({ out_trade_no: outerTradeId }, function(err, order){
+            // 已经支付过，检测prepayid是否有效
+            var queryPromise = new Promise(function(resolve,
+                reject) {
+                wxpay.queryOrder({
+                    out_trade_no: outerTradeId
+                }, function(err, order) {
                     if (err) {
                         debug(err);
                         reject(err);
                     }
-                    debug(order);
                     resolve(order);
                 });
             });
+
+            var queryResult = yield queryPromise;
+
+            if (queryResult.trade_state == 'NOTPAY') {
+                payInfo = {
+                    appId: wechatConfig.appId,
+                    timeStamp: Math.floor(Date.now() / 1000) +
+                        "",
+                    nonceStr: utilx.randomNum(32),
+                    package: "prepay_id=" + order.prepayId,
+                    signType: "MD5"
+                };
+
+                payInfo.paySign = wxpay.sign(payInfo);
+            } else {
+                createOrder = true;
+            }
         } else {
-            var p = new Promise(function (resolve, reject) {
-                wxpay.createUnifiedOrder({
-                    body: '猫町海淘订单支付' + order.id,
+            createOrder = true;
+        }
+        if (createOrder) {
+
+            var payPromise = new Promise(function(resolve,
+                reject) {
+
+                wxpay.getBrandWCPayRequestParams({
+                    openid: user.openid,
+                    body: '订单支付' + order.id,
+                    detail: '公众号支付测试',
                     out_trade_no: outerTradeId,
                     total_fee: 1, //todo: for test 1分
-                    spbill_create_ip: this.request.id,
-                    notify_url: 'http://139.129.18.214/wechat/paid',
-                    trade_type: 'JSAPI',
-                    openid: user.openid,
-                    attach: order.id
-                    //product_id: '1234567890'
-                }, function(err, result){
+                    spbill_create_ip: '182.92.203.172',
+                    attach: order.id,
+                    notify_url: `${wechatConfig.domain}/wechat/paid`
+                }, function(err, result) {
                     if (err) {
-                        debug(err);
+                        console.log(err);
                         reject(err);
                     }
                     resolve(result);
                 });
             });
 
-            payInfo = yield p;
+            payInfo = yield payPromise;
 
-            debug(payInfo);
+            order.prepayId = payInfo.package.split('=')[1];
+
+            yield order.save();
         }
 
         payInfo = JSON.stringify(payInfo);
-        this.body = yield render('user/pay', {
+        this.body = yield render('phone/pay', {
             title: '微信支付',
             payInfo
         });
     });
 
-    router.get('/wechat/paid', function *() {
+    router.get('/wechat/paid', function*() {
         debug('paid');
     });
 

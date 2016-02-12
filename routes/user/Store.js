@@ -1,7 +1,10 @@
+var WechatAPI = require('co-wechat-api');
+
 var auth = require('../../helpers/auth.js');
 var db = require('../../models/db/index');
 var render = require('../../instances/render.js');
 var debug = require('../../instances/debug.js');
+var wechatConfig = require('../../instances/config.js').wechat;
 
 var sequelizex = require('../../lib/sequelizex.js');
 
@@ -16,6 +19,8 @@ var Favorite = db.models.Favorite;
 var User = db.models.User;
 var SalerGoods = db.models.SalerGoods;
 var Order = db.models.Order;
+
+var wechatApi = new WechatAPI(wechatConfig.appId, wechatConfig.secret);
 
 module.exports = (router) => {
 
@@ -76,6 +81,19 @@ module.exports = (router) => {
     });
 
     router.get('/user-store/home', function*() {
+
+        var params = {
+            debug: false,
+            jsApiList: [
+                'onMenuShareTimeLine',
+                'onMenuShareAppMessage'
+            ]
+        };
+
+        var wechatJsConfig = yield wechatApi.getJsConfig(params);
+
+        debug(wechatJsConfig);
+
         var id = (yield auth.user(this)).id;
         var s = yield Store.findOne({
             where: {
@@ -93,7 +111,8 @@ module.exports = (router) => {
 
             this.body = yield render('phone/storehome.html', {
                 s,
-                orderNum
+                orderNum,
+                wechatJsConfig
             });
         } else {
             this.redirect('/user-store/apply');
