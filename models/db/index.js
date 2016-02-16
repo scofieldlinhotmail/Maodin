@@ -3,7 +3,6 @@ var path = require('path');
 var Sequelize = require('sequelize');
 
 var configs = require('./../../instances/config.js');
-
 var sequelize = new Sequelize(configs.db.toString(), {
     logging: function () {}
 });
@@ -29,4 +28,3 @@ Object.keys(sequelize.models).forEach(function (modelName) {
 });
 
 module.exports = sequelize;
-

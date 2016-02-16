@@ -463,10 +463,3 @@ co(function * () {
 }).catch(function () {
     console.log(arguments);
 });
-
-
-
-
-
-
-
