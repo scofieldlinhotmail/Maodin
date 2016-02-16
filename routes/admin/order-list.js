@@ -109,7 +109,7 @@ module.exports = (router) => {
             });
         } else if (status == 3) {
 
-            this.body = yield db.transaction(function(t) {
+            this.body = yield db.transaction(function *(t) {
 
                 var orders = yield Order.findAll({
                     where: {
