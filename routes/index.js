@@ -83,6 +83,10 @@ router.use(function *(next) {
     yield next;
 });
 
+
+router.get('/', function *() {
+  this.body = 'hello maodin';
+})
 /****************************/
 
 var loadDir = (dir) => {
