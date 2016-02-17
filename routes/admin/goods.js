@@ -32,7 +32,7 @@ module.exports = (router) => {
         var data;
         if (this.params.id ){
             data = yield Goods.scope('all').findById(this.params.id);
-            data.timeToDown = moment(data.timeToDown).format('MM/DD/YYYY hh:mm A');
+            data.dataValues.timeToDown = moment(data.timeToDown).format('MM/DD/YYYY hh:mm A').toString();
             data.typeIds = JSON.stringify((yield data.getGoodsOfTypes()).map((rel) => rel.GoodsTypeId));
         }
 
@@ -47,16 +47,16 @@ module.exports = (router) => {
         this.checkBody('title').notEmpty();
         this.checkBody('mainImg').notEmpty();
         this.checkBody('imgs').notEmpty();
-        this.checkBody('price').notEmpty().isFloat().gt(0).toFloat();
-        this.checkBody('oldPrice').notEmpty().isFloat().gt(0).toFloat();
-        this.checkBody('capacity').notEmpty().isInt().gt(0).toInt();
+        this.checkBody('price').notEmpty().isFloat().ge(0).toFloat();
+        this.checkBody('oldPrice').notEmpty().isFloat().ge(0).toFloat();
+        this.checkBody('capacity').notEmpty().isInt().ge(0).toInt();
         this.checkBody('typeIds').notEmpty();
         this.checkBody('baseSoldNum').notEmpty().isInt().toInt();
-        this.checkBody('commission1').notEmpty().isFloat().gt(0).toFloat();
-        this.checkBody('commission2').notEmpty().isFloat().gt(0).toFloat();
-        this.checkBody('commission3').notEmpty().isFloat().gt(0).toFloat();
-        this.checkBody('integral').notEmpty().isFloat().gt(0).toFloat();
-        this.checkBody('taxRate').notEmpty().isFloat().gt(0).toFloat();
+        this.checkBody('commission1').notEmpty().isFloat().ge(0).toFloat();
+        this.checkBody('commission2').notEmpty().isFloat().ge(0).toFloat();
+        this.checkBody('commission3').notEmpty().isFloat().ge(0).toFloat();
+        this.checkBody('integral').notEmpty().isFloat().ge(0).toFloat();
+        this.checkBody('taxRate').notEmpty().isFloat().ge(0).toFloat();
 
         var body = this.request.body;
 
@@ -122,18 +122,22 @@ module.exports = (router) => {
                 goods.commission3 = body.commission3;
                 goods.integral = body.integral;
                 goods.baseSoldNum = body.baseSoldNum;
-                goods.compoundSoldNum = body.baseSoldNum + body.soldNum;
+                goods.compoundSoldNum = goods.baseSoldNum + goods.soldNum;
                 goods.taxRate = body.taxRate;
                 goods.extraFields = JSON.stringify(extraFields);
                 goods.timeToDown = body.hasTimeToDown ? (new Date(body.timeToDown)).getTime() : null;
                 goods.buyLimit = body.buyLimit ? body.buyLimit : 0;
 
                 yield goods.save();
-                createTypeTask.push(GoodsOfTypes.destory({
+                createTypeTask.push(GoodsOfTypes.destroy({
                     where: {
                         GoodId: goods.id
                     }
                 }));
+
+                yield createTypeTask;
+
+                createTypeTask = [];
 
                 isCreate = false;
             }

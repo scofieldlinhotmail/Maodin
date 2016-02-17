@@ -299,11 +299,13 @@ $(function () {
         var typeIds = typeDom.data('id');
 
         try {
-            var $select = $('[name="typeIds"]');
-            $select.select2();
-            $select.val(typeIds).trigger('change');
             scope.typeIds = typeIds;
             scope.$applyAsync();
+            setTimeout(function () {
+                var $select = $('[name="typeIds"]');
+                $select.val(typeIds).trigger('change');
+                $select.select2();
+            }, 0);
         }catch (ex) {
         }
 
@@ -316,7 +318,7 @@ $(function () {
             angular.forEach(scope.typeIds, function (typeId) {
                 ids.push(typeId);
                 var stype = scope.typeDict[typeId];
-                if (ids.indexOf(stype.GoodsTypeId) == -1) {
+                if (stype && ids.indexOf(stype.GoodsTypeId) == -1) {
                     ids.push(stype.GoodsTypeId);
                     var ltype = scope.typeDict[stype.GoodsTypeId];
                     types.push(ltype);
@@ -339,6 +341,8 @@ $(function () {
             }
             scope.extraFields = extraFields;
         }
+
+
         window.s = scope;
 
     }]);
