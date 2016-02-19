@@ -80,13 +80,15 @@ module.exports = (router) => {
                 },
                 include: [{
                     model: Store,
-                    as: "TopStore",
-                    required: true
+                    as: "TopStore"
                 }]
             }).map((store) => {
                 store.status = 1;
-                store.checkTime = Date.now()
+                store.checkTime = Date.now();
                 store.TopStore.inferiorNum += 1;
+                if (store.TopStore) {
+                    store.TopStore.inferiorNum += 1;
+                }
                 return store.save();
             }));
 

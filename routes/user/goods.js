@@ -64,17 +64,17 @@ module.exports = (router) => {
             where,
             offset: (body.page - 1) * goodsPerPage,
                 limit: goodsPerPage,
-                attributes: [
-                    'id', 'title',
-                    'price', 'oldPrice',
-                    'mainImg',
-                    'status',
-                    'integral',
-                    'compoundSoldNum',
-                    'capacity',
-                    'taxRate',
-                    'createdAt'
-                ]
+            attributes: [
+                'id', 'title',
+                'price', 'oldPrice',
+                'mainImg',
+                'status',
+                'integral',
+                'compoundSoldNum',
+                'capacity',
+                'taxRate',
+                'createdAt'
+            ]
         };
 
         if (body.typeId && /^\d*$/.test(body.typeId)) {

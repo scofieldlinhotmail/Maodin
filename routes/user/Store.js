@@ -12,7 +12,6 @@ var util = require('util');
 
 
 var Store = db.models.Store;
-var GoodsShortcutView = db.models.GoodsShortcutView;
 var Slideshow = db.models.Slideshow;
 var Goods = db.models.Goods;
 var Favorite = db.models.Favorite;
@@ -33,7 +32,7 @@ module.exports = (router) => {
                 }
             })) != 0) {
             this.redirect('/user-wait');
-        };
+        }
 
         this.body = yield render('phone/storeapply.html', {
             upstore
@@ -58,7 +57,7 @@ module.exports = (router) => {
                 }
             })) != 0) {
             this.redirect('/user-wait');
-        };
+        }
 
         if (body.upstore == "") {
             yield Store.create({
@@ -91,8 +90,6 @@ module.exports = (router) => {
         };
 
         var wechatJsConfig = yield wechatApi.getJsConfig(params);
-
-        debug(wechatJsConfig);
 
         var id = (yield auth.user(this)).id;
         var s = yield Store.findOne({
@@ -152,6 +149,23 @@ module.exports = (router) => {
         this.body = yield render('phone/group.html', {
             list,
             title: "我的团队"
+        });
+    });
+
+    router.get('/user-store/topseller', function *() {
+        var id = this.query.id;
+        var list = yield Store.findAll({
+            //where: {
+            //    StoreId: id
+            //},
+            include: [User],
+            order: 'sales DESC',
+            limit: 10
+        });
+        debug(list);
+        this.body = yield render('phone/group.html', {
+            list,
+            title: "英雄榜"
         });
     });
 

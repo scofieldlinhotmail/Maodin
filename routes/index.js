@@ -22,7 +22,7 @@ router.use(function *(next) {
 
     context.set(this);
     var req = this.request;
-    // auth.login(this, yield db.models.User.findOne());
+     //auth.login(this, yield db.models.User.findOne());
     // auth.login(this, yield db.models.Adminer.findOne());
 
     var user = yield auth.user(this);

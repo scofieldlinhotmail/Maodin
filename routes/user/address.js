@@ -5,7 +5,6 @@
 var render = require('../../instances/render');
 var db = require('../../models/db/index');
 var DeliverAddress = db.models.DeliverAddress;
-var Area = db.models.Area;
 var auth = require('../../helpers/auth');
 
 module.exports = (router) => {
