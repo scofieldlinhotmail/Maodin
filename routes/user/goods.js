@@ -133,7 +133,6 @@ module.exports = (router) => {
         }
 
         if (!goods || goods.status !== 1) {
-            console.log('what123');
             this.redirect(encodeURI('/user-msg/抱歉，商品已下架'))
             return;
         }
@@ -167,7 +166,7 @@ module.exports = (router) => {
             }
         });
 
-        var isSaled = typeof store === 'undefined' ? false : (yield SalerGoods
+        var isSaled = util.isNullOrUndefined(store) ? false : (yield SalerGoods
             .count({
                 where: {
                     GoodId: goods.id,
