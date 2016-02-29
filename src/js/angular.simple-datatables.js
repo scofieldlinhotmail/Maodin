@@ -128,7 +128,7 @@
 
                 scope.sdtSelected = scope.sdtSelected || [];
 
-                scope.sdtSelectboxHtml = $sce.trustAsHtml(scope.sdtSelectboxHtml || '<input type="checkbox">');
+                scope.sdtSelectboxHtml = $sce.trustAsHtml(scope.sdtSelectboxHtml || '<input type="checkbox" ng-checked="isRowSelected(row)"');
 
 
                 angular.copy(scope.ngModel, scope.list);
@@ -260,10 +260,11 @@
 
                 scope.select = function (row) {
                     var index = scope.sdtSelected.indexOf(row);
+
                     if (index === -1) {
                         scope.sdtSelected.push(row);
                     } else {
-                        scope.sdtSelected.splice(index, -1);
+                        scope.sdtSelected.splice(index, 1);
                     }
                 };
 
@@ -301,7 +302,7 @@
                             //'{{row | property: name}}' +
                                 '<span ng-bind-html="row | property: rowAttr.name" ng-if="[\'string\'].indexOf(rowAttr.type) != -1"></span>' +
                                 '<img ng-src="{{row | property: rowAttr.name}}" ng-if="rowAttr.type == \'img\'">' +
-                                '<span ng-bind-html="sdtSelectboxHtml" ng-if="rowAttr.type == \'selectbox\'" ng-click="select(row)"></span>' +
+                                '<span ng-if="rowAttr.type == \'selectbox\'" ng-click="select(row)">' + scope.sdtSelectboxHtml + '</span>' +
                                 '<span ng-if="rowAttr.type == \'date\'">{{ (row | property: rowAttr.name : "Date") | date: "yyyy/MM/dd"}}</span>' +
                                 '<span ng-if="rowAttr.type == \'datetime\'">{{row | property: rowAttr.name:  "Date" | date: "yyyy/MM/dd hh:mm"}}</span>' +
                                 '<span ng-if="rowAttr.type == \'bool\'">{{ (row | property: rowAttr.name) ? rowAttr.true : rowAttr.false}}</span>' +

@@ -8,7 +8,7 @@ var debug = require('../../instances/debug.js');
 module.exports = (router) => {
 
     var GoodsType = db.models.GoodsType;
-    var Goods = db.models.Goods;
+    var GoodsOfTypes = db.models.GoodsOfTypes;
 
     router.get('/adminer-shopkeeper/goodstype', function *() {
         var types = yield GoodsType.all({
@@ -99,7 +99,7 @@ module.exports = (router) => {
             return;
         }
         if (type.type == 2) {
-            var count = yield Goods.count({
+            var count = yield GoodsOfTypes.count({
                 where: {
                     GoodsTypeId: id
                 }

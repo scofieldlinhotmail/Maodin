@@ -119,8 +119,3 @@ app.controller('AppCtrl', ['$scope', '$http', function (scope, $http) {
 
 
 angular.bootstrap(document.documentElement, ['app']);
-
-
-
-
-

@@ -19,7 +19,7 @@ $(function () {
 
     $('.del-btn').click(function () {
         var $this = $(this);
-        var $tr = $this.parents('tr');
+        var $tr = $this.parentsUntil('tr');
         $.ajax({
             url: 'goodstype-del',
             type: 'post',
@@ -28,7 +28,7 @@ $(function () {
             },
             success: function (ret) {
                 if(ret === 0) {
-                    $this.parents('tr').remove();
+                    $tr.remove();
                 } else {
                     alert('该类别包含相关商品或者子类别，不能删除');
                 }
@@ -40,12 +40,3 @@ $(function () {
     });
 
 });
-
-
-
-
-
-
-
-
-

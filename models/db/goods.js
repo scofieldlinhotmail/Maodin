@@ -125,6 +125,9 @@ module.exports = function (sequelize, DataTypes) {
                 };
                 yield models.ShoppingCart.destroy(condition);
                 yield models.GoodsCollection.destroy(condition);
+                yield models.GoodsOfTypes.destroy({
+                    where: { GoodId: id}
+                })
                 yield this.destroy({
                     where: {
                         id: id
@@ -159,4 +162,3 @@ module.exports = function (sequelize, DataTypes) {
 
     return Goods;
 };
-

@@ -21,7 +21,7 @@ var port = 8765;
 app.env = 'development';
 
 // static file
-app.use(staticServer(path.join( __dirname, 'public')));
+app.use(staticServer(path.join(__dirname, 'public')));
 // favicon
 app.use(favicon(__dirname + '/public/favicon.ico'));
 // http parse
@@ -35,12 +35,15 @@ app.use(koaValidate());
 // route
 app.use(router);
 
- app.on('error', (err, ctx) => {
-     //todo: error handle
-     // todo: for test
-     console.log(err);
-     log.error('server error', err, ctx);
- });
+// app.on('error', (err, ctx) => {
+//     //todo: error handle
+//     // todo: for test
+//     console.log(err);
+//     log.error('--------------------------');
+//     log.error('server error', err.toString());
+//     log.error('server error content', ctx);
+//     log.error('--------------------------');
+// });
 
 app = app.listen(port);
 module.exports = app;
