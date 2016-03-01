@@ -127,6 +127,7 @@ $('#add1btn').click(function () {
 });
 $('.edit').click(function () {
     formclear();
+    $(".modal-title").html("修改");
     var id = $(this).data("id");
     var $p = $(this).parent().parent().parent();
     var name = $p.find(".n1").html();
@@ -141,6 +142,7 @@ $('.edit').click(function () {
 });
 $("#addbtn").click(function () {
     formclear();
+    $(".modal-title").html("添加");
 });
 
 function formclear() {
