@@ -1,22 +1,13 @@
-### todo
+# Maodin
+------
+一个微信公众平台海淘电商项目
+
+[系列介绍博客](http://lext-7.github.io/categories/webshop-dev/)
+
+[项目结构](http://lext-7.github.io/2016/03/03/项目结构/)
+[手机商城的实现](http://lext-7.github.io/2016/03/03/手机商城的实现/)
+[登录过滤](http://lext-7.github.io/2016/03/03/登录过滤/)
+[redis work with json](http://lext-7.github.io/2016/03/03/redis-work-with-json/)
 
 
-上下家分享 -- 測試
-
-退款 -- 测试
-
-群通知
-
-分销订单列表 
-
-定时下架
-
-英雄榜
-
-客服
-
-通知
-
-用积分抵扣
-
-佣金体现
+by lext
